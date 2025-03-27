@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useState } from "react";
 import {
   BrowserRouter as Router,
   Route,
@@ -14,6 +14,8 @@ import Home from "./components/Home";
 import SignUp from "./components/SignUp";
 import SignIn from "./components/SignIn";
 import Sidebar from "./components/Sidebar";
+import Header from "./components/Header";
+import { MainLayout } from "./App1";
 
 const App = () => {
   return (
@@ -73,31 +75,33 @@ const App = () => {
 
 export default App;
 
-function MainLayout() {
-  const location = useLocation();
-  const hideSidebarRoutes = ["/signin", "/signup"];
+// function MainLayout() {
+//   const location = useLocation();
+//   const hideSidebarRoutes = ["/signin", "/signup"];
 
-  // check if current path is in hidden routes
-  const hideSidebar = hideSidebarRoutes.includes(location.pathname);
+//   // check if current path is in hidden routes
+//   const hideSidebar = hideSidebarRoutes.includes(location.pathname);
+//   const [open, setOpen] = useState(false);
 
-  return (
-    <div className="flex w-full">
-      {/* Sidebar only when route is not in hidden list */}
-      {!hideSidebar && <div className="hidden md:flex"><Sidebar /></div> }
+//   return (
+//     <div className="flex w-full">
+//       {/* Sidebar only when route is not in hidden list */}
+//       {!hideSidebar && <div className="hidden md:flex"><Sidebar /></div> }
+//       {!hideSidebar && <Header open={open} /> }
 
-      {/* Your actual routes */}
-      <Routes>
-        <Route path="/signup" element={<SignUp />} />
-        <Route path="/signin" element={<SignIn />} />
-        <Route path="/RDF-design" element={<RDFDesign />} />
-        <Route path="/" element={<Home />} />
-        <Route path="/landfill-design" element={<LandfillDesign />} />
-        <Route path="/MRF-design" element={<MRFDesign />} />
-        <Route
-          path="/anaerobic-design"
-          element={<AnaerobicDigesterCalculator />}
-        />
-      </Routes>
-    </div>
-  );
-}
+//       {/* Your actual routes */}
+//       <Routes>
+//         <Route path="/signup" element={<SignUp />} />
+//         <Route path="/signin" element={<SignIn />} />
+//         <Route path="/RDF-design" element={<RDFDesign />} />
+//         <Route path="/" element={<Home setOpen={setOpen} open={open}/>} />
+//         <Route path="/landfill-design" element={<LandfillDesign />} />
+//         <Route path="/MRF-design" element={<MRFDesign />} />
+//         <Route
+//           path="/anaerobic-design"
+//           element={<AnaerobicDigesterCalculator />}
+//         />
+//       </Routes>
+//     </div>
+//   );
+// }

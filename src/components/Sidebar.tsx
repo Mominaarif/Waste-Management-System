@@ -70,13 +70,13 @@ const Sidebar = () => {
         } relative`}
       >
         <div>
-          <div className="flex items-center pb-5 pt-8 justify-between">
+          <div className="flex items-center pb-5 pt-1 justify-between">
             {!isOpen && (
               // <a href="/" className="flex justify-center w-full cursor-pointer" >
               <button
                 onMouseEnter={() => setIsOpen(true)}
                 onClick={ () => location.href='/'}
-                className="w-full flex justify-center"
+                className="w-full flex justify-center pt-1.5"
               >
                 <img src="./H2.png" alt="" className="w-8" />
               </button>
@@ -96,7 +96,7 @@ const Sidebar = () => {
             {/* Fix button visibility */}
             <button
               onClick={() => setIsOpen(!isOpen)}
-              className={`absolute right-4 top-14 flex items-center cursor-pointer ${
+              className={`absolute right-4 top-8 flex items-center cursor-pointer ${
                 !isOpen ? "opacity-0" : " opacity-100"
               }`}
             >
@@ -104,7 +104,7 @@ const Sidebar = () => {
             </button>
           </div>
 
-          <ul className={` ${isOpen ? "p-2" : "p-3"}`}>
+          <ul className={`pt-6 ${isOpen ? "p-2" : "p-3"}`}>
             <a href="/" className="text-sm">
               <li
                 className={`${

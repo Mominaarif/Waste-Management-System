@@ -424,13 +424,13 @@ function RDF() {
   };
 
   return (
-    <div className="w-screen h-screen bg-white">
-      <h1 className="text-lg md:text-3xl pl-5 md:pl-14 border shadow-sm py-4 font-bold">
+    <div className="w-full h-screen bg-white">
+      {/* <h1 className="text-lg md:text-3xl pl-5 md:pl-14 border shadow-sm py-4 font-bold">
         RDF Design
-      </h1>
+      </h1> */}
       <div className="h-[calc(96%-68px)] overflow-y-auto">
         {/* Input Section */}
-        <div className="pt-10 px-5 md:px-16">
+        <div className="pt-10 px-5 md:px-8">
           <div className="border p-8 rounded-md">
             <h2 className="text-lg font-semibold text-gray-900 pb-5">
               Input Parameters
@@ -499,7 +499,7 @@ function RDF() {
 
         {/* Output Section */}
         {calculatedValues && (
-          <div className="pt-10 px-5 md:px-16 bg-white">
+          <div className="pt-10 px-5 md:px-8 bg-white">
             <div className="border p-8 rounded-md">
               <h2 className="text-lg font-semibold text-gray-900 ">Outputs</h2>
               <div className="grid grid-cols-1 sm:grid-cols-3 gap-y-4 gap-x-6">

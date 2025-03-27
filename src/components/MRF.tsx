@@ -615,13 +615,13 @@ const MRFDesign = () => {
   };
 
   return (
-    <div className="w-screen h-screen bg-white">
-      <h1 className="text-lg md:text-3xl pl-5 md:pl-14 border shadow-sm py-4 font-bold">
+    <div className="w-full h-screen bg-white">
+      {/* <h1 className="text-lg md:text-3xl pl-5 md:pl-14 border shadow-sm py-4 font-bold">
         Material Recovery Facility (MRF) Design
-      </h1>
+      </h1> */}
       <div className="h-[calc(96%-68px)] overflow-y-auto">
 
-      <div className="pt-10 px-5 md:px-16 bg-white">
+      <div className="pt-10 px-5 md:px-8 bg-white">
         <div className="border  p-8 rounded-md">
           {wasteData.map((waste, index) => (
             <div key={index} className="pb-8 mb-8 border-b">
@@ -737,7 +737,7 @@ const MRFDesign = () => {
 )} */}
 
       {calculatedData && (
-        <div className="pt-10 px-5 md:px-16 bg-white">
+        <div className="pt-10 px-5 md:px-8 bg-white">
           <div className="border p-8 rounded-md">
             <h2 className="text-lg font-semibold text-gray-900 pb-3">
               Outputs
