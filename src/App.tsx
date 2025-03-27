@@ -83,7 +83,7 @@ function MainLayout() {
   return (
     <div className="flex w-full">
       {/* Sidebar only when route is not in hidden list */}
-      {!hideSidebar && <Sidebar />}
+      {!hideSidebar && <div className="hidden md:flex"><Sidebar /></div> }
 
       {/* Your actual routes */}
       <Routes>

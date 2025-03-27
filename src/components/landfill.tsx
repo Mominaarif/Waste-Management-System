@@ -145,13 +145,13 @@ const Landfill = () => {
 
   return (
     <div className="w-screen h-screen bg-white">
-      <h1 className="text-3xl text-center border shadow-sm py-4 font-bold">
+      <h1 className="text-lg md:text-3xl pl-5 md:pl-14  border shadow-sm py-4 font-bold">
         Landfill Design
       </h1>
       <div className="h-[calc(96%-68px)] overflow-y-auto">
 
       {/* Input Section */}
-      <div className="pt-10 px-16 bg-white">
+      <div className="pt-10 px-5 md:px-16 bg-white">
         <div className="border p-8 rounded-md">
           <div className="border-b border-gray-900/10 pb-8 mb-8">
             <h2 className="text-lg font-semibold text-gray-900 pb-5">
@@ -519,7 +519,7 @@ const Landfill = () => {
 
       {/* Output Section */}
       {(outputs.totalWastePerDay > 0 || outputs.totalWastePerYear > 0) && (
-        <div className="pt-10 px-16 bg-white">
+        <div className="pt-10 px-5 md:px-16 bg-white">
           <div className="border p-8 rounded-md">
             <h2 className="text-lg font-semibold text-gray-900 ">Outputs</h2>
             <div className="grid grid-cols-1 sm:grid-cols-3 gap-y-4 gap-x-6">
