@@ -1,12 +1,12 @@
 "use client";
-import { Button } from "./components/ui/button";
-import { Component } from "./elements/PieChart";
+import { Button } from "./ui/button";
+import { Component } from "../elements/PieChart";
 // import { App } from "./elements/BarChart";
-import { ComponentBarChart } from "./elements/BarChart";
-import { ComponentBarChart1 } from "./elements/BarChart1";
-import ComponentPieChart1 from "./elements/PieChart1";
-import { ComponentBarChart2 } from "./elements/BarChart2";
-import ComponentPieChart2 from "./elements/PieChart2";
+import { ComponentBarChart } from "../elements/BarChart";
+import { ComponentBarChart1 } from "../elements/BarChart1";
+import ComponentPieChart1 from "../elements/PieChart1";
+import { ComponentBarChart2 } from "../elements/BarChart2";
+import ComponentPieChart2 from "../elements/PieChart2";
 
 function Home() {
   return (

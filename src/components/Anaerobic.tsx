@@ -377,7 +377,7 @@
 // export default AnaerobicDigesterCalculator;
 
 import React, { useState } from "react";
-import "./App.css";
+import "../Styles/App.css";
 interface Results {
   totalBiodegradableWaste: number;
   waterRequirement: number;

@@ -1,5 +1,5 @@
 import React, { useState } from "react";
-import "./App.css";
+import "../Styles/App.css";
 
 const Landfill = () => {
   // Default inputs for waste quantities

@@ -461,7 +461,7 @@
 // export default MRFDesign;
 
 import React, { useState } from "react";
-import "./MRF.css";
+import "../Styles/MRF.css";
 
 type WasteItem = {
   type: string;

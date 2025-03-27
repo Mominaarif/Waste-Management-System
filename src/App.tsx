@@ -5,18 +5,17 @@ import {
   Routes,
   useLocation,
 } from "react-router-dom";
-import LandfillDesign from "./landfill";
-import RDFDesign from "./RDF";
-import MRFDesign from "./MRF";
-import AnaerobicDigesterCalculator from "./Anaerobic";
-import "./App.css";
-import Home from "./Home";
-import SignUp from "./SignUp";
-import SignIn from "./SignIn";
-import Sidebar from "./Sidebar";
+import LandfillDesign from "./components/landfill";
+import RDFDesign from "./components/RDF";
+import MRFDesign from "./components/MRF";
+import AnaerobicDigesterCalculator from "./components/Anaerobic";
+import "./Styles/App.css";
+import Home from "./components/Home";
+import SignUp from "./components/SignUp";
+import SignIn from "./components/SignIn";
+import Sidebar from "./components/Sidebar";
 
 const App = () => {
- 
   return (
     <>
       {/* <Router>
@@ -65,19 +64,18 @@ const App = () => {
         </Router>
       </div> */}
 
-<Router>
-      <MainLayout />
-    </Router>
+      <Router>
+        <MainLayout />
+      </Router>
     </>
   );
 };
 
 export default App;
 
-
 function MainLayout() {
   const location = useLocation();
-  const hideSidebarRoutes = ['/signin', '/signup'];
+  const hideSidebarRoutes = ["/signin", "/signup"];
 
   // check if current path is in hidden routes
   const hideSidebar = hideSidebarRoutes.includes(location.pathname);
@@ -95,7 +93,10 @@ function MainLayout() {
         <Route path="/" element={<Home />} />
         <Route path="/landfill-design" element={<LandfillDesign />} />
         <Route path="/MRF-design" element={<MRFDesign />} />
-        <Route path="/anaerobic-design" element={<AnaerobicDigesterCalculator />} />
+        <Route
+          path="/anaerobic-design"
+          element={<AnaerobicDigesterCalculator />}
+        />
       </Routes>
     </div>
   );
