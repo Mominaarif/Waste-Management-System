@@ -11,11 +11,11 @@ import Example from "./SidebarMobile";
 
 function Home() {
   return (
-    <div className="h-screen bg-white w-full pt-5">
+    <div className="h-[calc(100vh-85px)] overflow-y-auto bg-white w-full pt-5">
       {/* <h1 className="text-lg md:text-3xl pl-5 md:pl-14 bg-white  shadow-md py-4 font-bold mb-5">
         Waste Management Dashboard
       </h1> */}
-      <div className="h-[calc(96%-68px)] overflow-y-auto">
+      <div className="">
         <div className="px-5 md:px-8 ">
           <div className="grid grid-cols-1 md:grid-cols-3 gap-x-8 gap-y-5">
             {/* <App /> */}

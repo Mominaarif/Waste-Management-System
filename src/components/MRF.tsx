@@ -615,11 +615,11 @@ const MRFDesign = () => {
   };
 
   return (
-    <div className="w-full h-screen bg-white">
+    <div className="w-full h-[calc(100vh-85px)] overflow-y-auto bg-white">
       {/* <h1 className="text-lg md:text-3xl pl-5 md:pl-14 border shadow-sm py-4 font-bold">
         Material Recovery Facility (MRF) Design
       </h1> */}
-      <div className="h-[calc(96%-68px)] overflow-y-auto">
+      <div className="">
 
       <div className="pt-10 px-5 md:px-8 bg-white">
         <div className="border  p-8 rounded-md">
