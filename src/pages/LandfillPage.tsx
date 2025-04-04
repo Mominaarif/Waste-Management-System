@@ -1,6 +1,5 @@
 import Header from "@/components/Header";
 import Landfill from "@/components/landfill";
-import React from "react";
 
 function LandfillPage({ open, setOpen }: any) {
   const title = "Landfill Design";

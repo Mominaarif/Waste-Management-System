@@ -1,5 +1,10 @@
-import React, { useState } from "react";
+import Toast from "./Toast";
+import { useState } from "react";
 import { useNavigate } from "react-router-dom";
+import { signInWithEmailAndPassword } from "firebase/auth";
+import { auth } from "../firebase"; 
+import { useAuth } from "./AuthContext";
+
 type FormErrors = {
   email?: string;
   password?: string;
@@ -12,34 +17,59 @@ interface FormValues {
 function SignIn() {
   const [values, setValues] = useState({ email: "", password: "" });
   const [errors, setErrors] = useState<FormErrors>({});
-  const navigate = useNavigate()
+  const [toast, setToast] = useState<{ message: string; type: string }>({
+    message: "",
+    type: "",
+  });
+  const { login } = useAuth();
+  const navigate = useNavigate();
   const handleChange = (e: any) => {
     setValues({ ...values, [e.target.name]: e.target.value });
   };
 
-  const handleSubmit = (e: any) => {
+  const handleSubmit = async (e: any) => {
     e.preventDefault();
     const validationErrors = validateForm(values);
     setErrors(validationErrors);
 
     if (Object.keys(validationErrors).length === 0) {
-      alert("Sign In successfully!");
-      navigate("/")
+      try {
+        await signInWithEmailAndPassword(auth, values.email, values.password);
+        setErrors({ email: "", password: "" });
+        setValues({ email: "", password: "" });
+        login();
+        setToast({ message: "Successfully Login!", type: "success" });
+        setTimeout(() => {
+          navigate("/"); 
+        }, 2000); 
+      } catch (error: any) {
+        if (error.code === "auth/user-not-found") {
+          setToast({
+            message: "No user found with this email.",
+            type: "error",
+          });
+        } else if (error.code === "auth/wrong-password") {
+          setToast({ message: "Incorrect password.", type: "error" });
+        } else {
+          setToast({
+            message: "Failed to sign in. Please try again.",
+            type: "error",
+          });
+        }
+        console.error("Error signing in:", error.message);
+      }
     }
   };
+
   const validateForm = (values: FormValues): { [key: string]: string } => {
     let errors: { [key: string]: string } = {};
 
-    // Required field check
-
-    // Email validation
     if (!values.email) {
       errors.email = "Email is required";
     } else if (!/\S+@\S+\.\S+/.test(values.email)) {
       errors.email = "Email is not valid";
     }
 
-    // Password validation
     if (!values.password) {
       errors.password = "Password is required";
     } else if (values.password.length < 6) {
@@ -49,25 +79,42 @@ function SignIn() {
     return errors;
   };
 
+  const closeToast = () => {
+    console.log("Closing toast");
+    setToast({ message: "", type: "" });
+  };
+
   return (
     <div className="bg-white h-screen w-full">
       {" "}
       <div className="flex min-h-full flex-1 flex-col justify-center px-6 py-12 lg:px-8">
         <div className="sm:mx-auto sm:w-full sm:max-w-sm">
-        <h1 className="flex items-center w-full justify-center gap-2 pb-5">
-                <img src="./H3.png" alt="" className="w-8" />
+          <h1 className="flex items-center w-full justify-center gap-2 pb-5">
+            <img src="./H3.png" alt="" className="w-8" />
 
-                <span className="text-3xl tracking-[.25em] font-light">
-                  HIWMA
-                </span>
-              </h1>
+            <span className="text-3xl tracking-[.25em] font-light">HIWMA</span>
+          </h1>
           <h2 className="text-center text-2xl/9 font-bold tracking-tight text-gray-900">
             Sign in
           </h2>
         </div>
+        {toast.message || toast.type ? (
+          <Toast
+            message={toast.message || ""}
+            type={toast.type || ""}
+            onClose={closeToast}
+            timeout={3000}
+          />
+        ) : null}
 
         <div className="mt-4 sm:mx-auto sm:w-full sm:max-w-sm">
-          <form action="/" method="POST" className="space-y-6" noValidate onSubmit={handleSubmit}>
+          <form
+            action="/"
+            method="POST"
+            className="space-y-6"
+            noValidate
+            onSubmit={handleSubmit}
+          >
             <div>
               <div className="flex items-center justify-between">
                 <label
@@ -76,7 +123,9 @@ function SignIn() {
                 >
                   Email address
                 </label>
-                <label className="block text-sm/6 font-medium text-red-500">{errors.email && <p>{errors.email}</p>}</label>
+                <label className="block text-sm/6 font-medium text-red-500">
+                  {errors.email && <p>{errors.email}</p>}
+                </label>
               </div>
 
               <div className="mt-2">
@@ -100,7 +149,9 @@ function SignIn() {
                 >
                   Password
                 </label>
-                <label className="block text-sm/6 font-medium text-red-500">{errors.password && <p>{errors.password}</p>}</label>
+                <label className="block text-sm/6 font-medium text-red-500">
+                  {errors.password && <p>{errors.password}</p>}
+                </label>
               </div>
               <div className="mt-2">
                 <input

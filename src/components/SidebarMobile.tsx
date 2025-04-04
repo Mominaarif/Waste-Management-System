@@ -282,6 +282,8 @@ import {
   Frame,
   Framer,
   Home,
+  LandPlot,
+  LayoutDashboard,
   Menu,
   Search,
   ShoppingBag,
@@ -472,10 +474,22 @@ export default function Example({ open, setOpen }: any) {
                     <span className="ml-3">Home</span>
                   </li>
                 </a>
+                <a href="/home" className="text-sm">
+                  <li className="flex items-center mb-4 cursor-pointer hover:bg-gray-400/15 py-1.5 px-2 rounded w-full my-1">
+                    <LayoutDashboard className="w-[18px]" />
+                    <span className="ml-3">Dashboard</span>
+                  </li>
+                </a>
                 <a href="/landfill-design" className="text-sm">
                   <li className="flex items-center mb-4 cursor-pointer hover:bg-gray-400/15 py-1.5 px-2 rounded w-full my-1">
                     <DraftingCompass className="w-[18px]" />
                     <span className="ml-3">Landfill Design</span>
+                  </li>
+                </a>
+                <a href="/landfills" className="text-sm">
+                  <li className="flex items-center mb-4 cursor-pointer hover:bg-gray-400/15 py-1.5 px-2 rounded w-full my-1">
+                    <LandPlot className="w-[18px]" />
+                    <span className="ml-3">Landfills</span>
                   </li>
                 </a>
                 <a href="/MRF-design" className="text-sm">
@@ -516,24 +530,7 @@ export default function Example({ open, setOpen }: any) {
                 </ul>
               </div>
             </div>
-            <div className="">
-              <div className="">
-                <ul className="px-4 text-[15px] pt-3">
-                  <a href="#" className="text-sm">
-                    <li className="flex items-center  cursor-pointer hover:bg-gray-400/15 py-1.5 px-2 rounded w-full my-1 gap-3">
-                      <span className="">
-                        <img
-                          alt=""
-                          src="https://images.unsplash.com/photo-1472099645785-5658abf4ff4e?ixlib=rb-1.2.1&ixid=eyJhcHBfaWQiOjEyMDd9&auto=format&fit=facearea&facepad=2&w=256&h=256&q=80"
-                          className="size-8 rounded-full"
-                        />
-                      </span>
-                      <span className="ml-3">MR. Abcddk</span>
-                    </li>
-                  </a>
-                </ul>
-              </div>
-            </div>
+           
           </DialogPanel>
         </div>
       </Dialog>

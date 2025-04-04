@@ -12,6 +12,7 @@ import MRFDesign from "./components/MRF";
 import AnaerobicDigesterCalculator from "./components/Anaerobic";
 import "./Styles/App.css";
 import HomePage from "./pages/HomePage";
+import HomePage2 from "./pages/HomePage2";
 import SignUp from "./components/SignUp";
 import SignIn from "./components/SignIn";
 import Sidebar from "./components/Sidebar";
@@ -20,6 +21,8 @@ import RDFPage from "./pages/RDFPage";
 import LandfillPage from "./pages/LandfillPage";
 import MRFPage from "./pages/MRFPage";
 import AnaerobticPage from "./pages/AnaerobticPage";
+import Landfills from "./components/Landfills";
+import LandfillsPage from "./pages/LandfillsPage";
 
 export function MainLayout() {
   const location = useLocation();
@@ -40,6 +43,8 @@ export function MainLayout() {
         <Route path="/signin" element={<SignIn />} />
         <Route path="/RDF-design" element={<RDFPage setOpen={setOpen} open={open} />} />
         <Route path="/" element={<HomePage setOpen={setOpen} open={open}/>} />
+        <Route path="/landfills" element={<LandfillsPage setOpen={setOpen} open={open}/>} />
+        <Route path="/home" element={<HomePage2 setOpen={setOpen} open={open}/>} />
         <Route path="/landfill-design" element={<LandfillPage setOpen={setOpen} open={open} />} />
         <Route path="/MRF-design" element={<MRFPage setOpen={setOpen} open={open} />} />
         <Route

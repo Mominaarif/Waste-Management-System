@@ -41,13 +41,12 @@
 
 // export default Sidebar;
 
-import React, { useState } from "react";
+import { useEffect, useState } from "react";
+import { auth } from "../firebase";
+
+import { onAuthStateChanged } from "firebase/auth";
 import {
   Home,
-  Info,
-  Phone,
-  Wrench,
-  Menu,
   Frame,
   DraftingCompass,
   SquareChartGantt,
@@ -55,15 +54,28 @@ import {
   Crop,
   Framer,
   LogIn,
+  LayoutDashboard,
+  LandPlot,
 } from "lucide-react";
+
+type UserData = {
+  email?: string;
+  displayName?: string;
+};
 
 const Sidebar = () => {
   const [isOpen, setIsOpen] = useState(false);
-  const [isServicesOpen, setIsServicesOpen] = useState(false);
+  const [user, setUser] = useState<UserData>({});
+
+  useEffect(() => {
+    const unsubscribe = onAuthStateChanged(auth, (currentUser: any) => {
+      setUser(currentUser);
+    });
+    return () => unsubscribe();
+  }, []);
 
   return (
     <div className="flex">
-      {/* Sidebar */}
       <div
         className={`bg-gray-800 text-white h-screen transition-all flex flex-col justify-between duration-300 ${
           isOpen ? "w-[300px] p-5" : "w-16 p-2"
@@ -72,103 +84,125 @@ const Sidebar = () => {
         <div>
           <div className="flex items-center pb-5 pt-1 justify-between">
             {!isOpen && (
-              // <a href="/" className="flex justify-center w-full cursor-pointer" >
               <button
                 onMouseEnter={() => setIsOpen(true)}
-                onClick={ () => location.href='/'}
+                onClick={() => (location.href = "/")}
                 className="w-full flex justify-center pt-1.5"
               >
                 <img src="./H2.png" alt="" className="w-8" />
               </button>
-              // </a>
             )}
             {isOpen && (
               <a href="/" className="">
-              <h1 className="flex items-center gap-2 pl-4">
-                <img src="./H2.png" alt="" className="w-8" />
+                <h1 className="flex items-center gap-2 pl-4">
+                  <img src="./H2.png" alt="" className="w-8" />
 
-                <span className="text-3xl tracking-[.25em] font-light">
-                  HIWMA
-                </span>
-              </h1>
+                  <span className="text-3xl tracking-[.25em] font-light">
+                    HIWMA
+                  </span>
+                </h1>
               </a>
             )}
-            {/* Fix button visibility */}
             <button
               onClick={() => setIsOpen(!isOpen)}
               className={`absolute right-4 top-8 flex items-center cursor-pointer ${
                 !isOpen ? "opacity-0" : " opacity-100"
               }`}
             >
-              <LogIn size={24} style = {{transform: 'rotate(180deg)' }} />
+              <LogIn size={24} style={{ transform: "rotate(180deg)" }} />
             </button>
           </div>
-
-          <ul className={`pt-6 ${isOpen ? "p-2" : "p-3"}`}>
-            <a href="/" className="text-sm">
-              <li
-                className={`${
-                  isOpen
-                    ? "flex items-center mb-4 cursor-pointer hover:bg-gray-400/15 py-1.5 px-2 rounded w-full my-1"
-                    : "flex items-center mb-4 cursor-pointer hover:text-gray-400"
-                }`}
-              >
-                <Home className="w-[18px]" />
-                {isOpen && <span className="ml-3">Home</span>}
-              </li>
-            </a>
-            <a href="/landfill-design" className="text-sm">
-              <li
-                className={`${
-                  isOpen
-                    ? "flex items-center mb-4 cursor-pointer hover:bg-gray-400/15 py-1.5 px-2 rounded w-full my-1"
-                    : "flex items-center mb-4 cursor-pointer hover:text-gray-400"
-                }`}
-              >
-                <DraftingCompass className="w-[18px]" />
-                {isOpen && <span className="ml-3">Landfill Design</span>}
-              </li>
-            </a>
-            <a href="/MRF-design" className="text-sm">
-              <li
-                className={`${
-                  isOpen
-                    ? "flex items-center mb-4 cursor-pointer hover:bg-gray-400/15 py-1.5 px-2 rounded w-full my-1"
-                    : "flex items-center mb-4 cursor-pointer hover:text-gray-400"
-                }`}
-              >
-                <Framer className="w-[18px]" />
-                {isOpen && <span className="ml-3">MRF Design</span>}
-              </li>
-            </a>
-            <a href="/RDF-design" className="text-sm">
-              <li
-                className={`${
-                  isOpen
-                    ? "flex items-center mb-4 cursor-pointer hover:bg-gray-400/15 py-1.5 px-2 rounded w-full my-1"
-                    : "flex items-center mb-4 cursor-pointer hover:text-gray-400"
-                }`}
-              >
-                <SquareChartGantt className="w-[18px]" />
-                {isOpen && <span className="ml-3">RDF Design</span>}
-              </li>
-            </a>
-            <a href="/anaerobic-design" className="text-sm">
-              <li
-                className={`${
-                  isOpen
-                    ? "flex items-center mb-4 cursor-pointer hover:bg-gray-400/15 py-1.5 px-2 rounded w-full my-1"
-                    : "flex items-center mb-4 cursor-pointer hover:text-gray-400"
-                }`}
-              >
-                <Frame className="w-[18px]" />
-                {isOpen && <span className="ml-3">Anaerobic Desgin</span>}
-              </li>
-            </a>
-            {/* Expandable Services */}
-            {/* <li>
+          <div className=" h-[calc(100vh-85px)] overflow-y-auto pb-5">
+            <ul className={`pt-6 ${isOpen ? "p-2" : "p-3"}`}>
+              <a href="/" className="text-sm">
+                <li
+                  className={`${
+                    isOpen
+                      ? "flex items-center mb-3 cursor-pointer hover:bg-gray-400/15 py-1 px-2 rounded w-full"
+                      : "flex items-center mb-3 cursor-pointer hover:text-gray-400"
+                  }`}
+                >
+                  <Home className="w-[18px]" />
+                  {isOpen && <span className="ml-3">Home</span>}
+                </li>
+              </a>
+              <a href="/home" className="text-sm">
+                <li
+                  className={`${
+                    isOpen
+                      ? "flex items-center mb-3 cursor-pointer hover:bg-gray-400/15 py-1.5 px-2 rounded w-full my-1"
+                      : "flex items-center mb-3 cursor-pointer hover:text-gray-400"
+                  }`}
+                >
+                  <LayoutDashboard className="w-[18px]" />
+                  {isOpen && <span className="ml-3">Dashboard</span>}
+                </li>
+              </a>
+              <a href="/landfill-design" className="text-sm">
+                <li
+                  className={`${
+                    isOpen
+                      ? "flex items-center mb-3 cursor-pointer hover:bg-gray-400/15 py-1.5 px-2 rounded w-full my-1"
+                      : "flex items-center mb-3 cursor-pointer hover:text-gray-400"
+                  }`}
+                >
+                  <DraftingCompass className="w-[18px]" />
+                  {isOpen && <span className="ml-3">Landfill Design</span>}
+                </li>
+              </a>
+              <a href="/landfills" className="text-sm">
+                <li
+                  className={`${
+                    isOpen
+                      ? "flex items-center mb-3 cursor-pointer hover:bg-gray-400/15 py-1.5 px-2 rounded w-full my-1"
+                      : "flex items-center mb-3 cursor-pointer hover:text-gray-400"
+                  }`}
+                >
+                  <LandPlot className="w-[18px]" />
+                  {isOpen && <span className="ml-3">Landfills</span>}
+                </li>
+              </a>
+             
+              <a href="/MRF-design" className="text-sm">
+                <li
+                  className={`${
+                    isOpen
+                      ? "flex items-center mb-3 cursor-pointer hover:bg-gray-400/15 py-1.5 px-2 rounded w-full my-1"
+                      : "flex items-center mb-3 cursor-pointer hover:text-gray-400"
+                  }`}
+                >
+                  <Framer className="w-[18px]" />
+                  {isOpen && <span className="ml-3">MRF Design</span>}
+                </li>
+              </a>
+              <a href="/RDF-design" className="text-sm">
+                <li
+                  className={`${
+                    isOpen
+                      ? "flex items-center mb-3 cursor-pointer hover:bg-gray-400/15 py-1.5 px-2 rounded w-full my-1"
+                      : "flex items-center mb-3 cursor-pointer hover:text-gray-400"
+                  }`}
+                >
+                  <SquareChartGantt className="w-[18px]" />
+                  {isOpen && <span className="ml-3">RDF Design</span>}
+                </li>
+              </a>
+              <a href="/anaerobic-design" className="text-sm">
+                <li
+                  className={`${
+                    isOpen
+                      ? "flex items-center mb-3 cursor-pointer hover:bg-gray-400/15 py-1.5 px-2 rounded w-full my-1"
+                      : "flex items-center mb-3 cursor-pointer hover:text-gray-400"
+                  }`}
+                >
+                  <Frame className="w-[18px]" />
+                  {isOpen && <span className="ml-3">Anaerobic Desgin</span>}
+                </li>
+              </a>
+              {/* Expandable Services */}
+              {/* <li>
             <div
-              className={`${isOpen ? "text-sm flex items-center mb-4 cursor-pointer hover:bg-gray-400/15 py-1.5 px-2 rounded w-full my-1" : "flex items-center mb-4 cursor-pointer hover:bg-gray-400/15"}`}
+              className={`${isOpen ? "text-sm flex items-center mb-3 cursor-pointer hover:bg-gray-400/15 py-1.5 px-2 rounded w-full my-1" : "flex items-center mb-3 cursor-pointer hover:bg-gray-400/15"}`}
             >
               <Wrench  className="w-[18px]"  />
               {isOpen && <span className="ml-3">Services</span>}
@@ -187,67 +221,41 @@ const Sidebar = () => {
               </ul>
             )}
           </li> */}
-          </ul>
-          <div className="">
-            {isOpen && (
-              <h2 className="text-xs text-white pl-5 pt-5">About Us</h2>
-            )}
-            {!isOpen && (
-              <span className="h-[0.5px] w-full bg-gray-200 flex"></span>
-            )}
-            <ul className="px-4 text-[15px] pt-3">
-              <a href="#" className="text-sm">
-                <li
-                  className={`${
-                    isOpen
-                      ? "flex items-center mb-4 cursor-pointer hover:bg-gray-400/15 py-1.5 px-2 rounded w-full my-1"
-                      : "flex items-center mb-4 cursor-pointer hover:text-gray-400"
-                  }`}
-                >
-                  <Codepen className="w-[18px]" />
-                  {isOpen && <span className="ml-3">About</span>}
-                </li>
-              </a>
-              <a href="#" className="text-sm">
-                <li
-                  className={`${
-                    isOpen
-                      ? "flex items-center mb-4 cursor-pointer hover:bg-gray-400/15 py-1.5 px-2 rounded w-full my-1"
-                      : "flex items-center mb-4 cursor-pointer hover:text-gray-400"
-                  }`}
-                >
-                  <Crop className="w-[18px]" />
-                  {isOpen && <span className="ml-3">Contact</span>}
-                </li>
-              </a>
             </ul>
-          </div>
-        </div>
-        <div className="">
-          <div className="">
-            {!isOpen && (
-              <span className="h-[0.5px] w-full bg-gray-200 flex"></span>
-            )}
-            <ul className={`${isOpen? "px-4 text-[15px] pt-3" : "px-0 text-[15px]  flex justify-center pt-3" }`}>
-              <a href="#" className="text-sm">
-                <li
-                  className={`${
-                    isOpen
-                      ? "flex items-center  cursor-pointer hover:bg-gray-400/15 py-1.5 px-2 rounded w-full my-1 gap-3"
-                      : "flex items-center mb-4 cursor-pointer hover:text-gray-400"
-                  }`}
-                >
-                 <span className="">
-                 <img
-                    alt=""
-                    src="https://images.unsplash.com/photo-1472099645785-5658abf4ff4e?ixlib=rb-1.2.1&ixid=eyJhcHBfaWQiOjEyMDd9&auto=format&fit=facearea&facepad=2&w=256&h=256&q=80"
-                    className="size-8 rounded-full"
-                  />
-                 </span>
-                  {isOpen && <span className="ml-3">MR. Abcddk</span>}
-                </li>
-              </a>
-            </ul>
+            <div className="">
+              {isOpen && (
+                <h2 className="text-xs text-white pl-5 pt-3">About Us</h2>
+              )}
+              {!isOpen && (
+                <span className="h-[0.5px] w-full bg-gray-200 flex"></span>
+              )}
+              <ul className="px-4 text-[15px] pt-3">
+                <a href="#" className="text-sm">
+                  <li
+                    className={`${
+                      isOpen
+                        ? "flex items-center mb-3 cursor-pointer hover:bg-gray-400/15 py-1.5 px-2 rounded w-full my-1"
+                        : "flex items-center mb-3 cursor-pointer hover:text-gray-400"
+                    }`}
+                  >
+                    <Codepen className="w-[18px]" />
+                    {isOpen && <span className="ml-3">About</span>}
+                  </li>
+                </a>
+                <a href="#" className="text-sm">
+                  <li
+                    className={`${
+                      isOpen
+                        ? "flex items-center mb-3 cursor-pointer hover:bg-gray-400/15 py-1.5 px-2 rounded w-full my-1"
+                        : "flex items-center mb-3 cursor-pointer hover:text-gray-400"
+                    }`}
+                  >
+                    <Crop className="w-[18px]" />
+                    {isOpen && <span className="ml-3">Contact</span>}
+                  </li>
+                </a>
+              </ul>
+            </div>
           </div>
         </div>
       </div>

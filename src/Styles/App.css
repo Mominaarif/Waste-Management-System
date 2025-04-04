@@ -101,6 +101,11 @@ h2 {
   gap: 20px;
 }
 
+.pac-target-input{
+  background-color: white !important;
+}
+
+
 .output-group {
   padding: 15px;
   background-color: #e3fcf0;

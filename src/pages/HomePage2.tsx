@@ -1,15 +1,15 @@
 import Header from '@/components/Header'
-import Home from '@/components/Home'
+import Home2 from '@/components/Home2'
 import React from 'react'
 
-function HomPage({open, setOpen}:any) {
+function HomPage2({open, setOpen}:any) {
   const title = "Waste Management Dashboard"
   return (
     <div className="w-full">
         <Header setOpen={setOpen} open={open} title={title}/>
-        <Home open={open} />
+        <Home2 />
     </div>
   )
 }
 
-export default HomPage
+export default HomPage2
