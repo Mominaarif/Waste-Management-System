@@ -23,7 +23,34 @@ import MRFPage from "./pages/MRFPage";
 import AnaerobticPage from "./pages/AnaerobticPage";
 import Landfills from "./components/Landfills";
 import LandfillsPage from "./pages/LandfillsPage";
+import MyChatbot from "./ChatBot";
 
+const steps = [
+  {
+    id: '0',
+    message: 'Hi!',
+    trigger: '1',
+  },
+  {
+    id: '1',
+    message: 'What is your name?',
+    trigger: '2',
+  },
+  {
+    id: '2',
+    user: true,
+    trigger: '3',
+  },
+  {
+    id: '3',
+    message: 'Nice to meet you, {previousValue}!',
+    trigger: '4',
+  },
+  {
+    id: '4',
+    message: 'Ask me any question related to solid waste management...',
+  }
+];
 export function MainLayout() {
   const location = useLocation();
   const hideSidebarRoutes = ["/signin", "/signup"];
@@ -52,6 +79,7 @@ export function MainLayout() {
           element={<AnaerobticPage setOpen={setOpen} open={open} />}
         />
       </Routes>
+      <MyChatbot />
     </div>
   );
 }

@@ -56,6 +56,8 @@ import {
   LogIn,
   LayoutDashboard,
   LandPlot,
+  FileStack,
+  ChevronDown,
 } from "lucide-react";
 
 type UserData = {
@@ -65,6 +67,7 @@ type UserData = {
 
 const Sidebar = () => {
   const [isOpen, setIsOpen] = useState(false);
+  const [isServicesOpen, setIsServicesOpen] = useState(false);
   const [user, setUser] = useState<UserData>({});
 
   useEffect(() => {
@@ -138,7 +141,7 @@ const Sidebar = () => {
                   {isOpen && <span className="ml-3">Dashboard</span>}
                 </li>
               </a>
-              <a href="/landfill-design" className="text-sm">
+              {/* <a href="/landfill-design" className="text-sm">
                 <li
                   className={`${
                     isOpen
@@ -149,7 +152,7 @@ const Sidebar = () => {
                   <DraftingCompass className="w-[18px]" />
                   {isOpen && <span className="ml-3">Landfill Design</span>}
                 </li>
-              </a>
+              </a> */}
               <a href="/landfills" className="text-sm">
                 <li
                   className={`${
@@ -162,8 +165,8 @@ const Sidebar = () => {
                   {isOpen && <span className="ml-3">Landfills</span>}
                 </li>
               </a>
-             
-              <a href="/MRF-design" className="text-sm">
+
+              {/* <a href="/MRF-design" className="text-sm">
                 <li
                   className={`${
                     isOpen
@@ -174,8 +177,8 @@ const Sidebar = () => {
                   <Framer className="w-[18px]" />
                   {isOpen && <span className="ml-3">MRF Design</span>}
                 </li>
-              </a>
-              <a href="/RDF-design" className="text-sm">
+              </a> */}
+              {/* <a href="/RDF-design" className="text-sm">
                 <li
                   className={`${
                     isOpen
@@ -196,31 +199,66 @@ const Sidebar = () => {
                   }`}
                 >
                   <Frame className="w-[18px]" />
-                  {isOpen && <span className="ml-3">Anaerobic Desgin</span>}
+                  {isOpen && <span className="ml-3">Anaerobic Design</span>}
                 </li>
-              </a>
+              </a> */}
               {/* Expandable Services */}
-              {/* <li>
-            <div
-              className={`${isOpen ? "text-sm flex items-center mb-3 cursor-pointer hover:bg-gray-400/15 py-1.5 px-2 rounded w-full my-1" : "flex items-center mb-3 cursor-pointer hover:bg-gray-400/15"}`}
-            >
-              <Wrench  className="w-[18px]"  />
-              {isOpen && <span className="ml-3">Services</span>}
-            </div>
-            {isOpen && isServicesOpen && (
-              <ul className="ml-6 mt-2">
-                <li className="cursor-pointer hover:text-gray-300">
-                  Web Development
-                </li>
-                <li className="cursor-pointer hover:text-gray-300">
-                  SEO Optimization
-                </li>
-                <li className="cursor-pointer hover:text-gray-300">
-                  Marketing
-                </li>
-              </ul>
-            )}
-          </li> */}
+              <li>
+                <div
+                  className={`${
+                    isOpen
+                      ? "text-sm flex items-center mb-3 cursor-pointer hover:bg-gray-400/15 py-1.5 px-2 rounded w-full my-1"
+                      : "flex items-center mb-3 cursor-pointer hover:bg-gray-400/15"
+                  }`}
+                  onClick={() => setIsServicesOpen(!isServicesOpen)}
+                >
+                  <FileStack className="w-[18px]" />
+                  {isOpen && (
+                    <div className="flex justify-between w-full">
+                      <span className="ml-3">Designs</span>
+                      <ChevronDown className={`"w-[18px]" ${isServicesOpen ? "rotate-180 transition duration-300" : "transition duration-300"}`} />
+                    </div>
+                  )}
+                </div>
+                {isOpen && isServicesOpen && (
+                  <ul className="ml-6 mt-2 text-sm">
+                    <a href="/landfill-design" className="text-sm">
+                      <li
+                        className={`flex items-center mb-3 cursor-pointer hover:bg-gray-400/15 py-1 px-2 rounded w-full my-0.5`}
+                      >
+                        <DraftingCompass className="w-[18px]" />
+                        {isOpen && (
+                          <span className="ml-3">Landfill Design</span>
+                        )}
+                      </li>
+                    </a>
+                    <a href="/MRF-design" className="text-sm">
+                      <li
+                        className={`flex items-center mb-3 cursor-pointer hover:bg-gray-400/15 py-1 px-2 rounded w-full my-0.5`}
+                      >
+                        <Framer className="w-[18px]" />
+                        {isOpen && <span className="ml-3">MRF Design</span>}
+                      </li>
+                    </a>
+                    <a href="/RDF-design" className="text-sm">
+                      <li
+                        className={`flex items-center mb-3 cursor-pointer hover:bg-gray-400/15 py-1 px-2 rounded w-full my-0.5`}
+                      >
+                        <SquareChartGantt className="w-[18px]" />
+                        {isOpen && <span className="ml-3">RDF Design</span>}
+                      </li>
+                    </a>
+                    <a href="/anaerobic-design" className="text-sm">
+                      <li
+                        className={`flex items-center mb-3 cursor-pointer hover:bg-gray-400/15 py-1 px-2 rounded w-full my-0.5`}
+                      >
+                      <Frame className="w-[18px]" />
+                      {isOpen && <span className="ml-3">Anaerobic Design</span>}
+                      </li>
+                    </a>
+                  </ul>
+                )}
+              </li>
             </ul>
             <div className="">
               {isOpen && (
