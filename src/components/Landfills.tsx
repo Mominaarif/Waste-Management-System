@@ -6,14 +6,12 @@ import {
   InfoWindow,
 } from "@react-google-maps/api";
 import MapSearch from "./MapSearch";
+import { Styles } from "../Styles/GoogleStyles";  // Import your custom styles
 
 const containerStyle: React.CSSProperties = {
   width: "100%",
   height: "calc(100vh - 85px)",
   position: "fixed",
-  // top: "68px",
-  // left: "-120px",
-  // border: "2px solid #73AD21",
   zIndex: 1,
   boxSizing: "border-box",
 };
@@ -40,7 +38,7 @@ type PolygonData = {
 
 const options = {};
 
-const Landfills = ({open}:any) => {
+const Landfills = ({ open }: any) => {
   const [polygons, setPolygons] = useState<PolygonData[]>([]);
   const [selectedPolygon, setSelectedPolygon] = useState<PolygonData | null>(
     null
@@ -120,7 +118,7 @@ const Landfills = ({open}:any) => {
           center={center}
           zoom={13}
           onLoad={onLoad}
-          options={options}
+          options={{ ...options, styles: Styles }} // Apply the custom styles here
         >
           {polygons.map((polygon, index) => (
             <Polygon
@@ -143,9 +141,7 @@ const Landfills = ({open}:any) => {
               onCloseClick={() => setSelectedPolygon(null)}
             >
               <div style={{ fontFamily: "Arial, sans-serif", padding: "10px" }}>
-                <h3>
-                  {selectedPolygon.name}
-                </h3>
+                <h3>{selectedPolygon.name}</h3>
                 <p style={{ margin: "0", whiteSpace: "pre-line" }}>
                   {selectedPolygon.info}
                 </p>
@@ -154,10 +150,7 @@ const Landfills = ({open}:any) => {
           )}
         </GoogleMap>
       </LoadScript>
-      <div
-      className="absolute top-[90px] right-[70px] z-2 bg-white rounded-xs text-sm shadow-lg"
-        // style={{ position: 'absolute', top: '150px', left: '180px', zIndex: 2, backgroundColor: "white", borderRadius: "5px", fontSize: "15px" }}
-      >
+      <div className="absolute top-[90px] right-[70px] z-2 bg-white rounded-xs text-sm shadow-lg">
         <input
           type="file"
           accept=".geojson"
@@ -165,9 +158,8 @@ const Landfills = ({open}:any) => {
           className="p-[10px] cursor-pointer"
         />
         {uploadedFileName && (
-          <p className=" text-sm pl-2 border-t py-2"
-          >
-            Uploaded File: <strong className=" text-sm">{uploadedFileName}</strong>
+          <p className="text-sm pl-2 border-t py-2">
+            Uploaded File: <strong className="text-sm">{uploadedFileName}</strong>
           </p>
         )}
       </div>
