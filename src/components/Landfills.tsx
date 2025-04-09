@@ -168,6 +168,7 @@ const Landfills = ({ open }: { open?: boolean }) => {
             file:mr-4 file:py-1 file:px-4
             file:rounded file:border-0
             file:text-sm file:font-semibold
+            file:cursor-pointer
             file:bg-blue-50 file:text-blue-700
             hover:file:bg-blue-100"
         />
