@@ -276,153 +276,27 @@ import {
   TabPanels,
 } from "@headlessui/react";
 import {
+  ChevronDown,
   Codepen,
   Crop,
   DraftingCompass,
+  FileStack,
   Frame,
   Framer,
   Home,
   LandPlot,
   LayoutDashboard,
   Menu,
+  Plus,
   Search,
   ShoppingBag,
   SquareChartGantt,
   X,
 } from "lucide-react";
 
-const navigation = {
-  categories: [
-    {
-      id: "women",
-      name: "Women",
-      featured: [
-        {
-          name: "New Arrivals",
-          href: "#",
-          imageSrc:
-            "https://tailwindcss.com/plus-assets/img/ecommerce-images/mega-menu-category-01.jpg",
-          imageAlt:
-            "Models sitting back to back, wearing Basic Tee in black and bone.",
-        },
-        {
-          name: "Basic Tees",
-          href: "#",
-          imageSrc:
-            "https://tailwindcss.com/plus-assets/img/ecommerce-images/mega-menu-category-02.jpg",
-          imageAlt:
-            "Close up of Basic Tee fall bundle with off-white, ochre, olive, and black tees.",
-        },
-      ],
-      sections: [
-        {
-          id: "clothing",
-          name: "Clothing",
-          items: [
-            { name: "Tops", href: "#" },
-            { name: "Dresses", href: "#" },
-            { name: "Pants", href: "#" },
-            { name: "Denim", href: "#" },
-            { name: "Sweaters", href: "#" },
-            { name: "T-Shirts", href: "#" },
-            { name: "Jackets", href: "#" },
-            { name: "Activewear", href: "#" },
-            { name: "Browse All", href: "#" },
-          ],
-        },
-        {
-          id: "accessories",
-          name: "Accessories",
-          items: [
-            { name: "Watches", href: "#" },
-            { name: "Wallets", href: "#" },
-            { name: "Bags", href: "#" },
-            { name: "Sunglasses", href: "#" },
-            { name: "Hats", href: "#" },
-            { name: "Belts", href: "#" },
-          ],
-        },
-        {
-          id: "brands",
-          name: "Brands",
-          items: [
-            { name: "Full Nelson", href: "#" },
-            { name: "My Way", href: "#" },
-            { name: "Re-Arranged", href: "#" },
-            { name: "Counterfeit", href: "#" },
-            { name: "Significant Other", href: "#" },
-          ],
-        },
-      ],
-    },
-    {
-      id: "men",
-      name: "Men",
-      featured: [
-        {
-          name: "New Arrivals",
-          href: "#",
-          imageSrc:
-            "https://tailwindcss.com/plus-assets/img/ecommerce-images/product-page-04-detail-product-shot-01.jpg",
-          imageAlt:
-            "Drawstring top with elastic loop closure and textured interior padding.",
-        },
-        {
-          name: "Artwork Tees",
-          href: "#",
-          imageSrc:
-            "https://tailwindcss.com/plus-assets/img/ecommerce-images/category-page-02-image-card-06.jpg",
-          imageAlt:
-            "Three shirts in gray, white, and blue arranged on table with same line drawing of hands and shapes overlapping on front of shirt.",
-        },
-      ],
-      sections: [
-        {
-          id: "clothing",
-          name: "Clothing",
-          items: [
-            { name: "Tops", href: "#" },
-            { name: "Pants", href: "#" },
-            { name: "Sweaters", href: "#" },
-            { name: "T-Shirts", href: "#" },
-            { name: "Jackets", href: "#" },
-            { name: "Activewear", href: "#" },
-            { name: "Browse All", href: "#" },
-          ],
-        },
-        {
-          id: "accessories",
-          name: "Accessories",
-          items: [
-            { name: "Watches", href: "#" },
-            { name: "Wallets", href: "#" },
-            { name: "Bags", href: "#" },
-            { name: "Sunglasses", href: "#" },
-            { name: "Hats", href: "#" },
-            { name: "Belts", href: "#" },
-          ],
-        },
-        {
-          id: "brands",
-          name: "Brands",
-          items: [
-            { name: "Re-Arranged", href: "#" },
-            { name: "Counterfeit", href: "#" },
-            { name: "Full Nelson", href: "#" },
-            { name: "My Way", href: "#" },
-          ],
-        },
-      ],
-    },
-  ],
-  pages: [
-    { name: "Company", href: "#" },
-    { name: "Stores", href: "#" },
-  ],
-};
 
 export default function Example({ open, setOpen }: any) {
-  // const [open, setOpen] = useState(false);
+  const [isServicesOpen, setIsServicesOpen] = useState(false);
 
   return (
     <div className="w-full">
@@ -480,19 +354,74 @@ export default function Example({ open, setOpen }: any) {
                     <span className="ml-3">Dashboard</span>
                   </li>
                 </a>
-                <a href="/landfill-design" className="text-sm">
-                  <li className="flex items-center mb-4 cursor-pointer hover:bg-gray-400/15 py-1.5 px-2 rounded w-full my-1">
-                    <DraftingCompass className="w-[18px]" />
-                    <span className="ml-3">Landfill Design</span>
-                  </li>
-                </a>
                 <a href="/landfills" className="text-sm">
                   <li className="flex items-center mb-4 cursor-pointer hover:bg-gray-400/15 py-1.5 px-2 rounded w-full my-1">
                     <LandPlot className="w-[18px]" />
                     <span className="ml-3">Landfills</span>
                   </li>
                 </a>
-                <a href="/MRF-design" className="text-sm">
+                <a href="/add-data" className="text-sm">
+                  <li className="flex items-center mb-4 cursor-pointer hover:bg-gray-400/15 py-1.5 px-2 rounded w-full my-1">
+                    <Plus className="w-[18px]" />
+                    <span className="ml-3">Add Data</span>
+                  </li>
+                </a>
+                <li onClick={() => setIsServicesOpen(!isServicesOpen)} className="text-sm flex items-center mb-4 cursor-pointer hover:bg-gray-400/15 py-1.5 px-2 rounded w-full my-1">
+                  <FileStack className="w-[18px]" />
+                  <p className="flex justify-between w-full">
+                  <span className="ml-3">Designs</span>
+                      <ChevronDown className={`"w-[18px]" ${isServicesOpen ? "rotate-180 transition duration-300" : "transition duration-300"}`} />
+
+                  </p>
+                </li>
+                <li>
+                  {isServicesOpen && (
+                    <ul className="ml-6 mt-2 text-sm">
+                      <a href="/landfill-design" className="text-sm">
+                        <li
+                          className={`flex items-center mb-3 cursor-pointer hover:bg-gray-400/15 py-1 px-2 rounded w-full my-0.5`}
+                        >
+                          <DraftingCompass className="w-[18px]" />
+
+                          <span className="ml-3">Landfill Design</span>
+
+                        </li>
+                      </a>
+                      <a href="/MRF-design" className="text-sm">
+                        <li
+                          className={`flex items-center mb-3 cursor-pointer hover:bg-gray-400/15 py-1 px-2 rounded w-full my-0.5`}
+                        >
+                          <Framer className="w-[18px]" />
+                          <span className="ml-3">MRF Design</span>
+                        </li>
+                      </a>
+                      <a href="/RDF-design" className="text-sm">
+                        <li
+                          className={`flex items-center mb-3 cursor-pointer hover:bg-gray-400/15 py-1 px-2 rounded w-full my-0.5`}
+                        >
+                          <SquareChartGantt className="w-[18px]" />
+                          <span className="ml-3">RDF Design</span>
+                        </li>
+                      </a>
+                      <a href="/anaerobic-design" className="text-sm">
+                        <li
+                          className={`flex items-center mb-3 cursor-pointer hover:bg-gray-400/15 py-1 px-2 rounded w-full my-0.5`}
+                        >
+                          <Frame className="w-[18px]" />
+                          <span className="ml-3">Anaerobic Design</span>
+                        </li>
+                      </a>
+                    </ul>
+                  )}
+                </li>
+                {/* <a href="/landfill-design" className="text-sm">
+                  <li className="flex items-center mb-4 cursor-pointer hover:bg-gray-400/15 py-1.5 px-2 rounded w-full my-1">
+                    <DraftingCompass className="w-[18px]" />
+                    <span className="ml-3">Landfill Design</span>
+                  </li>
+                </a> */}
+               
+                {/* <a href="/MRF-design" className="text-sm">
                   <li className="flex items-center mb-4 cursor-pointer hover:bg-gray-400/15 py-1.5 px-2 rounded w-full my-1">
                     <Framer className="w-[18px]" />
                     <span className="ml-3">MRF Design</span>
@@ -509,7 +438,7 @@ export default function Example({ open, setOpen }: any) {
                     <Frame className="w-[18px]" />
                     <span className="ml-3">Anaerobic Desgin</span>
                   </li>
-                </a>
+                </a> */}
               </ul>
               <div className="">
                 <h2 className="text-xs text-white pl-5 pt-5">About Us</h2>
@@ -530,7 +459,7 @@ export default function Example({ open, setOpen }: any) {
                 </ul>
               </div>
             </div>
-           
+
           </DialogPanel>
         </div>
       </Dialog>

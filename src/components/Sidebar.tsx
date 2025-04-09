@@ -58,6 +58,7 @@ import {
   LandPlot,
   FileStack,
   ChevronDown,
+  Plus,
 } from "lucide-react";
 
 type UserData = {
@@ -80,9 +81,8 @@ const Sidebar = () => {
   return (
     <div className="flex">
       <div
-        className={`bg-gray-800 text-white h-screen transition-all flex flex-col justify-between duration-300 ${
-          isOpen ? "w-[300px] p-5" : "w-16 p-2"
-        } relative`}
+        className={`bg-gray-800 text-white h-screen transition-all flex flex-col justify-between duration-300 ${isOpen ? "w-[300px] p-5" : "w-16 p-2"
+          } relative`}
       >
         <div>
           <div className="flex items-center pb-5 pt-1 justify-between">
@@ -108,9 +108,8 @@ const Sidebar = () => {
             )}
             <button
               onClick={() => setIsOpen(!isOpen)}
-              className={`absolute right-4 top-8 flex items-center cursor-pointer ${
-                !isOpen ? "opacity-0" : " opacity-100"
-              }`}
+              className={`absolute right-4 top-8 flex items-center cursor-pointer ${!isOpen ? "opacity-0" : " opacity-100"
+                }`}
             >
               <LogIn size={24} style={{ transform: "rotate(180deg)" }} />
             </button>
@@ -119,11 +118,10 @@ const Sidebar = () => {
             <ul className={`pt-6 ${isOpen ? "p-2" : "p-3"}`}>
               <a href="/" className="text-sm">
                 <li
-                  className={`${
-                    isOpen
+                  className={`${isOpen
                       ? "flex items-center mb-3 cursor-pointer hover:bg-gray-400/15 py-1 px-2 rounded w-full"
                       : "flex items-center mb-3 cursor-pointer hover:text-gray-400"
-                  }`}
+                    }`}
                 >
                   <Home className="w-[18px]" />
                   {isOpen && <span className="ml-3">Home</span>}
@@ -131,41 +129,39 @@ const Sidebar = () => {
               </a>
               <a href="/home" className="text-sm">
                 <li
-                  className={`${
-                    isOpen
+                  className={`${isOpen
                       ? "flex items-center mb-3 cursor-pointer hover:bg-gray-400/15 py-1.5 px-2 rounded w-full my-1"
                       : "flex items-center mb-3 cursor-pointer hover:text-gray-400"
-                  }`}
+                    }`}
                 >
                   <LayoutDashboard className="w-[18px]" />
                   {isOpen && <span className="ml-3">Dashboard</span>}
                 </li>
               </a>
-              {/* <a href="/landfill-design" className="text-sm">
-                <li
-                  className={`${
-                    isOpen
-                      ? "flex items-center mb-3 cursor-pointer hover:bg-gray-400/15 py-1.5 px-2 rounded w-full my-1"
-                      : "flex items-center mb-3 cursor-pointer hover:text-gray-400"
-                  }`}
-                >
-                  <DraftingCompass className="w-[18px]" />
-                  {isOpen && <span className="ml-3">Landfill Design</span>}
-                </li>
-              </a> */}
+
               <a href="/landfills" className="text-sm">
                 <li
-                  className={`${
-                    isOpen
+                  className={`${isOpen
                       ? "flex items-center mb-3 cursor-pointer hover:bg-gray-400/15 py-1.5 px-2 rounded w-full my-1"
                       : "flex items-center mb-3 cursor-pointer hover:text-gray-400"
-                  }`}
+                    }`}
                 >
                   <LandPlot className="w-[18px]" />
                   {isOpen && <span className="ml-3">Landfills</span>}
                 </li>
               </a>
 
+              <a href="/add-data" className="text-sm">
+                <li
+                  className={`${isOpen
+                      ? "flex items-center mb-3 cursor-pointer hover:bg-gray-400/15 py-1.5 px-2 rounded w-full my-1"
+                      : "flex items-center mb-3 cursor-pointer hover:text-gray-400"
+                    }`}
+                >
+                  <Plus className="w-[18px]" />
+                  {isOpen && <span className="ml-3">Add Data</span>}
+                </li>
+              </a>
               {/* <a href="/MRF-design" className="text-sm">
                 <li
                   className={`${
@@ -205,11 +201,10 @@ const Sidebar = () => {
               {/* Expandable Services */}
               <li>
                 <div
-                  className={`${
-                    isOpen
+                  className={`${isOpen
                       ? "text-sm flex items-center mb-3 cursor-pointer hover:bg-gray-400/15 py-1.5 px-2 rounded w-full my-1"
                       : "flex items-center mb-3 cursor-pointer hover:bg-gray-400/15"
-                  }`}
+                    }`}
                   onClick={() => setIsServicesOpen(!isServicesOpen)}
                 >
                   <FileStack className="w-[18px]" />
@@ -252,8 +247,8 @@ const Sidebar = () => {
                       <li
                         className={`flex items-center mb-3 cursor-pointer hover:bg-gray-400/15 py-1 px-2 rounded w-full my-0.5`}
                       >
-                      <Frame className="w-[18px]" />
-                      {isOpen && <span className="ml-3">Anaerobic Design</span>}
+                        <Frame className="w-[18px]" />
+                        {isOpen && <span className="ml-3">Anaerobic Design</span>}
                       </li>
                     </a>
                   </ul>
@@ -270,11 +265,10 @@ const Sidebar = () => {
               <ul className="px-4 text-[15px] pt-3">
                 <a href="#" className="text-sm">
                   <li
-                    className={`${
-                      isOpen
+                    className={`${isOpen
                         ? "flex items-center mb-3 cursor-pointer hover:bg-gray-400/15 py-1.5 px-2 rounded w-full my-1"
                         : "flex items-center mb-3 cursor-pointer hover:text-gray-400"
-                    }`}
+                      }`}
                   >
                     <Codepen className="w-[18px]" />
                     {isOpen && <span className="ml-3">About</span>}
@@ -282,11 +276,10 @@ const Sidebar = () => {
                 </a>
                 <a href="#" className="text-sm">
                   <li
-                    className={`${
-                      isOpen
+                    className={`${isOpen
                         ? "flex items-center mb-3 cursor-pointer hover:bg-gray-400/15 py-1.5 px-2 rounded w-full my-1"
                         : "flex items-center mb-3 cursor-pointer hover:text-gray-400"
-                    }`}
+                      }`}
                   >
                     <Crop className="w-[18px]" />
                     {isOpen && <span className="ml-3">Contact</span>}

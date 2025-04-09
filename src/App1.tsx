@@ -24,6 +24,7 @@ import AnaerobticPage from "./pages/AnaerobticPage";
 import Landfills from "./components/Landfills";
 import LandfillsPage from "./pages/LandfillsPage";
 import MyChatbot from "./ChatBot";
+import AddDataPage from "./pages/AddDataPage";
 
 const steps = [
   {
@@ -55,16 +56,12 @@ export function MainLayout() {
   const location = useLocation();
   const hideSidebarRoutes = ["/signin", "/signup"];
 
-  // check if current path is in hidden routes
   const hideSidebar = hideSidebarRoutes.includes(location.pathname);
   const [open, setOpen] = useState(false);
 
   return (
     <div className="flex w-full">
-      {/* Sidebar only when route is not in hidden list */}
       {!hideSidebar && <div className="hidden md:flex"><Sidebar /></div> }
-      {/* {!hideSidebar && <Header open={open} setOpen={setOpen} /> } */}
-      {/* Your actual routes */}
       <Routes>
         <Route path="/signup" element={<SignUp />} />
         <Route path="/signin" element={<SignIn />} />
@@ -74,6 +71,7 @@ export function MainLayout() {
         <Route path="/home" element={<HomePage2 setOpen={setOpen} open={open}/>} />
         <Route path="/landfill-design" element={<LandfillPage setOpen={setOpen} open={open} />} />
         <Route path="/MRF-design" element={<MRFPage setOpen={setOpen} open={open} />} />
+        <Route path="/add-data" element={<AddDataPage setOpen={setOpen} open={open} />} />
         <Route
           path="/anaerobic-design"
           element={<AnaerobticPage setOpen={setOpen} open={open} />}
