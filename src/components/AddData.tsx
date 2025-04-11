@@ -783,7 +783,7 @@ const containerStyle = {
   height: "60vh",
   top: "0",
   left: "-180px",
-  border: "2px solid #73AD21",
+  // border: "2px solid #73AD21",
   zIndex: 1,
   boxSizing: "border-box",
 };
@@ -1159,7 +1159,7 @@ const AddData = ({ open }: any) => {
   };
 
   return (
-    <div className='h-[calc(100vh-85px)] flex'>
+    <div className='h-[calc(100vh-85px)] flex relative'>
       {/* Map Container */}
       <div ref={mapContainerRef} style={{ flex: 1, height: '100%' }} />
 

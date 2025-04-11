@@ -6,25 +6,20 @@ import {
   Routes,
   useLocation,
 } from "react-router-dom";
-import LandfillDesign from "./components/landfill";
-import RDFDesign from "./components/RDF";
-import MRFDesign from "./components/MRF";
-import AnaerobicDigesterCalculator from "./components/Anaerobic";
 import "./Styles/App.css";
 import HomePage from "./pages/HomePage";
 import HomePage2 from "./pages/HomePage2";
 import SignUp from "./components/SignUp";
 import SignIn from "./components/SignIn";
 import Sidebar from "./components/Sidebar";
-import Header from "./components/Header";
 import RDFPage from "./pages/RDFPage";
 import LandfillPage from "./pages/LandfillPage";
 import MRFPage from "./pages/MRFPage";
 import AnaerobticPage from "./pages/AnaerobticPage";
-import Landfills from "./components/Landfills";
 import LandfillsPage from "./pages/LandfillsPage";
 import MyChatbot from "./ChatBot";
 import AddDataPage from "./pages/AddDataPage";
+import GenerateMapPage from "./pages/GenerateMapPage";
 
 const steps = [
   {
@@ -72,6 +67,7 @@ export function MainLayout() {
         <Route path="/landfill-design" element={<LandfillPage setOpen={setOpen} open={open} />} />
         <Route path="/MRF-design" element={<MRFPage setOpen={setOpen} open={open} />} />
         <Route path="/add-data" element={<AddDataPage setOpen={setOpen} open={open} />} />
+        <Route path="/map" element={<GenerateMapPage setOpen={setOpen} open={open} />} />
         <Route
           path="/anaerobic-design"
           element={<AnaerobticPage setOpen={setOpen} open={open} />}

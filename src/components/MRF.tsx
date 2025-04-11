@@ -460,6 +460,28 @@
 
 // export default MRFDesign;
 
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 import React, { useState } from "react";
 import "../Styles/MRF.css";
 
@@ -678,7 +700,7 @@ const MRFDesign = () => {
           <div className="grid grid-cols-2 gap-y-4 gap-x-6">
             <div className="">
               <label className="block text-sm font-medium text-gray-900 pb-1">
-                Inflow (Kg/day):
+                Design Period (days):
               </label>
               <input
                 type="number"
@@ -691,7 +713,7 @@ const MRFDesign = () => {
             </div>
             <div className="">
               <label className="block text-sm font-medium text-gray-900 pb-1">
-                Inflow (Kg/day):
+                Depth (m):
               </label>
               <input
                 type="number"

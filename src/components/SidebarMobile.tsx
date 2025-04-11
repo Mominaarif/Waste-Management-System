@@ -286,6 +286,7 @@ import {
   Home,
   LandPlot,
   LayoutDashboard,
+  MapIcon,
   Menu,
   Plus,
   Search,
@@ -364,6 +365,12 @@ export default function Example({ open, setOpen }: any) {
                   <li className="flex items-center mb-4 cursor-pointer hover:bg-gray-400/15 py-1.5 px-2 rounded w-full my-1">
                     <Plus className="w-[18px]" />
                     <span className="ml-3">Add Data</span>
+                  </li>
+                </a>
+                <a href="/map" className="text-sm">
+                  <li className="flex items-center mb-4 cursor-pointer hover:bg-gray-400/15 py-1.5 px-2 rounded w-full my-1">
+                    <MapIcon className="w-[18px]" />
+                    <span className="ml-3">Waste Generation Map</span>
                   </li>
                 </a>
                 <li onClick={() => setIsServicesOpen(!isServicesOpen)} className="text-sm flex items-center mb-4 cursor-pointer hover:bg-gray-400/15 py-1.5 px-2 rounded w-full my-1">

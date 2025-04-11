@@ -1,724 +1,751 @@
-
-// //"AIzaSyAo_mqWaTaovIAeSAUFCI9lBNNIwxx6_bE"
-
-// import React, { useCallback,useEffect, useState ,useRef} from 'react';
-// import { GoogleMap, LoadScript, Polygon, InfoWindow } from '@react-google-maps/api';
-// import { Chart as ChartJS, ArcElement, Tooltip, Legend } from 'chart.js';
-// import { Pie } from 'react-chartjs-2';
-// import './GeneateMap.css';
-// import { useNavigate } from 'react-router-dom';
-// import MapSearch from './MapSearch';
-// interface PolygonData {
-//   id: number;
-//   position?: google.maps.LatLng;
-//   wasteCategories: Record<string, Record<string, number>>;
-//   DISTRICT?: string;
-// }
-
-// interface ForecastedValues {
-//   [category: string]: {
-//     [subtype: string]: number;
-//   };
-// }
-
-
-// ChartJS.register(ArcElement, Tooltip, Legend);
-
-// const containerStyle: CSSProperties = {
-//   width: "calc(100% + (180px))",
-//   height: "100vh",
-//   position: "fixed",
-//   top: "0",
-//   left: "-120px",
-//   border: "2px solid #73AD21",
-//   zIndex: 1,
-//   boxSizing: "border-box",
-// };
-
-// const libraries = ['geometryutil', 'drawingutil', 'other_library_name'];
-// const center = { lat: 30.3, lng: 67.3 };
-
-// const JSON_FILE_URL = '/District_Boundary.json';
-
-// const options = {};
-
-// const infoWindowStyle = {
-//   fontFamily: 'Arial, sans-serif',
-//   backgroundColor: '#f9f9f9',
-//   padding: '15px',
-//   borderRadius: '12px',
-//   boxShadow: '0 4px 20px rgba(0, 0, 0, 0.2)',
-//   maxWidth: '500px',
-//   minWidth: '300px',
-//   lineHeight: '1.5',
-// };
-
-// const titleStyle = {
-//   fontSize: '20px',
-//   fontWeight: 'bold',
-//   marginBottom: '12px',
-//   color: '#2c3e50',
-//   textAlign: 'center',
-//   borderBottom: '2px solid #ddd',
-//   paddingBottom: '8px',
-// };
-
-// const labelStyle = {
-//   fontWeight: 'bold',
-//   color: '#34495e',
-//   marginBottom: '4px',
-//   display: 'flex',
-//   alignItems: 'center',
-// };
-
-// const valueStyle = {
-//   color: '#2c3e50',
-//   marginBottom: '8px',
-//   display: 'flex',
-//   alignItems: 'center',
-//   cursor: 'pointer',
-// };
-
-// const iconStyle = {
-//   marginRight: '8px',
-//   color: '#e74c3c',
-// };
-
-// const pieChartStyle = {
-//   fontFamily: 'Arial, sans-serif',
-//   backgroundColor: '#fff',
-//   padding: '20px',
-//   borderRadius: '12px',
-//   boxShadow: '0 4px 20px rgba(0, 0, 0, 0.2)',
-//   maxWidth: '650px',
-//   minWidth: '450px',
-//   lineHeight: '2.5',
-// };
-
-
-
-
-
-// const GeneateMap = ({ setCurrentValues }:any) => {
-//   const [showComparisonInputs, setShowComparisonInputs] = useState(false);
-//   const [viewType, setViewType] = useState('district');
-
-// const handleToggleComparisonInputs = () => {
-//   setShowComparisonInputs((prev) => !prev);
-// };
-// const [polygons, setPolygons] = useState<PolygonData[]>([]);
-  
-//   const [selectedPolygon, setSelectedPolygon] = useState<PolygonData | null>(null);
-//   const navigate = useNavigate(); 
-//   const [mapKey, setMapKey] = useState(0); // Key to force remount
-//   const [showPieChart, setShowPieChart] = useState(false);
-//   const [forecastYear, setForecastYear] = useState(1); // Changed to a number for easier handling
-//   const [selectedCategory, setSelectedCategory] = useState('residential');
-//   const wealthCategories = ['High Income', 'Higher Middle Income', 'Lower Middle Income', 'Low Income'];
-//   const randomWealthCategory = wealthCategories[Math.floor(Math.random() * wealthCategories.length)];
-//   const [population, setPopulation] = useState(0);
-//   const [households, setHouseholds] = useState(0);
-//   const mapRef = useRef<google.maps.Map | null>(null);
-//   const [totalWaste, setTotalWaste] = useState(0);
-//   const [polygonColors, setPolygonColors] = useState({});
-//   const [wealthCategory, setWealthCategory] = useState('');
-// //  const [forecastedValue, setForecastedValue] = useState(null); // To store forecasted value
-// const [forecastedValues, setForecastedValues] = useState<ForecastedValues>({});
-//   const GROWTH_RATE = 0.024; // 2.4% growth rate
-// const WASTE_GENERATION_RATE = (0.283 + 0.612) / 2; // Average waste generation rate
-// const [ucId1, setUcId1] = useState('');
-// const [ucId2, setUcId2] = useState('');
-// const [comparisonResults, setComparisonResults] = useState({});
-
-// const [legend, setLegend] = React.useState({
-//   green: '',
-//   yellow: '',
-//   red: '',
-// });
-
-
-// const options = {
-//   strokeColor: 'blue', // Red stroke color
-//   strokeOpacity: 0.8,     // Stroke opacity
-//   strokeWeight: 2,        // Stroke width
-//   fillColor: '#FF0000',   // Fill color
-//   fillOpacity: 0.35,      // Fill opacity (35%)
-// };
-
-
-// const onLoad = useCallback(({ map, url }: { map: any; url: string }) => {
-//   mapRef.current = map;
-//   fetch(url)
-//     .then(response => response.json())
-//     .then(data => {
-//       // Ensure data has the expected structure
-//       if (!data || !data.features) {
-//         console.error("Invalid data structure:", data);
-//         return;
-//       }
-
-//       const polygonsData = data.features.map(({feature, index}:any) => {
-//         // Check if the feature geometry type is Polygon
-//         if (feature.geometry.type === 'Polygon') {
-//           // Access coordinates and convert them into lat/lng pairs
-//           const coordinates = feature.geometry.coordinates[0]; // Coordinates for the polygon
-
-//           const residentialWaste = {
-//             paper: Math.floor(Math.random() * 500) + 50,
-//             cardboard: Math.floor(Math.random() * 300) + 30,
-//             lightPlastic: Math.floor(Math.random() * 100) + 10,
-//             densePlastic: Math.floor(Math.random() * 50) + 5,
-//             textile: Math.floor(Math.random() * 200) + 20,
-//             foodWaste: Math.floor(Math.random() * 500) + 50,
-//             yardWaste: Math.floor(Math.random() * 300) + 30,
-//             metals: Math.floor(Math.random() * 100) + 10,
-//             glass: Math.floor(Math.random() * 50) + 5,
-//             diapers: Math.floor(Math.random() * 100) + 10,
-//             animalDunk: Math.floor(Math.random() * 200) + 20,
-//             wood: Math.floor(Math.random() * 300) + 30,
-//             electronic: Math.floor(Math.random() * 50) + 5,
-//             leather: Math.floor(Math.random() * 50) + 5,
-//             cdWaste: Math.floor(Math.random() * 50) + 5,
-//           };
-
-//           const commercialWaste = {
-//             paper: Math.floor(Math.random() * 300) + 30,
-//             cardboard: Math.floor(Math.random() * 200) + 20,
-//             lightPlastic: Math.floor(Math.random() * 50) + 5,
-//             densePlastic: Math.floor(Math.random() * 25) + 3,
-//             textile: Math.floor(Math.random() * 100) + 10,
-//             foodWaste: Math.floor(Math.random() * 300) + 30,
-//             yardWaste: Math.floor(Math.random() * 200) + 20,
-//             metals: Math.floor(Math.random() * 50) + 5,
-//             glass: Math.floor(Math.random() * 25) + 3,
-//             diapers: Math.floor(Math.random() * 50) + 5,
-//             animalDunk: Math.floor(Math.random() * 100) + 10,
-//             wood: Math.floor(Math.random() * 100) + 10,
-//             electronic: Math.floor(Math.random() * 25) + 3,
-//             leather: Math.floor(Math.random() * 25) + 3,
-//             cdWaste: Math.floor(Math.random() * 25) + 3,
-//           };
-
-//           const industrialWaste = {
-//             paper: Math.floor(Math.random() * 400) + 40,
-//             cardboard: Math.floor(Math.random() * 250) + 25,
-//             lightPlastic: Math.floor(Math.random() * 75) + 7,
-//             densePlastic: Math.floor(Math.random() * 35) + 4,
-//             textile: Math.floor(Math.random() * 150) + 15,
-//             foodWaste: Math.floor(Math.random() * 400) + 40,
-//             yardWaste: Math.floor(Math.random() * 250) + 25,
-//             metals: Math.floor(Math.random() * 75) + 7,
-//             glass: Math.floor(Math.random() * 35) + 4,
-//             diapers: Math.floor(Math.random() * 75) + 7,
-//             animalDunk: Math.floor(Math.random() * 150) + 15,
-//             wood: Math.floor(Math.random() * 150) + 15,
-//             electronic: Math.floor(Math.random() * 35) + 4,
-//             leather: Math.floor(Math.random() * 35) + 4,
-//             cdWaste: Math.floor(Math.random() * 35) + 4,
-//           };
-
-//           const hazardousWaste = {
-//             needles: Math.floor(Math.random() * 100) + 10,
-//             syringes: Math.floor(Math.random() * 50) + 5,
-//             scalpels: Math.floor(Math.random() * 30) + 3,
-//             infusionSets: Math.floor(Math.random() * 20) + 2,
-//             sawsKnives: Math.floor(Math.random() * 50) + 5,
-//             blades: Math.floor(Math.random() * 50) + 5,
-//             chemicals: Math.floor(Math.random() * 100) + 10,
-//           };
-
-//           setPopulation(Math.floor(Math.random() * 10000) + 1000);
-//           setHouseholds(Math.floor(Math.random() * 500) + 50);
-//           setTotalWaste(Math.floor(Math.random() * 1000) + 100);
-//           setWealthCategory(randomWealthCategory);
-
-//           // Return polygon data with coordinates mapped to lat/lng
-//           return {
-//             id: index,
-//             city: feature.properties.DISTRICT,
-//             paths: coordinates.map((coord:any) => ({ lat: coord[1], lng: coord[0] })),
-//             wasteCategories: {
-//               residential: residentialWaste,
-//               commercial: commercialWaste,
-//               industrial: industrialWaste,
-//               hazardous: hazardousWaste,
-//             },
-//             options: {
-//               strokeColor: '#0f6175',
-//               strokeOpacity: 0.8,
-//               strokeWeight: 2,
-//               fillColor: '#ada5a5',
-//               fillOpacity: 0.35,
-//             }
-//           };
-//         }
-//         return null;
-//       }).filter(Boolean); // Remove null values (non-polygon features)
-
-//       setPolygons(polygonsData);
-//     })
-//     .catch(error => console.error('Error loading JSON data:', error));
-// }, []);
-
-// const handleLoadMap = ({ map, url }: { map: any, url: string }) => {
-//   onLoad({ map, url });
-// };
-
-// useEffect(() => {
-//   let url;
-//   switch (viewType) {
-//     case 'unionCouncil':
-//       url = '/Union_Council_VF.json';
-//       break;
-//     case 'province':
-//       url = '/Provinces_VF.json';
-//       break;
-//     case 'district':
-//     default:
-//       url = '/District_Boundary.json';
-//       break;
-//   }
-//   setPolygons([]); // Clear previous polygons
-//   handleLoadMap({ map: mapRef.current, url }); // Pass object with map and url
-//   setMapKey(prevKey => prevKey + 1); // Change key to remount map
-// }, [viewType]);
-
-// const handleViewChange = (type:any) => {
-//   setViewType(type);
-//   setSelectedPolygon(null); // Clear selected polygon
-// };
-
-//   const handleLocationSelect = (location:any) => {
-//    if (mapRef.current) {
-//   mapRef.current.setCenter(location);
-//   mapRef.current.setZoom(12);
-// }
-//   };
-
-//   const handlePolygonColorChange = (selectedCategory = 'total') => {
-//       const newColors: Record<number, string> = {};
-//     const updatedLegend: { green: string; yellow: string; red: string } = { green: '', yellow: '', red: '' };
-  
-//     // Step 1: Calculate percentage for each polygon
-//     const polygonPercentages = polygons.map((polygon: { id: number; wasteCategories: any }) => {
-//       const totalWaste = Object.values(polygon.wasteCategories).reduce((sum: number, category) => {
-//         return sum + Object.values(category as Record<string, number>).reduce((catSum, value) => catSum + value, 0);
-//       }, 0);
-  
-//       let categoryWaste = 0;
-  
-//       if (selectedCategory === 'total') {
-//         categoryWaste = totalWaste as number; // Use total waste for percentage calculation
-//       } else if (polygon.wasteCategories[selectedCategory]) {
-//         categoryWaste = (Object.values(polygon.wasteCategories[selectedCategory]) as number[]).reduce(
-//           (catSum, value) => catSum + value,
-//           0
-//         );
-//       }
-  
-//       const wastePercentage = totalWaste === 0 ? 0 : (categoryWaste / totalWaste) * 100;
-  
-//       return { id: polygon.id, percentage: wastePercentage };
-//     });
-  
-//     // Step 2: Sort polygons by percentage
-//     polygonPercentages.sort((a, b) => a.percentage - b.percentage);
-  
-//     // Step 3: Divide polygons into three groups (33% each)
-//     const totalPolygons = polygonPercentages.length;
-//     const groupSize = Math.ceil(totalPolygons / 3);
-  
-//     // Initialize ranges for legend
-//     let greenRange = { min: Infinity, max: -Infinity };
-//     let yellowRange = { min: Infinity, max: -Infinity };
-//     let redRange = { min: Infinity, max: -Infinity };
-  
-//     polygonPercentages.forEach((polygon, index) => {
-//       if (index < groupSize) {
-//         newColors[polygon.id] = '#2ecc71'; // Green
-//         greenRange.min = Math.min(greenRange.min, polygon.percentage);
-//         greenRange.max = Math.max(greenRange.max, polygon.percentage);
-//       } else if (index < groupSize * 2) {
-//         newColors[polygon.id] = '#f1c40f'; // Yellow
-//         yellowRange.min = Math.min(yellowRange.min, polygon.percentage);
-//         yellowRange.max = Math.max(yellowRange.max, polygon.percentage);
-//       } else {
-//         newColors[polygon.id] = '#e74c3c'; // Red
-//         redRange.min = Math.min(redRange.min, polygon.percentage);
-//         redRange.max = Math.max(redRange.max, polygon.percentage);
-//       }
-//     });
-  
-//     // Step 4: Update state
-//     setPolygonColors(newColors);
-  
-//     // Step 5: Update legend
-//     updatedLegend.green = `Green: ${greenRange.min.toFixed(2)}tons - ${greenRange.max.toFixed(2)}tons`;
-//     updatedLegend.yellow = `Yellow: ${yellowRange.min.toFixed(2)}tons - ${yellowRange.max.toFixed(2)}tons`;
-//     updatedLegend.red = `Red: ${redRange.min.toFixed(2)}tons - ${redRange.max.toFixed(2)}tons`;
-  
-//     setLegend(updatedLegend); 
-//   };
-  
-  
-  
-
-  
-
-//   const handlePolygonClick = ({polygonData, event}:any) => {
-//     setSelectedPolygon({ ...polygonData, position: event.latLng });
-//     setShowPieChart(false); // Hide pie chart when a new polygon is clicked
-    
-//     // Set stable values
-//     //setPopulation(Math.floor(Math.random() * 10000) + 1000);
-//     //setHouseholds(Math.floor(Math.random() * 500) + 50);
-//     //setTotalWaste(Math.floor(Math.random() * 1000) + 100);
-//     //setWealthCategory(randomWealthCategory);
-//   };
-
-//   const handleCloseClick = () => setSelectedPolygon(null);
-//   const handleWasteClick = () => setShowPieChart(true);
-//   const handlePieChartClose = () => setShowPieChart(false);
-//   const handleCategoryChange = (category:any) => {
-//     setSelectedCategory(category);
-//     setShowPieChart(true); // Show the pie chart when category is changed
-//   };
-
-//   const calculateMainCategoryData = (wasteCategories: Record<string, Record<string, number>>) => {
-//     const mainCategories = {
-//       residential: 0,
-//       commercial: 0,
-//       industrial: 0,
-//       hazardous: 0,
-//     };
-  
-//     Object.keys(wasteCategories).forEach(category => {
-//       const totalInCategory = Object.values(wasteCategories[category]).reduce((sum:any, value) => sum + (value as number), 0);
-//       mainCategories[category as keyof typeof mainCategories] = totalInCategory;
-//     });
-  
-//     return mainCategories;
-//   };
-  
-//   const mainCategoryData = selectedPolygon ? calculateMainCategoryData((selectedPolygon as { wasteCategories: Record<string, Record<string, number>> }).wasteCategories) : {};
-
-//   const mainPieChartData = {
-//     labels: Object.keys(mainCategoryData),
-//     datasets: [
-//       {
-//         label: 'Total Waste by Category',
-//         data: Object.values(mainCategoryData),
-//         backgroundColor: ['#2ecc71', '#3498db', '#e74c3c', '#f1c40f'],
-//         hoverBackgroundColor: ['#27ae60', '#2980b9', '#c0392b', '#f39c12'],
-//       },
-//     ],
-//   };
-  
-  
-//   const WasteTable = ({ wasteData }: { wasteData: Record<string, number> }) => (
-//     <table className="waste-table">
-//       <thead>
-//         <tr>
-//           <th>Subcategory</th>
-//           <th>Amount (kg)</th>
-//         </tr>
-//       </thead>
-//       <tbody>
-//       {Object.entries(wasteData).map(([key, value]: [string, number]) => (
-//           <tr key={key}>
-//             <td>{key}</td>
-//             <td>{value}</td>
-//           </tr>
-//         ))}
-//       </tbody>
-//     </table>
-//   );
-  
-
-//   const handleForecastClick = () => {
-//     if (!selectedPolygon) return; // Ensure a polygon is selected
-  
-//     // Get the current population and design period (N)
-//     const presentPopulation = population; // From your existing state
-//     const designPeriod = forecastYear; // Use the selected year from the dropdown
-  
-//     // Calculate future population
-//     const futurePopulation = Math.round(presentPopulation * Math.pow(1 + GROWTH_RATE, designPeriod));
-  
-//     // Calculate total waste generated in future
-//     const totalWasteGenerated = Math.round(futurePopulation * WASTE_GENERATION_RATE * 365); // Multiply by 365 for annual waste
-  
-//     // Update forecasted values for each category
-//     // Update forecasted values for each category
-// const newForecastedValues: ForecastedValues = {};
-// Object.keys(selectedPolygon.wasteCategories).forEach((category) => {
-//   const wasteData = selectedPolygon.wasteCategories[category];
-//   const totalWasteInCategory = Object.values(wasteData).reduce((sum, value) => sum + value, 0);
-
-//   newForecastedValues[category] = {};
-
-//   // Set forecasted total waste for each waste subtype in the category
-//   Object.keys(wasteData).forEach((key) => {
-//     // Calculate the waste proportion based on the existing subtype value
-//     const subtypeWaste = Math.round((wasteData[key] / totalWasteInCategory) * totalWasteGenerated);
-//     newForecastedValues[category][key] = subtypeWaste;
-//   });
-// });
-  
-//     setForecastedValues(newForecastedValues); // Update state with the new forecasted values
-  
-//     navigate('/forecast', { state: { forecastedValues: newForecastedValues, presentPopulation, forecastYear } });
-//   };
-  
-  
-//   const handleContourMap = () => {
-  
-  
-//     if (!selectedPolygon) {
-//       console.error("Selected polygon not found");
-//       return;
-//     }
-  
-//     // Collect waste data for the selected polygon only
-//     const currentData = {
-//       wasteCategories: {
-//         residential: selectedPolygon.wasteCategories.residential,
-//         commercial: selectedPolygon.wasteCategories.commercial,
-//         industrial: selectedPolygon.wasteCategories.industrial,
-//         hazardous: selectedPolygon.wasteCategories.hazardous,
-//       },
-//     };
-  
-//    // console.log("Current Waste Data",currentData)
-//     // Navigate to the heatmap page with the current data
-//     navigate('/heatmap', { state: currentData });
-//   };
-  
-  
-  
-
-
-//   const handleComparison = () => {
-//     const id1 = parseInt(ucId1, 10);
-//     const id2 = parseInt(ucId2, 10);
-  
-//     const polygon1 = polygons.find((p: PolygonData) => p.id === id1 - 1);
-//     const polygon2 = polygons.find((p: PolygonData) => p.id === id2 - 1);
-  
-//     if (polygon1 && polygon2) {
-//       const results = {
-//         uc1: {
-//           population: Math.floor(Math.random() * 10000) + 1000,
-//           totalWaste: Math.floor(Math.random() * 1000) + 100,
-//           wasteCategories: polygon1.wasteCategories,
-//         },
-//         uc2: {
-//           population: Math.floor(Math.random() * 10000) + 1000,
-//           totalWaste: Math.floor(Math.random() * 1000) + 100,
-//           wasteCategories: polygon2.wasteCategories,
-//         },
-//       };
-//       setComparisonResults(results);
-//     } else {
-//       alert('Invalid UC IDs');
-//     }
-//   };
-
-
-//   const pieChartData = {
-//     labels: selectedPolygon ? Object.keys(selectedPolygon.wasteCategories[selectedCategory]) : [],
-//     datasets: [
-//       {
-//         label: 'Waste',
-//         data: selectedPolygon ? Object.values(selectedPolygon.wasteCategories[selectedCategory]) : [],
-//         backgroundColor: [
-//           '#2ecc71', '#3498db', '#e74c3c', '#f1c40f',
-//           '#9b59b6', '#1abc9c', '#34495e', '#e67e22',
-//           '#e84393', '#f368e0', '#74b9ff', '#55efc4'
-//         ],
-//         hoverBackgroundColor: [
-//           '#27ae60', '#2980b9', '#c0392b', '#f39c12',
-//           '#8e44ad', '#16a085', '#2c3e50', '#d35400',
-//           '#d63031', '#fd79a8', '#0984e3', '#00b894'
-//         ]
-//       }
-//     ]
-//   };
-
-//   return (
-//     <LoadScript googleMapsApiKey="AIzaSyClURLc6gcn9M_AOXj6gUsYYk147-T_FDA" libraries={libraries}>
-
-// <select onChange={(e) => handlePolygonColorChange(e.target.value)}>
-//   <option value="total">Total Waste</option>
-//   <option value="residential">Residential Waste</option>
-//   <option value="industrial">Industrial Waste</option>
-//   <option value="commercial">Commercial Waste</option>
-//   <option value="hazardous">Hazardous Waste</option>
-// </select>
-
-// <select onChange={(e) => handleViewChange(e.target.value)} style={{ position: 'absolute', top: '0px', left: '620px', zIndex: 2 }}>
-//           <option value="district">Districts</option>
-//           <option value="unionCouncil">Union Councils</option>
-//           <option value="province">Provinces</option>
-//         </select>
-//         <div>
-//   <h4>Legend</h4>
-//   <p>
-//     <span style={{ color: '#2ecc71' }}>■</span> {legend.green}
-//   </p>
-//   <p>
-//     <span style={{ color: '#f1c40f' }}>■</span> {legend.yellow}
-//   </p>
-//   <p>
-//     <span style={{ color: '#e74c3c' }}>■</span> {legend.red}
-//   </p>
-// </div>
-
-
-//         <div style={{ position: 'absolute', top: '0px', left: '420px', zIndex: 2 }}>
-//     <button onClick={handleToggleComparisonInputs}>
-//       {showComparisonInputs ? 'Hide UC Comparison' : 'Show UC Comparison'}
-//     </button>
-
-//     {showComparisonInputs && (
-//       <div style={{ marginTop: '10px' }}>
-//         <input 
-//           type="number" 
-//           placeholder="Enter UC ID 1" 
-//           value={ucId1} 
-//           onChange={(e) => setUcId1(e.target.value)} 
-//           style={{ marginRight: '10px' }} 
-//         />
-//         <input 
-//           type="number" 
-//           placeholder="Enter UC ID 2" 
-//           value={ucId2} 
-//           onChange={(e) => setUcId2(e.target.value)} 
-//           style={{ marginRight: '10px' }} 
-//         />
-//         <button onClick={handleComparison}>Compare</button>
-//       </div>
-//     )}
-//   </div>
-//       <GoogleMap
-//         mapContainerStyle={containerStyle}
-//         center={center}
-//         zoom={8}
-//         key={mapKey} // Use key to force remount
-//         onLoad={onLoad}
-//         options={options}
-//       >
-
-//                 {/* Integrate the MapSearch component */}
-//                 <MapSearch onLocationSelect={handleLocationSelect} />
-//         {polygons.map((polygon, index) => (
-//           <Polygon
-//             key={index}
-//             options={{
-//               ...polygon.options,
-//               fillColor: polygonColors[polygon.id] || polygon.options.fillColor, // Use the updated color
-//             }}
-
-//             paths={polygon.paths}
-//             onClick={(event) => handlePolygonClick(polygon, event)}
-//           />
-//         ))}
-//         {selectedPolygon && (
-//           <>
-//             <InfoWindow position={selectedPolygon.position} onCloseClick={handleCloseClick}>
-//               <div style={infoWindowStyle}>
-                
-//                 <div style={titleStyle}>{`UC ${selectedPolygon.id + 1}`}</div>
-//                 <div style={labelStyle}><span style={iconStyle}>🏷️</span>City ID:</div>
-//                 <div style={valueStyle}>{`UC${selectedPolygon.id + 1}`}</div>
-//                 <div style={labelStyle}><span style={iconStyle}>👨‍👩‍👧‍👦</span>Population:</div>
-//                 <div style={valueStyle}>{population}</div>
-//                 <div style={labelStyle}><span style={iconStyle}>🏙️</span>City:</div>
-//                 <div style={valueStyle}>{selectedPolygon.DISTRICT}</div> {/* Display the city here */}
-//                 <div style={labelStyle}><span style={iconStyle}>🏠</span>Households:</div>
-//                 <div style={valueStyle}>{households}</div>
-//                 <div style={labelStyle}><span style={iconStyle}>💰</span>Wealth Category:</div>
-//                 <div style={valueStyle}>{wealthCategory}</div>
-//                 <div style={labelStyle}><span style={iconStyle}>♻️</span>Total Waste Generated:</div>
-//                 <div style={valueStyle} onClick={handleWasteClick}>
-//                   {totalWaste} Tons
-//                 </div>
-//                                               {/* Main Categories Pie Chart */}
-//               <div style={{marginBottom:'30px', width: '400px', height: '300px' }}>
-//                 <h3>Main Waste Categories</h3>
-//                 <Pie data={mainPieChartData} />
-//               </div>
-
-
-//                 <div>
-//                   <button className="styled-button" onClick={() => handleCategoryChange('residential')}>Residential</button>
-//                   <button className="styled-button" onClick={() => handleCategoryChange('commercial')}>Commercial</button>
-//                   <button className="styled-button" onClick={() => handleCategoryChange('industrial')}>Industrial</button>
-//                   <button className="styled-button" onClick={() => handleCategoryChange('hazardous')}>Hazardous</button>
-//                 </div>
-
-//                             {/* Show the Subcategories Table */}
-//                             <div>
-//                 <h3>Subcategories</h3>
-//                 <WasteTable wasteData={selectedPolygon.wasteCategories[selectedCategory]} />
-//               </div>
-//                 {/* New Forecast Section */}
-//                 <div className="forecast-section">
-                  
-//                   <select className="year-dropdown" value={forecastYear} onChange={(e) => setForecastYear(Number(e.target.value))}>
-//                     {[...Array(10)].map((_, index) => (
-//                       <option key={index + 1} value={index + 1}>
-//                          {index + 1} Year
-//                       </option>
-//                     ))}
-//                   </select>
-//                   <button className="forecast-button" onClick={handleForecastClick}>Forecast</button>
-//                   <button className="forecast-button" onClick={handleContourMap}>Carbon Footprint Analysis</button>
-                 
-          
-//                 </div>
-//               </div>
-//             </InfoWindow>
-//             {showPieChart && (
-//               <InfoWindow position={selectedPolygon.position} onCloseClick={handlePieChartClose}>
-//                 <div style={pieChartStyle}>
-//                   <Pie data={pieChartData} />
-//                 </div>
-//               </InfoWindow>
-//             )}
-//           </>
-//         )}
-//       </GoogleMap>
-//       {/* Comparison Results Display */}
-// {comparisonResults && (
-//   <div style={{ position: 'absolute', bottom: '20px', left: '20px', zIndex: 2, backgroundColor: '#fff', padding: '10px', borderRadius: '5px', overflow: 'auto', maxHeight: '300px' }}>
-//     <h3>Comparison Results</h3>
-//     <table style={{ width: '100%', borderCollapse: 'collapse' }}>
-//       <thead>
-//         <tr>
-//           <th style={{ border: '1px solid #ccc', padding: '8px' }}>Union Council</th>
-//           <th style={{ border: '1px solid #ccc', padding: '8px' }}>Population</th>
-//           <th style={{ border: '1px solid #ccc', padding: '8px' }}>Waste Categories</th>
-//         </tr>
-//       </thead>
-//       <tbody>
-//         <tr>
-//           <td style={{ border: '1px solid #ccc', padding: '8px' }}>UC {ucId1}</td>
-//           <td style={{ border: '1px solid #ccc', padding: '8px' }}>{comparisonResults.uc1.population}</td>
-//           <td style={{ border: '1px solid #ccc', padding: '8px' }}>{JSON.stringify(comparisonResults.uc1.wasteCategories)}</td>
-//         </tr>
-//         <tr>
-//           <td style={{ border: '1px solid #ccc', padding: '8px' }}>UC {ucId2}</td>
-//           <td style={{ border: '1px solid #ccc', padding: '8px' }}>{comparisonResults.uc2.population}</td>
-//           <td style={{ border: '1px solid #ccc', padding: '8px' }}>{JSON.stringify(comparisonResults.uc2.wasteCategories)}</td>
-//         </tr>
-//       </tbody>
-//     </table>
-//   </div>
-// )}
-
-//     </LoadScript>
-//   );
-// };
-
-// export default GeneateMap;
+// GeneateMap.tsx
+
+import React, { useCallback, useEffect, useState, useRef } from 'react';
+import { GoogleMap, LoadScript, Polygon, InfoWindow } from '@react-google-maps/api';
+import { Chart as ChartJS, ArcElement, Tooltip, Legend } from 'chart.js';
+import { Pie } from 'react-chartjs-2';
+import '../Styles/GeneateMap.css';
+import { useNavigate } from 'react-router-dom';
+import MapSearch from './MapSearch';
+
+// Register Chart.js components
+ChartJS.register(ArcElement, Tooltip, Legend);
+
+// Define interfaces for data structures
+interface LatLng {
+    lat: number;
+    lng: number;
+}
+
+interface WasteCategory {
+    [key: string]: number;
+}
+
+interface WasteCategories {
+    residential: WasteCategory;
+    commercial: WasteCategory;
+    industrial: WasteCategory;
+    hazardous: WasteCategory;
+}
+
+interface PolygonData {
+    id: number;
+    city: string;
+    paths: LatLng[];
+    wasteCategories: WasteCategories;
+    options: google.maps.PolygonOptions;
+    DISTRICT?: string; // Optional, as it may not always be present
+    position?: google.maps.LatLng; // Optional position property
+}
+
+interface Legend {
+    green: string;
+    yellow: string;
+    red: string;
+}
+
+interface ComparisonResults {
+    uc1: {
+        population: number;
+        totalWaste: number;
+        wasteCategories: WasteCategories;
+    };
+    uc2: {
+        population: number;
+        totalWaste: number;
+        wasteCategories: WasteCategories;
+    };
+}
+
+interface Props {
+    setCurrentValues: (values: any) => void; // Define more specific type if possible
+}
+
+// Map container style
+const containerStyle: React.CSSProperties = {
+    width: "100%",
+    height: "calc(100vh - 85px)",
+    position: "fixed",
+    top: "0",
+    //   left: "-120px",
+    //   border: "2px solid #73AD21",
+    zIndex: 1,
+    boxSizing: "border-box",
+};
+
+// Libraries for Google Maps
+const libraries: ('places')[] = ['places'];
+const center: LatLng = { lat: 30.3, lng: 67.3 };
+const JSON_FILE_URL = '/District_Boundary.json';
+
+// Styling objects
+const infoWindowStyle: React.CSSProperties = {
+    fontFamily: 'Arial, sans-serif',
+    backgroundColor: '#f9f9f9',
+    padding: '15px',
+    borderRadius: '12px',
+    boxShadow: '0 4px 20px rgba(0, 0, 0, 0.2)',
+    maxWidth: '500px',
+    minWidth: '300px',
+    lineHeight: '1.5',
+};
+
+const titleStyle: React.CSSProperties = {
+    fontSize: '20px',
+    fontWeight: 'bold',
+    marginBottom: '12px',
+    color: '#2c3e50',
+    textAlign: 'center',
+    borderBottom: '2px solid #ddd',
+    paddingBottom: '8px',
+};
+
+const labelStyle: React.CSSProperties = {
+    fontWeight: 'bold',
+    color: '#34495e',
+    marginBottom: '4px',
+    display: 'flex',
+    alignItems: 'center',
+};
+
+const valueStyle: React.CSSProperties = {
+    color: '#2c3e50',
+    marginBottom: '8px',
+    display: 'flex',
+    alignItems: 'center',
+    cursor: 'pointer',
+};
+
+const iconStyle: React.CSSProperties = {
+    marginRight: '8px',
+    color: '#e74c3c',
+};
+
+const pieChartStyle: React.CSSProperties = {
+    fontFamily: 'Arial, sans-serif',
+    backgroundColor: '#fff',
+    padding: '20px',
+    borderRadius: '12px',
+    boxShadow: '0 4px 20px rgba(0, 0, 0, 0.2)',
+    maxWidth: '650px',
+    minWidth: '450px',
+    lineHeight: '2.5',
+};
+
+const GeneateMap = ({ setCurrentValues, open }: any) => {
+    const [showComparisonInputs, setShowComparisonInputs] = useState<boolean>(false);
+    const [viewType, setViewType] = useState<'district' | 'unionCouncil' | 'province'>('district');
+    const [polygons, setPolygons] = useState<PolygonData[]>([]);
+    const [selectedPolygon, setSelectedPolygon] = useState<PolygonData | null>(null);
+    const navigate = useNavigate();
+    const [mapKey, setMapKey] = useState<number>(0);
+    const [showPieChart, setShowPieChart] = useState<boolean>(false);
+    const [forecastYear, setForecastYear] = useState<number>(1);
+    const [selectedCategory, setSelectedCategory] = useState<string>('residential');
+    const wealthCategories: string[] = ['High Income', 'Higher Middle Income', 'Lower Middle Income', 'Low Income'];
+    const randomWealthCategory: string = wealthCategories[Math.floor(Math.random() * wealthCategories.length)];
+    const [population, setPopulation] = useState<number>(0);
+    const [households, setHouseholds] = useState<number>(0);
+    const [totalWaste, setTotalWaste] = useState<number>(0);
+    const mapRef = useRef<google.maps.Map | null>(null);
+    const [polygonColors, setPolygonColors] = useState<{ [key: number]: string }>({});
+    const [wealthCategory, setWealthCategory] = useState<string>('');
+    const [forecastedValues, setForecastedValues] = useState<{ [key: string]: WasteCategory }>({});
+    const GROWTH_RATE: number = 0.024;
+    const WASTE_GENERATION_RATE: number = (0.283 + 0.612) / 2;
+    const [ucId1, setUcId1] = useState<string>('');
+    const [ucId2, setUcId2] = useState<string>('');
+    const [comparisonResults, setComparisonResults] = useState<ComparisonResults | null>(null);
+    const [legend, setLegend] = useState<Legend>({
+        green: '',
+        yellow: '',
+        red: '',
+    });
+
+    const handleToggleComparisonInputs = () => {
+        setShowComparisonInputs((prev) => !prev);
+    };
+
+    const onLoad = useCallback((map: google.maps.Map, url: string) => {
+        mapRef.current = map;
+        fetch(url)
+            .then((response) => response.json())
+            .then((data: any) => {
+                if (!data || !data.features) {
+                    console.error("Invalid data structure:", data);
+                    return;
+                }
+
+                const polygonsData: PolygonData[] = data.features
+                    .map((feature: any, index: number) => {
+                        if (feature.geometry.type === 'Polygon') {
+                            const coordinates = feature.geometry.coordinates[0];
+
+                            const residentialWaste: WasteCategory = {
+                                paper: Math.floor(Math.random() * 500) + 50,
+                                cardboard: Math.floor(Math.random() * 300) + 30,
+                                lightPlastic: Math.floor(Math.random() * 100) + 10,
+                                densePlastic: Math.floor(Math.random() * 50) + 5,
+                                textile: Math.floor(Math.random() * 200) + 20,
+                                foodWaste: Math.floor(Math.random() * 500) + 50,
+                                yardWaste: Math.floor(Math.random() * 300) + 30,
+                                metals: Math.floor(Math.random() * 100) + 10,
+                                glass: Math.floor(Math.random() * 50) + 5,
+                                diapers: Math.floor(Math.random() * 100) + 10,
+                                animalDunk: Math.floor(Math.random() * 200) + 20,
+                                wood: Math.floor(Math.random() * 300) + 30,
+                                electronic: Math.floor(Math.random() * 50) + 5,
+                                leather: Math.floor(Math.random() * 50) + 5,
+                                cdWaste: Math.floor(Math.random() * 50) + 5,
+                            };
+
+                            const commercialWaste: WasteCategory = {
+                                paper: Math.floor(Math.random() * 300) + 30,
+                                cardboard: Math.floor(Math.random() * 200) + 20,
+                                lightPlastic: Math.floor(Math.random() * 50) + 5,
+                                densePlastic: Math.floor(Math.random() * 25) + 3,
+                                textile: Math.floor(Math.random() * 100) + 10,
+                                foodWaste: Math.floor(Math.random() * 300) + 30,
+                                yardWaste: Math.floor(Math.random() * 200) + 20,
+                                metals: Math.floor(Math.random() * 50) + 5,
+                                glass: Math.floor(Math.random() * 25) + 3,
+                                diapers: Math.floor(Math.random() * 50) + 5,
+                                animalDunk: Math.floor(Math.random() * 100) + 10,
+                                wood: Math.floor(Math.random() * 100) + 10,
+                                electronic: Math.floor(Math.random() * 25) + 3,
+                                leather: Math.floor(Math.random() * 25) + 3,
+                                cdWaste: Math.floor(Math.random() * 25) + 3,
+                            };
+
+                            const industrialWaste: WasteCategory = {
+                                paper: Math.floor(Math.random() * 400) + 40,
+                                cardboard: Math.floor(Math.random() * 250) + 25,
+                                lightPlastic: Math.floor(Math.random() * 75) + 7,
+                                densePlastic: Math.floor(Math.random() * 35) + 4,
+                                textile: Math.floor(Math.random() * 150) + 15,
+                                foodWaste: Math.floor(Math.random() * 400) + 40,
+                                yardWaste: Math.floor(Math.random() * 250) + 25,
+                                metals: Math.floor(Math.random() * 75) + 7,
+                                glass: Math.floor(Math.random() * 35) + 4,
+                                diapers: Math.floor(Math.random() * 75) + 7,
+                                animalDunk: Math.floor(Math.random() * 150) + 15,
+                                wood: Math.floor(Math.random() * 150) + 15,
+                                electronic: Math.floor(Math.random() * 35) + 4,
+                                leather: Math.floor(Math.random() * 35) + 4,
+                                cdWaste: Math.floor(Math.random() * 35) + 4,
+                            };
+
+                            const hazardousWaste: WasteCategory = {
+                                needles: Math.floor(Math.random() * 100) + 10,
+                                syringes: Math.floor(Math.random() * 50) + 5,
+                                scalpels: Math.floor(Math.random() * 30) + 3,
+                                infusionSets: Math.floor(Math.random() * 20) + 2,
+                                sawsKnives: Math.floor(Math.random() * 50) + 5,
+                                blades: Math.floor(Math.random() * 50) + 5,
+                                chemicals: Math.floor(Math.random() * 100) + 10,
+                            };
+
+                            setPopulation(Math.floor(Math.random() * 10000) + 1000);
+                            setHouseholds(Math.floor(Math.random() * 500) + 50);
+                            setTotalWaste(Math.floor(Math.random() * 1000) + 100);
+                            setWealthCategory(randomWealthCategory);
+
+                            return {
+                                id: index,
+                                city: feature.properties.DISTRICT,
+                                paths: coordinates.map((coord: [number, number]) => ({
+                                    lat: coord[1],
+                                    lng: coord[0],
+                                })),
+                                wasteCategories: {
+                                    residential: residentialWaste,
+                                    commercial: commercialWaste,
+                                    industrial: industrialWaste,
+                                    hazardous: hazardousWaste,
+                                },
+                                options: {
+                                    strokeColor: '#0f6175',
+                                    strokeOpacity: 0.8,
+                                    strokeWeight: 2,
+                                    fillColor: '#ada5a5',
+                                    fillOpacity: 0.35,
+                                },
+                            };
+                        }
+                        return null;
+                    })
+                    .filter(Boolean);
+
+                setPolygons(polygonsData);
+            })
+            .catch((error) => console.error('Error loading JSON data:', error));
+    }, []);
+
+    const handleLoadMap = (map: google.maps.Map, url: string) => {
+        onLoad(map, url);
+    };
+
+    useEffect(() => {
+        let url: string;
+        switch (viewType) {
+            case 'unionCouncil':
+                url = '/Union_Council_VF.json';
+                break;
+            case 'province':
+                url = '/Provinces_VF.json';
+                break;
+            case 'district':
+            default:
+                url = '/District_Boundary.json';
+                break;
+        }
+        setPolygons([]);
+        handleLoadMap(mapRef.current!, url);
+        setMapKey((prevKey) => prevKey + 1);
+    }, [viewType]);
+
+    const handleViewChange = (type: 'district' | 'unionCouncil' | 'province') => {
+        setViewType(type);
+        setSelectedPolygon(null);
+    };
+
+    const handleLocationSelect = (location: LatLng) => {
+        if (mapRef.current) {
+            mapRef.current.panTo(location);
+            mapRef.current.setZoom(12);
+        }
+    };
+
+    const handlePolygonColorChange = (selectedCategory: string = 'total') => {
+        const newColors: { [key: number]: string } = {};
+        const updatedLegend: Legend = {
+            green: '',
+            yellow: '',
+            red: '',
+        };
+
+        const polygonPercentages = polygons.map((polygon) => {
+            const totalWaste = Object.values(polygon.wasteCategories).reduce((sum, category) => {
+                return sum + Object.values(category).reduce((catSum: any, value) => catSum + value, 0);
+            }, 0);
+
+            let categoryWaste = 0;
+
+            if (selectedCategory === 'total') {
+                categoryWaste = totalWaste;
+            } else if (polygon.wasteCategories[selectedCategory as keyof WasteCategories]) {
+                categoryWaste = Object.values(
+                    polygon.wasteCategories[selectedCategory as keyof WasteCategories]
+                ).reduce((catSum, value) => catSum + value, 0);
+            }
+
+            const wastePercentage = totalWaste === 0 ? 0 : (categoryWaste / totalWaste) * 100;
+
+            return { id: polygon.id, percentage: wastePercentage };
+        });
+
+        polygonPercentages.sort((a, b) => a.percentage - b.percentage);
+
+        const totalPolygons = polygonPercentages.length;
+        const groupSize = Math.ceil(totalPolygons / 3);
+
+        let greenRange = { min: Infinity, max: -Infinity };
+        let yellowRange = { min: Infinity, max: -Infinity };
+        let redRange = { min: Infinity, max: -Infinity };
+
+        polygonPercentages.forEach((polygon, index) => {
+            if (index < groupSize) {
+                newColors[polygon.id] = '#2ecc71';
+                greenRange.min = Math.min(greenRange.min, polygon.percentage);
+                greenRange.max = Math.max(greenRange.max, polygon.percentage);
+            } else if (index < groupSize * 2) {
+                newColors[polygon.id] = '#f1c40f';
+                yellowRange.min = Math.min(yellowRange.min, polygon.percentage);
+                yellowRange.max = Math.max(yellowRange.max, polygon.percentage);
+            } else {
+                newColors[polygon.id] = '#e74c3c';
+                redRange.min = Math.min(redRange.min, polygon.percentage);
+                redRange.max = Math.max(redRange.max, polygon.percentage);
+            }
+        });
+
+        setPolygonColors(newColors);
+
+        updatedLegend.green = `Green: ${greenRange.min.toFixed(2)}tons - ${greenRange.max.toFixed(2)}tons`;
+        updatedLegend.yellow = `Yellow: ${yellowRange.min.toFixed(2)}tons - ${yellowRange.max.toFixed(2)}tons`;
+        updatedLegend.red = `Red: ${redRange.min.toFixed(2)}tons - ${redRange.max.toFixed(2)}tons`;
+
+        setLegend(updatedLegend);
+    };
+
+    const handlePolygonClick = (polygonData: PolygonData, event: google.maps.MapMouseEvent) => {
+        setSelectedPolygon({ ...polygonData, position: event.latLng! });
+        setShowPieChart(false);
+    };
+
+    const handleCloseClick = () => setSelectedPolygon(null);
+    const handleWasteClick = () => setShowPieChart(true);
+    const handlePieChartClose = () => setShowPieChart(false);
+    const handleCategoryChange = (category: string) => {
+        setSelectedCategory(category);
+        setShowPieChart(true);
+    };
+
+    const calculateMainCategoryData = (wasteCategories: WasteCategories) => {
+        const mainCategories: { [key: string]: number } = {
+            residential: 0,
+            commercial: 0,
+            industrial: 0,
+            hazardous: 0,
+        };
+
+        Object.keys(wasteCategories).forEach((category) => {
+            const totalInCategory = Object.values(wasteCategories[category as keyof WasteCategories]).reduce(
+                (sum, value) => sum + value,
+                0
+            );
+            mainCategories[category] = totalInCategory;
+        });
+
+        return mainCategories;
+    };
+
+    const mainCategoryData = selectedPolygon ? calculateMainCategoryData(selectedPolygon.wasteCategories) : {};
+
+    const mainPieChartData = {
+        labels: Object.keys(mainCategoryData),
+        datasets: [
+            {
+                label: 'Total Waste by Category',
+                data: Object.values(mainCategoryData),
+                backgroundColor: ['#2ecc71', '#3498db', '#e74c3c', '#f1c40f'],
+                hoverBackgroundColor: ['#27ae60', '#2980b9', '#c0392b', '#f39c12'],
+            },
+        ],
+    };
+
+    const WasteTable: React.FC<{ wasteData: WasteCategory }> = ({ wasteData }) => (
+        <table className="waste-table">
+            <thead>
+                <tr>
+                    <th>Subcategory</th>
+                    <th>Amount (kg)</th>
+                </tr>
+            </thead>
+            <tbody>
+                {Object.entries(wasteData).map(([key, value]) => (
+                    <tr key={key}>
+                        <td>{key}</td>
+                        <td>{value}</td>
+                    </tr>
+                ))}
+            </tbody>
+        </table>
+    );
+
+    const handleForecastClick = () => {
+        if (!selectedPolygon) return;
+
+        const presentPopulation = population;
+        const designPeriod = forecastYear;
+        const futurePopulation = Math.round(presentPopulation * Math.pow(1 + GROWTH_RATE, designPeriod));
+        const totalWasteGenerated = Math.round(futurePopulation * WASTE_GENERATION_RATE * 365);
+
+        const newForecastedValues: { [key: string]: WasteCategory } = {};
+        Object.keys(selectedPolygon.wasteCategories).forEach((category) => {
+            const wasteData = selectedPolygon.wasteCategories[category as keyof WasteCategories];
+            const totalWasteInCategory = Object.values(wasteData).reduce((sum, value) => sum + value, 0);
+
+            newForecastedValues[category] = {};
+
+            Object.keys(wasteData).forEach((key) => {
+                const subtypeWaste = Math.round((wasteData[key] / totalWasteInCategory) * totalWasteGenerated);
+                newForecastedValues[category][key] = subtypeWaste;
+            });
+        });
+
+        setForecastedValues(newForecastedValues);
+
+        navigate('/forecast', { state: { forecastedValues: newForecastedValues, presentPopulation, forecastYear } });
+    };
+
+    const handleContourMap = () => {
+        if (!selectedPolygon) {
+            console.error("Selected polygon not found");
+            return;
+        }
+
+        const currentData = {
+            wasteCategories: {
+                residential: selectedPolygon.wasteCategories.residential,
+                commercial: selectedPolygon.wasteCategories.commercial,
+                industrial: selectedPolygon.wasteCategories.industrial,
+                hazardous: selectedPolygon.wasteCategories.hazardous,
+            },
+        };
+
+        navigate('/heatmap', { state: currentData });
+    };
+
+    const handleComparison = () => {
+        const id1 = parseInt(ucId1, 10);
+        const id2 = parseInt(ucId2, 10);
+
+        const polygon1 = polygons.find((p) => p.id === id1 - 1);
+        const polygon2 = polygons.find((p) => p.id === id2 - 1);
+
+        if (polygon1 && polygon2) {
+            const results: ComparisonResults = {
+                uc1: {
+                    population: Math.floor(Math.random() * 10000) + 1000,
+                    totalWaste: Math.floor(Math.random() * 1000) + 100,
+                    wasteCategories: polygon1.wasteCategories,
+                },
+                uc2: {
+                    population: Math.floor(Math.random() * 10000) + 1000,
+                    totalWaste: Math.floor(Math.random() * 1000) + 100,
+                    wasteCategories: polygon2.wasteCategories,
+                },
+            };
+            setComparisonResults(results);
+        } else {
+            alert('Invalid UC IDs');
+        }
+    };
+
+    const pieChartData = {
+        labels: selectedPolygon ? Object.keys(selectedPolygon.wasteCategories[selectedCategory as keyof WasteCategories]) : [],
+        datasets: [
+            {
+                label: 'Waste',
+                data: selectedPolygon ? Object.values(selectedPolygon.wasteCategories[selectedCategory as keyof WasteCategories]) : [],
+                backgroundColor: [
+                    '#2ecc71', '#3498db', '#e74c3c', '#f1c40f',
+                    '#9b59b6', '#1abc9c', '#34495e', '#e67e22',
+                    '#e84393', '#f368e0', '#74b9ff', '#55efc4',
+                ],
+                hoverBackgroundColor: [
+                    '#27ae60', '#2980b9', '#c0392b', '#f39c12',
+                    '#8e44ad', '#16a085', '#2c3e50', '#d35400',
+                    '#d63031', '#fd79a8', '#0984e3', '#00b894',
+                ],
+            },
+        ],
+    };
+
+    return (
+        <div className="relative">
+            <LoadScript googleMapsApiKey="AIzaSyClURLc6gcn9M_AOXj6gUsYYk147-T_FDA" libraries={libraries}>
+                <div className=" absolute top-15 left-5 right-0 bottom-0 z-50">
+                    <select onChange={(e) => handlePolygonColorChange(e.target.value)} className=' border  rounded-sm w-50 h-10 text-sm text-black bg-white border-black border-opacity-50 border-solid z-10'>
+                        <option value="total">Total Waste</option>
+                        <option value="residential">Residential Waste</option>
+                        <option value="industrial">Industrial Waste</option>
+                        <option value="commercial">Commercial Waste</option>
+                        <option value="hazardous">Hazardous Waste</option>
+                    </select>
+
+                    <select
+                        onChange={(e) => handleViewChange(e.target.value as 'district' | 'unionCouncil' | 'province')}
+                        style={{ position: 'absolute', top: '0px', left: '620px', zIndex: 2 }}
+                        className=' border  rounded-sm w-50 h-10 text-sm text-black bg-white border-black border-opacity-50 border-solid z-10'
+                    >
+                        <option value="district">Districts</option>
+                        <option value="unionCouncil">Union Councils</option>
+                        <option value="province">Provinces</option>
+                    </select>
+
+                    {(legend.green && legend.yellow && legend.red) &&
+                        <div className=' border w-fit p-1 mt-1 bg-white'> 
+                            {/* <h4>Legend</h4> */}
+                            <p>
+                                <span style={{ color: '#2ecc71' }}>■</span> {legend.green}
+                            </p>
+                            <p>
+                                <span style={{ color: '#f1c40f' }}>■</span> {legend.yellow}
+                            </p>
+                            <p>
+                                <span style={{ color: '#e74c3c' }}>■</span> {legend.red}
+                            </p>
+                        </div>
+                    }
+                </div>
+
+                <div style={{ position: 'absolute', top: '60px', left: '420px', zIndex: 2 }}
+                className=' border  rounded-sm w-50 h-10 text-sm text-black bg-white border-black border-opacity-50 border-solid z-10'>
+                    <button onClick={handleToggleComparisonInputs} className=' w-full h-full'>
+                        {showComparisonInputs ? 'Hide UC Comparison' : 'Show UC Comparison'}
+                    </button>
+
+                    {showComparisonInputs && (
+                        <div style={{ marginTop: '10px' }}>
+                            <input
+                                type="number"
+                                placeholder="Enter UC ID 1"
+                                value={ucId1}
+                                onChange={(e) => setUcId1(e.target.value)}
+                                style={{ marginRight: '10px' }}
+                            />
+                            <input
+                                type="number"
+                                placeholder="Enter UC ID 2"
+                                value={ucId2}
+                                onChange={(e) => setUcId2(e.target.value)}
+                                style={{ marginRight: '10px' }}
+                            />
+                            <button onClick={handleComparison}>Compare</button>
+                        </div>
+                    )}
+                </div>
+
+                <GoogleMap
+                    mapContainerStyle={containerStyle}
+                    center={center}
+                    zoom={8}
+                    key={mapKey}
+                    onLoad={(map) => handleLoadMap(map, JSON_FILE_URL)}
+                >
+                    <MapSearch onLocationSelect={handleLocationSelect} />
+                    {polygons.map((polygon) => (
+                        <Polygon
+                            key={polygon.id}
+                            options={{
+                                ...polygon.options,
+                                fillColor: polygonColors[polygon.id] || polygon.options.fillColor,
+                            }}
+                            paths={polygon.paths}
+                            onClick={(event) => handlePolygonClick(polygon, event)}
+                        />
+                    ))}
+                    {selectedPolygon && (
+                        <>
+                            <InfoWindow position={selectedPolygon.position!} onCloseClick={handleCloseClick}>
+                                <div style={infoWindowStyle}>
+                                    <div style={titleStyle}>{`UC ${selectedPolygon.id + 1}`}</div>
+                                    <div style={labelStyle}>
+                                        <span style={iconStyle}>🏷️</span>City ID:
+                                    </div>
+                                    <div style={valueStyle}>{`UC${selectedPolygon.id + 1}`}</div>
+                                    <div style={labelStyle}>
+                                        <span style={iconStyle}>👨‍👩‍👧‍👦</span>Population:
+                                    </div>
+                                    <div style={valueStyle}>{population}</div>
+                                    <div style={labelStyle}>
+                                        <span style={iconStyle}>🏙️</span>City:
+                                    </div>
+                                    <div style={valueStyle}>{selectedPolygon.city}</div>
+                                    <div style={labelStyle}>
+                                        <span style={iconStyle}>🏠</span>Households:
+                                    </div>
+                                    <div style={valueStyle}>{households}</div>
+                                    <div style={labelStyle}>
+                                        <span style={iconStyle}>💰</span>Wealth Category:
+                                    </div>
+                                    <div style={valueStyle}>{wealthCategory}</div>
+                                    <div style={labelStyle}>
+                                        <span style={iconStyle}>♻️</span>Total Waste Generated:
+                                    </div>
+                                    <div style={valueStyle} onClick={handleWasteClick}>
+                                        {totalWaste} Tons
+                                    </div>
+                                    <div style={{ marginBottom: '30px', width: '400px', height: '300px' }}>
+                                        <h3>Main Waste Categories</h3>
+                                        <Pie data={mainPieChartData} />
+                                    </div>
+                                    <div>
+                                        <button className="styled-button" onClick={() => handleCategoryChange('residential')}>
+                                            Residential
+                                        </button>
+                                        <button className="styled-button" onClick={() => handleCategoryChange('commercial')}>
+                                            Commercial
+                                        </button>
+                                        <button className="styled-button" onClick={() => handleCategoryChange('industrial')}>
+                                            Industrial
+                                        </button>
+                                        <button className="styled-button" onClick={() => handleCategoryChange('hazardous')}>
+                                            Hazardous
+                                        </button>
+                                    </div>
+                                    <div>
+                                        <h3>Subcategories</h3>
+                                        <WasteTable wasteData={selectedPolygon.wasteCategories[selectedCategory as keyof WasteCategories]} />
+                                    </div>
+                                    <div className="forecast-section">
+                                        <select
+                                            className="year-dropdown"
+                                            value={forecastYear}
+                                            onChange={(e) => setForecastYear(Number(e.target.value))}
+                                        >
+                                            {[...Array(10)].map((_, index) => (
+                                                <option key={index + 1} value={index + 1}>
+                                                    {index + 1} Year
+                                                </option>
+                                            ))}
+                                        </select>
+                                        <button className="forecast-button" onClick={handleForecastClick}>
+                                            Forecast
+                                        </button>
+                                        <button className="forecast-button" onClick={handleContourMap}>
+                                            Carbon Footprint Analysis
+                                        </button>
+                                    </div>
+                                </div>
+                            </InfoWindow>
+                            {showPieChart && (
+                                <InfoWindow position={selectedPolygon.position!} onCloseClick={handlePieChartClose}>
+                                    <div style={pieChartStyle}>
+                                        <Pie data={pieChartData} />
+                                    </div>
+                                </InfoWindow>
+                            )}
+                        </>
+                    )}
+                </GoogleMap>
+                {comparisonResults && (
+                    <div
+                        style={{
+                            position: 'absolute',
+                            bottom: '20px',
+                            left: '20px',
+                            zIndex: 2,
+                            backgroundColor: '#fff',
+                            padding: '10px',
+                            borderRadius: '5px',
+                            overflow: 'auto',
+                            maxHeight: '300px',
+                        }}
+                    >
+                        <h3>Comparison Results</h3>
+                        <table style={{ width: '100%', borderCollapse: 'collapse' }}>
+                            <thead>
+                                <tr>
+                                    <th style={{ border: '1px solid #ccc', padding: '8px' }}>Union Council</th>
+                                    <th style={{ border: '1px solid #ccc', padding: '8px' }}>Population</th>
+                                    <th style={{ border: '1px solid #ccc', padding: '8px' }}>Waste Categories</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                <tr>
+                                    <td style={{ border: '1px solid #ccc', padding: '8px' }}>UC {ucId1}</td>
+                                    <td style={{ border: '1px solid #ccc', padding: '8px' }}>{comparisonResults.uc1.population}</td>
+                                    <td style={{ border: '1px solid #ccc', padding: '8px' }}>
+                                        {JSON.stringify(comparisonResults.uc1.wasteCategories)}
+                                    </td>
+                                </tr>
+                                <tr>
+                                    <td style={{ border: '1px solid #ccc', padding: '8px' }}>UC {ucId2}</td>
+                                    <td style={{ border: '1px solid #ccc', padding: '8px' }}>{comparisonResults.uc2.population}</td>
+                                    <td style={{ border: '1px solid #ccc', padding: '8px' }}>
+                                        {JSON.stringify(comparisonResults.uc2.wasteCategories)}
+                                    </td>
+                                </tr>
+                            </tbody>
+                        </table>
+                    </div>
+                )}
+            </LoadScript>
+        </div>
+    );
+};
+
+export default GeneateMap;

@@ -59,6 +59,7 @@ import {
   FileStack,
   ChevronDown,
   Plus,
+  MapIcon,
 } from "lucide-react";
 
 type UserData = {
@@ -162,7 +163,7 @@ const Sidebar = () => {
                   {isOpen && <span className="ml-3">Add Data</span>}
                 </li>
               </a>
-              {/* <a href="/MRF-design" className="text-sm">
+              <a href="/map" className="text-sm">
                 <li
                   className={`${
                     isOpen
@@ -170,10 +171,10 @@ const Sidebar = () => {
                       : "flex items-center mb-3 cursor-pointer hover:text-gray-400"
                   }`}
                 >
-                  <Framer className="w-[18px]" />
-                  {isOpen && <span className="ml-3">MRF Design</span>}
+                  <MapIcon className="w-[18px]" />
+                  {isOpen && <span className="ml-3">Waste Generation Map</span>}
                 </li>
-              </a> */}
+              </a>
               {/* <a href="/RDF-design" className="text-sm">
                 <li
                   className={`${
@@ -201,10 +202,11 @@ const Sidebar = () => {
               {/* Expandable Services */}
               <li>
                 <div
-                  className={`${isOpen
-                      ? "text-sm flex items-center mb-3 cursor-pointer hover:bg-gray-400/15 py-1.5 px-2 rounded w-full my-1"
-                      : "flex items-center mb-3 cursor-pointer hover:bg-gray-400/15"
-                    }`}
+                   className={`${
+                    isOpen
+                      ? "flex items-center mb-3 cursor-pointer hover:bg-gray-400/15 py-1.5 px-2 rounded w-full my-1"
+                      : "flex items-center mb-3 cursor-pointer hover:text-gray-400"
+                  }`}
                   onClick={() => setIsServicesOpen(!isServicesOpen)}
                 >
                   <FileStack className="w-[18px]" />
