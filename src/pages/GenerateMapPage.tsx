@@ -2,7 +2,7 @@ import GeneateMap from '@/components/GeneateMap'
 import Header from '@/components/Header'
 
 function GenerateMapPage({open, setOpen}:any) {
-  const title = "Add Data"
+  const title = "Waste Generation Map"
   return (
     <div className="w-full h-full">
         <Header setOpen={setOpen} open={open} title={title}/>
