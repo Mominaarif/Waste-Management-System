@@ -1,11 +1,14 @@
 @import "tailwindcss";
+@plugin "daisyui";
 /* 
 ---break--- */
 @plugin "tailwindcss-animate";
 /* 
 ---break--- */
 @custom-variant dark (&:is(.dark *));
-
+.radio-info {
+  --input-color: #7007e8;
+}
 /* 
 :root {
   font-family: system-ui, Avenir, Helvetica, Arial, sans-serif;

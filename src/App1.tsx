@@ -20,6 +20,7 @@ import LandfillsPage from "./pages/LandfillsPage";
 import MyChatbot from "./ChatBot";
 import AddDataPage from "./pages/AddDataPage";
 import GenerateMapPage from "./pages/GenerateMapPage";
+import WasteCategoriesPage from "./pages/WasteCategoriesPage";
 
 const steps = [
   {
@@ -68,6 +69,7 @@ export function MainLayout() {
         <Route path="/MRF-design" element={<MRFPage setOpen={setOpen} open={open} />} />
         <Route path="/add-data" element={<AddDataPage setOpen={setOpen} open={open} />} />
         <Route path="/map" element={<GenerateMapPage setOpen={setOpen} open={open} />} />
+        <Route path="/waste-categories" element={<WasteCategoriesPage setOpen={setOpen} open={open} />} />
         <Route
           path="/anaerobic-design"
           element={<AnaerobticPage setOpen={setOpen} open={open} />}

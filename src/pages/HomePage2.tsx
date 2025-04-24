@@ -1,6 +1,5 @@
 import Header from '@/components/Header'
 import Home2 from '@/components/Home2'
-import React from 'react'
 
 function HomPage2({open, setOpen}:any) {
   const title = "Waste Management Dashboard"

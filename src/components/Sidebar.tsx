@@ -60,6 +60,7 @@ import {
   ChevronDown,
   Plus,
   MapIcon,
+  List,
 } from "lucide-react";
 
 type UserData = {
@@ -175,7 +176,7 @@ const Sidebar = () => {
                   {isOpen && <span className="ml-3">Waste Generation Map</span>}
                 </li>
               </a>
-              {/* <a href="/RDF-design" className="text-sm">
+             <a href="/waste-categories" className="text-sm">
                 <li
                   className={`${
                     isOpen
@@ -183,11 +184,11 @@ const Sidebar = () => {
                       : "flex items-center mb-3 cursor-pointer hover:text-gray-400"
                   }`}
                 >
-                  <SquareChartGantt className="w-[18px]" />
-                  {isOpen && <span className="ml-3">RDF Design</span>}
+                  <List className="w-[18px]" />
+                  {isOpen && <span className="ml-3">Waste Categories</span>}
                 </li>
               </a>
-              <a href="/anaerobic-design" className="text-sm">
+               {/* <a href="/anaerobic-design" className="text-sm">
                 <li
                   className={`${
                     isOpen
@@ -212,7 +213,7 @@ const Sidebar = () => {
                   <FileStack className="w-[18px]" />
                   {isOpen && (
                     <div className="flex justify-between w-full">
-                      <span className="ml-3">Designs</span>
+                      <span className="ml-3 text-sm">Designs</span>
                       <ChevronDown className={`"w-[18px]" ${isServicesOpen ? "rotate-180 transition duration-300" : "transition duration-300"}`} />
                     </div>
                   )}
