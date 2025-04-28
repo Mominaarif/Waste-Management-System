@@ -508,6 +508,8 @@ const GeneateMap1 = ({}) => {
   };
   console.log(formData.subCategories[0])
   return (
+    <dialog id="my_modal_1" className="modal">
+      <div className="modal-box rounded-none h-[100vh] max-w-[100vw] w-[100vw]">
     <div className="relative">
       <LoadScript
         googleMapsApiKey="AIzaSyClURLc6gcn9M_AOXj6gUsYYk147-T_FDA"
@@ -727,6 +729,15 @@ const GeneateMap1 = ({}) => {
         handleAddSubCategory={handleAddSubCategory}
       />
     </div>
+    </div>
+    <div className="modal-action">
+          <form method="dialog">
+            <button className="btn btn-sm btn-circle btn-ghost absolute right-2 top-2">
+              ✕
+            </button>
+          </form>
+        </div>
+    </dialog>
   );
 };
 

@@ -117,7 +117,7 @@ export default function WasteCategories(open: any) {
 
 
   const location = useLocation();
-  const formData1 = location.state;
+  // const formData = location.state;
   const [dataOption, setDataOption] = useState<number | undefined>();
 
   const [formData, setFormData] = useState<FormData>({
@@ -223,7 +223,7 @@ export default function WasteCategories(open: any) {
     return total === 100;
   };
 
-  console.log(formData1.subCategories);
+  // console.log(formData.subCategories);
   return (
     <div className="w-full h-[calc(100vh-85px)] overflow-y-auto bg-white pt-10 px-5 md:px-8">
       <div className="border p-8 rounded-md">
@@ -291,14 +291,14 @@ export default function WasteCategories(open: any) {
             </div>  
             </div>  
           </div>  
-        {formData1.subCategories.length > 0 && (
+        {formData.subCategories.length > 0 && (
           <div className="">
             <p className="text-sm font-bold text-gray-900  pb-1 text-left w-full mb-3">
               Main Categories:
             </p>
 
             <div className="grid grid-cols-2 gap-5">
-              {formData1.mainCategories.slice(0, 3).map((category:any) => (
+              {formData.mainCategories.slice(0, 3).map((category:any) => (
                 <div key={category.id} className="border">
                   <div className="flex justify-between items-center bg-violet-700 text-white border-b px-5 py-3">
                     <h2 className="text-sm font-medium text-left w-full">
@@ -317,7 +317,7 @@ export default function WasteCategories(open: any) {
                   {!category.isDone ? (
                     <div className="space-y-2">
                       <div className=" flex flex-col">
-                        {formData1.selectedSubcategories
+                        {formData.selectedSubcategories
                           .filter((ss:any) => ss.mainCategoryId === category.id)
                           .map((ss:any) => {
                             const sub = formData.subCategories.find(
@@ -353,7 +353,7 @@ export default function WasteCategories(open: any) {
                         className="w-[calc(100%-20px)] text-sm px-5 py-2"
                         onChange={(e) => {
                           const subId = e.target.value;
-                          const sub = formData1.subCategories.find(
+                          const sub = formData.subCategories.find(
                             (s:any) => s.id === subId
                           );
                           if (sub) {
@@ -377,7 +377,7 @@ export default function WasteCategories(open: any) {
                         <option value="" disabled>
                           Select subcategory
                         </option>
-                        {formData1.subCategories
+                        {formData.subCategories
                           .filter(
                             (sc:any) =>
                               !formData.selectedSubcategories.some(
@@ -426,7 +426,7 @@ export default function WasteCategories(open: any) {
                     </div>
                   ) : (
                     <div className="flex flex-col">
-                      {formData1.selectedSubcategories
+                      {formData.selectedSubcategories
                         .filter((ss:any) => ss.mainCategoryId === category.id)
                         .map((ss:any) => {
                           const sub = formData.subCategories.find(
@@ -738,7 +738,7 @@ export default function WasteCategories(open: any) {
           </div>
         )}
       </div>
-
+<GeneateMap1 />
       
     </div>
   );
