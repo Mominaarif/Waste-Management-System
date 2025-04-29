@@ -34,11 +34,11 @@ interface FormData {
 }
 
 const initialFields = [
-  { key: 'totalVolumeInflow', label: 'Total Volume Inflow', value: 3626 },
-  { key: 'numberOfDays', label: 'No. of Days', value: 0 },
-  { key: 'storageRequired', label: 'Storage Required', value: 10789.1 },
-  { key: 'depthOfStorageArea', label: 'Depth of Storage Area', value: 8 },
-  { key: 'areaRequiredForStorage', label: 'Area Required for Storage', value: 1359.9 },
+  { key: 'totalVolumeInflow', label: 'Total Volume Inflow (m³/day)', value: 3626 },
+  { key: 'numberOfDays', label: 'No. of Days', value: 3 },
+  // { key: 'storageRequired', label: 'Storage Required (m)', value: 10789.1 },
+  { key: 'depthOfStorageArea', label: 'Depth of Storage Area (m)', value: 8 },
+  // { key: 'areaRequiredForStorage', label: 'Area Required for Storage', value: 1359.9 },
 
   { key: 'totalWasteThroughputPrimaryShredder', label: 'Total Waste Throughput (Primary Shredder)', value: 1388 },
   { key: 'adoptedDesignCapacityPrimary', label: 'Adopted Design Capacity (Primary)', value: 116 },
@@ -246,8 +246,55 @@ function RDF() {
               Input Parameters
             </h2>
 
-            <div className="grid grid-cols-1 sm:grid-cols-3 gap-y-4 gap-x-6">
+            <div className="grid grid-cols-1 gap-y-4 gap-x-6">
               {[
+                // Mapping input fields
+                {
+                  label: "Total Combustible Waste (kg/day)",
+                  value: totalWasteInput,
+                  setter: setTotalWasteInput,
+                },
+              ].map((input, index) => (
+                <div className="" key={index}>
+                  <label className="block text-sm font-medium text-gray-900 pb-1">
+                    {input.label}
+                  </label>
+                  <input
+                    type="number"
+                    value={input.value}
+                    onChange={(e) =>
+                      input.setter(parseFloat(e.target.value) || 0)
+                    }
+                    className="block w-full border rounded-md border-gray-300 px-3 py-1.5 text-gray-900 focus:border-indigo-500 focus:ring-indigo-500 sm:text-sm"
+                  />
+                </div>
+              ))}
+            </div>
+            <h2 className="text-lg font-semibold text-gray-900 py-5">
+              Storage Design
+            </h2>
+            <div className="grid grid-cols-1 sm:grid-cols-3 gap-y-4 gap-x-6">
+              {formFields.slice(0, 3).map(({ key, label, value }) => (
+                <div key={key} className="">
+                  <label className="block text-sm font-medium text-gray-900 pb-1">{label}:</label>
+                  <input
+                    type="number"
+                    value={value}
+                    onChange={e => handleInputChange({ key, value: e.target.value })}
+                    className="block w-full border rounded-md border-gray-300 px-3 py-1.5 text-gray-900 focus:border-indigo-500 focus:ring-indigo-500 sm:text-sm"
+                  />
+                </div>
+              ))}
+            </div>
+
+            <h2 className="text-lg font-semibold text-gray-900 py-5">
+              Process  Design
+            </h2>
+            <h2 className="text-lg font-semibold text-gray-900 py-5 text-center">
+              1. Primary Shredder
+            </h2>
+            <div className="grid grid-cols-1 sm:grid-cols-3 gap-y-4 gap-x-6">
+              {/* {[
                 // Mapping input fields
                 {
                   label: "Total Combustible Waste (kg/day)",
@@ -299,8 +346,8 @@ function RDF() {
                     className="block w-full border rounded-md border-gray-300 px-3 py-1.5 text-gray-900 focus:border-indigo-500 focus:ring-indigo-500 sm:text-sm"
                   />
                 </div>
-              ))}
-              {formFields.map(({ key, label, value }) => (
+              ))} */}
+              {formFields.slice(3, -1).map(({ key, label, value }) => (
                 <div key={key} className="">
                   <label className="block text-sm font-medium text-gray-900 pb-1">{label}:</label>
                   <input
@@ -312,6 +359,7 @@ function RDF() {
                 </div>
               ))}
             </div>
+
             <div className="w-full h-full flex flex-col items-center justify-center pt-5">
               <label className="block text-sm font-medium text-gray-900 pb-1 w-full text-left">
                 Waste Composition:
@@ -325,7 +373,7 @@ function RDF() {
                     Composition  (%)
                   </p>
                   <p className="block w-full bg-[#F2F2F2] border px-3 py-2  sm:text-sm">
-                    Typical Densities (tonnes/m3)
+                    Typical Densities (tonnes/m³)
                   </p>
                   <p className="block w-full bg-[#F2F2F2] border px-3 py-2  sm:text-sm">
                     Moisture Content (%)
