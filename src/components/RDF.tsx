@@ -11,11 +11,48 @@ interface Results {
   storageArea: number;
   rdfOutput: number;
   equivalentCoal: number;
+  totalCV: number;
+  TotalComposition: number;
+  TotalDensityContribution: number;
+  TotalCVContribution: number;
+  TotalMoistureContribution: number;
+  adoptDesign: number;
+  powerRequiredPerDayPrimary: number;
+  ShreddedOutflowPrimary: number;
+  adoptDesignSec: number;
+  powerRequiredPerDaySec: number;
+  ShreddedOutflowSec: number;
+  adoptDesignPell: number;
+  RDFOutflowPell: number;
+  totalWasteGenerated: number;
+  totalWasteGenerated1: number;
+  totalWasteGenerated2: number;
+  totalWasteGenerated3: number;
+  totalPowerRequirementPelletizer: number;
+  densificationRatioPelletizer: number;
+  powerRequiredPerDay: number;
+  moistureAdditionRequired: number;
+  waterAdditionRequired: number;
+  ResidueGeneratedPrimary: number;
+  ResidueGeneratedSecondary: number;
+  ResidueGeneratedPelletizing: number;
+  ratioRDFCoal: number;
+  totalAmountCoalEqualTonnePerDay: number;
+  totalAmountRDFProduced: number;
+  totalAmountCoalEqualGgPerYear: number;
+  totaPriceRDFProduce: number;
+  totalAmountCoalEqual: number;
+  RDF: number;
+  Coal: number;
+
   wasteGenerationResults: {
     id: string;
     name: string;
     wasteGenerated: number;
     wasteGenerated1: number;
+    DensityContributionPerComponent: number;
+    moistureContentPerComponent: number;
+    CVContentPerComponent: number;
   }[];
 }
 
@@ -28,55 +65,118 @@ interface SubCategory {
   typicalCalorificValue: string;
 }
 
-
 interface FormData {
   subCategories: SubCategory[];
 }
 
 const initialFields = [
-  { key: 'totalVolumeInflow', label: 'Total Volume Inflow (m³/day)', value: 3626 },
-  { key: 'numberOfDays', label: 'No. of Days', value: 3 },
-  // { key: 'storageRequired', label: 'Storage Required (m)', value: 10789.1 },
-  { key: 'depthOfStorageArea', label: 'Depth of Storage Area (m)', value: 8 },
-  // { key: 'areaRequiredForStorage', label: 'Area Required for Storage', value: 1359.9 },
+  {
+    key: "totalVolumeInflow",
+    label: "Total Volume Inflow (m³/day)",
+    value: 3626,
+  },
+  { key: "numberOfDays", label: "No. of Days", value: 3 },
+  { key: "depthOfStorageArea", label: "Depth of Storage Area (m)", value: 8 },
 
-  { key: 'totalWasteThroughputPrimaryShredder', label: 'Total Waste Throughput (Primary Shredder)', value: 1388 },
-  { key: 'adoptedDesignCapacityPrimary', label: 'Adopted Design Capacity (Primary)', value: 116 },
-  { key: 'operatingHoursPrimary', label: 'Operating Hours (Primary)', value: 12 },
-  { key: 'typicalPowerRequirementPrimary', label: 'Typical Power Requirement (Primary)', value: 500 },
-  { key: 'powerRequiredPerDayPrimary', label: 'Power Required per Day (Primary)', value: 6000 },
-  { key: 'shredderEfficiency', label: 'Shredder Efficiency (%)', value: 85 },
-  { key: 'shreddedOutflow', label: 'Shredded Outflow', value: 1180 },
-  { key: 'sizeOfCoarseShreddedMatter', label: 'Size of Coarse Shredded Matter', value: 200 },
+  {
+    key: "totalWasteThroughputPrimaryShredder",
+    label: "Total Waste Thoroughput to Shredder (tonnes/day)",
+    value: 1388,
+  },
+  {
+    key: "operatingHoursPrimary",
+    label: "Operating hours (hrs/day)",
+    value: 12,
+  },
+  {
+    key: "typicalPowerRequirementPrimary",
+    label: "Typical Power Requirement (kW)",
+    value: 500,
+  },
+  { key: "shredderEfficiency", label: "Shredder Efficiency (%)", value: 95 },
+  {
+    key: "sizeOfCoarseShreddedMatter",
+    label: "Size of Coarse Shredded Matter (mm)",
+    value: 200,
+  },
 
-  { key: 'totalWasteThroughputSecondaryShredder', label: 'Total Waste Throughput (Secondary Shredder)', value: 1318 },
-  { key: 'adoptedDesignCapacitySecondary', label: 'Adopted Design Capacity (Secondary)', value: 110 },
-  { key: 'operatingHoursSecondary', label: 'Operating Hours (Secondary)', value: 12 },
-  { key: 'typicalPowerRequirementSecondary', label: 'Typical Power Requirement (Secondary)', value: 670 },
-  { key: 'powerRequiredPerDaySecondary', label: 'Power Required per Day (Secondary)', value: 8040 },
-  { key: 'shreddingEfficiency', label: 'Shredding Efficiency (%)', value: 95 },
-  { key: 'shreddedOutflowSecondary', label: 'Shredded Outflow (Secondary)', value: 1253 },
-  { key: 'sizeOfFineShreddedMatter', label: 'Size of Fine Shredded Matter', value: 10 },
+  {
+    key: "totalWasteThroughputSecondaryShredder",
+    label: "Total Waste Thoroughput to Shredder (tonnes/day) ",
+    value: 1318,
+  },
+  {
+    key: "operatingHoursSecondary",
+    label: "Operating hours (hrs/day)",
+    value: 12,
+  },
+  {
+    key: "typicalPowerRequirementSecondary",
+    label: "Typical Power Requirement (kW)",
+    value: 670,
+  },
+  // { key: 'powerRequiredPerDaySecondary', label: 'Power Required per Day (Secondary)', value: 8040 },
+  { key: "shreddingEfficiency", label: "Shredding Efficiency (%)", value: 95 },
+  // { key: 'shreddedOutflowSecondary', label: 'Shredded Outflow (Secondary)', value: 1253 },
+  {
+    key: "sizeOfFineShreddedMatter",
+    label: "Size of Fine Shredded Matter (mm)",
+    value: 10,
+  },
 
-  { key: 'totalWasteThroughputPelletizer', label: 'Total Waste Throughput (Pelletizer)', value: 1253 },
-  { key: 'adoptedDesignCapacityPelletizer', label: 'Adopted Design Capacity (Pelletizer)', value: 104 },
-  { key: 'operatingHoursPelletizer', label: 'Operating Hours (Pelletizer)', value: 12 },
-  { key: 'recoveryEfficiency', label: 'Recovery Efficiency (%)', value: 98 },
-  { key: 'rdfOutflow', label: 'RDF Outflow', value: 1227.5 },
-  { key: 'densificationRatio', label: 'Densification Ratio', value: 4 },
-  { key: 'initialVolumePellets', label: 'Initial Volume of Pellets', value: 3207.3 },
-  { key: 'finalVolumePellets', label: 'Final Volume of Pellets', value: 800.9 },
-  { key: 'volumeReduction', label: 'Volume Reduction (%)', value: 75 },
-  { key: 'typicalPowerRequirementPelletizer', label: 'Typical Power Requirement (Pelletizer)', value: 0.75 },
-  { key: 'totalPowerRequirementPelletizer', label: 'Total Power Requirement (Pelletizer)', value: 500.8 },
-  { key: 'powerRequiredPerDayPelletizer', label: 'Power Required per Day (Pelletizer)', value: 6008 },
+  {
+    key: "totalWasteThroughputPelletizer",
+    label: "Total Waste Thoroughput to Pelletizer (tonnes/day) ",
+    value: 1253,
+  },
+  // { key: 'adoptedDesignCapacityPelletizer', label: 'Adopted Design Capacity (Pelletizer)', value: 104 },
+  {
+    key: "operatingHoursPelletizer",
+    label: "Operating hours (hrs/day)",
+    value: 12,
+  },
+  { key: "recoveryEfficiency", label: "Recovery Efficiency (%)", value: 98 },
+  { key: "densificationRatio", label: "Densification Ratio", value: 4 },
 
-  { key: 'optimumMoistureContent', label: 'Optimum Moisture Content (%)', value: 20 },
-  { key: 'initialMoistureContent', label: 'Initial Moisture Content (%)', value: 5 },
-  { key: 'moistureAdditionRequired', label: 'Moisture Addition Required (%)', value: 15 },
-  { key: 'waterAdditionRequired', label: 'Water Addition Required', value: 188.05 },
+  {
+    key: "typicalPowerRequirementPelletizer",
+    label: "Typical Power Requirement (kW)",
+    value: 0.75,
+  },
+  {
+    key: "typicalPowerRequirementPelletizer1",
+    label: "Typical Power Requirement (kW)",
+    value: 500.8,
+  },
 
-  { key: 'totalResidueGenerated', label: 'Total Residue Generated', value: 160 },
+  {
+    key: "optimumMoistureContent",
+    label: "Optimum Moisture Content (%)",
+    value: 20,
+  },
+  {
+    key: "initialMoistureContent",
+    label: "Initial Moisture Content (%)",
+    value: 5,
+  },
+
+  {
+    key: "calorificValueCoal",
+    label: "Calorific Value of Coal (MJ/Kg)",
+    value: 28,
+  },
+  {
+    key: "calorificValueRDF",
+    label: "Calorific Value of RDF (MJ/Kg)",
+    value: 25.97,
+  },
+  {
+    key: "totalAmountRDFProduce",
+    label: "Total Amount of RDF Produced (tonnes/day)",
+    value: 1227.5,
+  },
+  { key: "coalUnitPrice", label: "Coal Unit Price (Rs./tonne)", value: 44240 },
+  { key: "RDFUnitPrice", label: "RDF Unit Price (Rs./tonne)", value: 13530 },
 ];
 
 function RDF() {
@@ -92,11 +192,17 @@ function RDF() {
 
   const [totalWasteInput, setTotalWasteInput] = useState(1387860); // in kg/day
   const [retentionTime, setRetentionTime] = useState(3); // in days
-  const [shredderEfficiencyPrimary, setShredderEfficiencyPrimary] = useState(95); // in %
+  const [shredderEfficiencyPrimary, setShredderEfficiencyPrimary] = useState(
+    95
+  ); // in %
   const [shredderWastePrimary, setShredderWastePrimary] = useState(95); // in %
   const [pelletizerEfficiency, setPelletizerEfficiency] = useState(98); // in %
   const [densificationRatio, setDensificationRatio] = useState(8); // ratio
   const [optimumMoistureContent, setOptimumMoistureContent] = useState(20); // in %
+
+  const [primaryShredder, setPrimaryShredder] = useState(95);
+  const [secondaryShredder, setSecondaryShredder] = useState(95);
+  const [pelletizer, setPelletizer] = useState(98);
 
   const [calculatedValues, setCalculatedValues] = useState<Results | null>(
     null
@@ -114,8 +220,8 @@ function RDF() {
   const [formFields, setFormFields] = useState(initialFields);
 
   const handleInputChange = ({ key, value }: any) => {
-    setFormFields(prevFields =>
-      prevFields.map(field =>
+    setFormFields((prevFields) =>
+      prevFields.map((field) =>
         field.key === key ? { ...field, value: parseFloat(value) } : field
       )
     );
@@ -128,7 +234,7 @@ function RDF() {
         total +
         materialProperties[material as keyof typeof materialProperties]
           .density *
-        (wasteComposition[material as keyof typeof wasteComposition] / 100)
+          (wasteComposition[material as keyof typeof wasteComposition] / 100)
       );
     }, 0);
 
@@ -138,7 +244,7 @@ function RDF() {
           total +
           materialProperties[material as keyof typeof materialProperties]
             .moisture *
-          (wasteComposition[material as keyof typeof wasteComposition] / 100)
+            (wasteComposition[material as keyof typeof wasteComposition] / 100)
         );
       },
       0
@@ -149,34 +255,210 @@ function RDF() {
         return (
           total +
           materialProperties[material as keyof typeof materialProperties].cv *
-          (wasteComposition[material as keyof typeof wasteComposition] / 100)
+            (wasteComposition[material as keyof typeof wasteComposition] / 100)
         );
       },
       0
     );
-
 
     const totalWasteGenerated = formData.subCategories.reduce((sum, subCat) => {
       const percentage = parseFloat(subCat.value); // Ensure it's a number
       return sum + totalWasteInput * (percentage / 100);
     }, 0);
 
-    const wasteGenerationResults = formData.subCategories.map((subCat) => {
-      const percentage = parseFloat(subCat.value); // Ensure it's a number
-      const generatedWaste = totalWasteInput * (percentage / 100);
-      const wasteGenerated1 = (generatedWaste / totalWasteGenerated) * 100; // Convert to percentage
+    const totalWasteGenerated1 = formData.subCategories.reduce(
+      (sum, subCat) => {
+        const percentage = parseFloat(subCat.value); // Ensure it's a number
+        return sum + percentage;
+      },
+      0
+    );
 
+    const totalWasteGenerated2 = formData.subCategories.reduce(
+      (sum, subCat) => {
+        const percentage = parseFloat(subCat.typicalDensity); // Ensure it's a number
+        return sum + percentage;
+      },
+      0
+    );
+
+    const totalWasteGenerated3 = formData.subCategories.reduce(
+      (sum, subCat) => {
+        const percentage = parseFloat(subCat.moistureContent); // Ensure it's a number
+        return sum + percentage;
+      },
+      0
+    );
+
+    const totalCV = formData.subCategories.reduce((sum, subCat) => {
+      const percentage = parseFloat(subCat.typicalCalorificValue); // Ensure it's a number
+      return sum + percentage;
+    }, 0);
+
+    const wasteGenerationResults = formData.subCategories.map((subCat) => {
+      const percentage = parseFloat(subCat.value);
+      // const percentage = parseFloat(subCat.value);
+      const DensityContribute = parseFloat(subCat.typicalDensity);
+      const moisture = parseFloat(subCat.moistureContent);
+      const CV = parseFloat(subCat.typicalCalorificValue);
+      const generatedWaste = totalWasteInput * (percentage / 100);
+      const wasteGenerated1 = (generatedWaste / totalWasteGenerated) * 100;
+      const DensityContributionPerComponent =
+        DensityContribute * (wasteGenerated1 / 100);
+      const moistureContentPerComponent = moisture * (wasteGenerated1 / 100);
+      const CVContentPerComponent = CV * (wasteGenerated1 / 100);
       return {
         id: subCat.id,
         name: subCat.name,
         wasteGenerated: generatedWaste, // tons/day
         wasteGenerated1: wasteGenerated1, // tons/day
+        DensityContributionPerComponent: DensityContributionPerComponent,
+        moistureContentPerComponent: moistureContentPerComponent,
+        CVContentPerComponent: CVContentPerComponent,
       };
     });
 
-    const volumePerDay = totalWasteInput / (density * 1000); // Convert density to kg/m³
-    const storageVolume = volumePerDay * retentionTime;
-    const storageArea = storageVolume / 8; // Assumed depth = 8 meters
+    // const volumePerDay = totalWasteInput / (density * 1000); // Convert density to kg/m³
+    // const storageVolume = volumePerDay * retentionTime;
+    const totalVolumeInflow =
+      formFields.find((field) => field.key === "totalVolumeInflow")?.value || 0;
+
+    const numberOfDays =
+      formFields.find((field) => field.key === "numberOfDays")?.value || 0;
+
+    const depthOfStorageArea =
+      formFields.find((field) => field.key === "depthOfStorageArea")?.value ||
+      0;
+
+    ////////////
+    const TotalWastePrimary =
+      formFields.find(
+        (field) => field.key === "totalWasteThroughputPrimaryShredder"
+      )?.value || 0;
+
+    const operatingHoursPrimary =
+      formFields.find((field) => field.key === "operatingHoursPrimary")
+        ?.value || 0;
+
+    const typicalPowerRequirementPrimary =
+      formFields.find((field) => field.key === "typicalPowerRequirementPrimary")
+        ?.value || 0;
+
+    const ShreddedEfficiencypri =
+      formFields.find((field) => field.key === "shredderEfficiency")?.value ||
+      0;
+
+    ////////////
+    const TotalWasteSecondary =
+      formFields.find(
+        (field) => field.key === "totalWasteThroughputSecondaryShredder"
+      )?.value || 0;
+
+    const operatingHoursSecondary =
+      formFields.find((field) => field.key === "operatingHoursSecondary")
+        ?.value || 0;
+
+    const typicalPowerRequirementSecondary =
+      formFields.find(
+        (field) => field.key === "typicalPowerRequirementSecondary"
+      )?.value || 0;
+
+    const ShreddedEfficiencySec =
+      formFields.find((field) => field.key === "shreddingEfficiency")?.value ||
+      0;
+
+    ///////////
+
+    const TotalWastePelletizer =
+      formFields.find((field) => field.key === "totalWasteThroughputPelletizer")
+        ?.value || 0;
+
+    const operatingHoursPelletizer =
+      formFields.find((field) => field.key === "operatingHoursPelletizer")
+        ?.value || 0;
+
+    const recoveryEfficiencyPelletizer =
+      formFields.find((field) => field.key === "recoveryEfficiency")?.value ||
+      0;
+
+    const densificationRatioPelletizer =
+      formFields.find((field) => field.key === "densificationRatio")?.value ||
+      0;
+
+    const storageArea = totalVolumeInflow * numberOfDays;
+    const storageVolume = storageArea / depthOfStorageArea;
+
+    const TotalComposition = wasteGenerationResults.reduce((sum, subCat) => {
+      const percentage = subCat.wasteGenerated1; // Already a number
+      return sum + percentage;
+    }, 0);
+
+    const TotalDensityContribution = wasteGenerationResults.reduce(
+      (sum, subCat) => {
+        const percentage = subCat.DensityContributionPerComponent; // Already a number
+        return sum + percentage;
+      },
+      0
+    );
+
+    const TotalMoistureContribution = wasteGenerationResults.reduce(
+      (sum, subCat) => {
+        const percentage = subCat.moistureContentPerComponent; // Already a number
+        return sum + percentage;
+      },
+      0
+    );
+
+    const TotalCVContribution = wasteGenerationResults.reduce((sum, subCat) => {
+      const percentage = subCat.CVContentPerComponent; // Already a number
+      return sum + percentage;
+    }, 0);
+
+    const typicalPowerRequirementPelletizer =
+      formFields.find(
+        (field) => field.key === "typicalPowerRequirementPelletizer"
+      )?.value || 0;
+
+    const typicalPowerRequirementPelletizer1 =
+      formFields.find(
+        (field) => field.key === "typicalPowerRequirementPelletizer1"
+      )?.value || 0;
+
+    const adoptDesign = TotalWastePrimary / operatingHoursPrimary;
+    const powerRequiredPerDayPrimary =
+      typicalPowerRequirementPrimary * operatingHoursPrimary;
+    const ShreddedOutflowPrimary =
+      TotalWastePrimary * (ShreddedEfficiencypri / 100);
+
+    const adoptDesignSec = TotalWasteSecondary / operatingHoursSecondary;
+    const powerRequiredPerDaySec =
+      typicalPowerRequirementSecondary * operatingHoursSecondary;
+    const ShreddedOutflowSec =
+      TotalWasteSecondary * (ShreddedEfficiencySec / 100);
+
+    const adoptDesignPell = TotalWastePelletizer / operatingHoursPelletizer;
+    const RDFOutflowPell =
+      TotalWastePelletizer * (recoveryEfficiencyPelletizer / 100);
+
+    const totalPowerRequirementPelletizer =
+      typicalPowerRequirementPelletizer + typicalPowerRequirementPelletizer1;
+
+    const powerRequiredPerDay =
+      operatingHoursPelletizer * totalPowerRequirementPelletizer;
+
+    const optimumMoistureContent =
+      formFields.find((field) => field.key === "optimumMoistureContent")
+        ?.value || 0;
+
+    const initialMoistureContent =
+      formFields.find((field) => field.key === "initialMoistureContent")
+        ?.value || 0;
+
+    const moistureAdditionRequired =
+      optimumMoistureContent - initialMoistureContent;
+
+    const waterAdditionRequired =
+      ((moistureAdditionRequired / 100) * (TotalWastePelletizer * 1000)) / 1000;
 
     const rdfOutput =
       totalWasteInput *
@@ -184,18 +466,94 @@ function RDF() {
       (pelletizerEfficiency / 100);
     const equivalentCoal = (rdfOutput * calorificValue) / 28; // Assuming coal CV = 28 MJ/kg
 
+    const ResidueGeneratedPrimary = TotalWastePrimary - ShreddedOutflowPrimary;
+    const ResidueGeneratedSecondary =
+      ShreddedOutflowPrimary - ShreddedOutflowSec;
+    const ResidueGeneratedPelletizing = ShreddedOutflowSec - RDFOutflowPell;
+
+    const calorificValueCoal =
+      formFields.find((field) => field.key === "calorificValueCoal")?.value ||
+      0;
+
+    const calorificValueRDF =
+      formFields.find((field) => field.key === "calorificValueRDF")?.value || 0;
+
+    const totalAmountRDFProduce =
+      formFields.find((field) => field.key === "totalAmountRDFProduce")
+        ?.value || 0;
+
+    const coalUnitPrice =
+      formFields.find((field) => field.key === "coalUnitPrice")?.value || 0;
+
+    const RDFUnitPrice =
+      formFields.find((field) => field.key === "RDFUnitPrice")?.value || 0;
+
+
+    const ratioRDFCoal = calorificValueRDF / calorificValueCoal;
+    const totalAmountCoalEqualTonnePerDay =
+      totalAmountRDFProduce * ratioRDFCoal;
+    const totalAmountRDFProduced = (totalAmountRDFProduce * 365) / 1000; // in Gg/year
+    const totalAmountCoalEqualGgPerYear =
+      (totalAmountCoalEqualTonnePerDay * 365) / 1000; // in Gg/year
+    const totaPriceRDFProduce = totalAmountRDFProduce * 365 * RDFUnitPrice;
+    const totalAmountCoalEqual =
+      totalAmountCoalEqualTonnePerDay * 365 * coalUnitPrice;
+    const RDF = totaPriceRDFProduce / 1000000000;
+    const Coal = totalAmountCoalEqual / 1000000000;
+
+    
+
     setCalculatedValues({
       density,
       moistureContent,
       calorificValue,
-      storageVolume,
+      storageVolume: storageVolume ?? 0,
       storageArea,
       rdfOutput,
       equivalentCoal,
-      wasteGenerationResults
+      wasteGenerationResults,
+      densificationRatioPelletizer,
+
+      totalWasteGenerated,
+      totalWasteGenerated1,
+      totalWasteGenerated2,
+      totalWasteGenerated3,
+
+      totalCV,
+      TotalComposition,
+      TotalDensityContribution,
+      TotalMoistureContribution,
+      TotalCVContribution,
+
+      adoptDesign,
+      powerRequiredPerDayPrimary,
+      ShreddedOutflowPrimary,
+
+      adoptDesignSec,
+      powerRequiredPerDaySec,
+      ShreddedOutflowSec,
+
+      adoptDesignPell,
+      RDFOutflowPell,
+      totalPowerRequirementPelletizer,
+      powerRequiredPerDay,
+      moistureAdditionRequired,
+      waterAdditionRequired,
+
+      ResidueGeneratedPrimary,
+      ResidueGeneratedSecondary,
+      ResidueGeneratedPelletizing,
+
+      ratioRDFCoal,
+      totalAmountCoalEqualTonnePerDay,
+      totalAmountRDFProduced,
+      totalAmountCoalEqualGgPerYear,
+      totaPriceRDFProduce,
+      totalAmountCoalEqual,
+      RDF,
+      Coal,
     });
   };
-
 
   const [formData, setFormData] = useState<FormData>({
     subCategories: [],
@@ -232,7 +590,6 @@ function RDF() {
     setMoistureContent("");
   };
 
-
   return (
     <div className="w-full h-[calc(100vh-85px)] overflow-y-auto bg-white">
       {/* <h1 className="text-lg md:text-3xl pl-5 md:pl-14 border shadow-sm py-4 font-bold">
@@ -265,7 +622,7 @@ function RDF() {
                     onChange={(e) =>
                       input.setter(parseFloat(e.target.value) || 0)
                     }
-                    className="block w-full border rounded-md border-gray-300 px-3 py-1.5 text-gray-900 focus:border-indigo-500 focus:ring-indigo-500 sm:text-sm"
+                    className="block w-full border rounded-md border-gray-300 px-3 py-1.5 text-gray-900 focus:border-indigo-500 focus:ring-indigo-500 md:text-sm"
                   />
                 </div>
               ))}
@@ -273,88 +630,105 @@ function RDF() {
             <h2 className="text-lg font-semibold text-gray-900 py-5">
               Storage Design
             </h2>
-            <div className="grid grid-cols-1 sm:grid-cols-3 gap-y-4 gap-x-6">
+            <div className="grid grid-cols-1 md:grid-cols-3 gap-y-4 gap-x-6">
               {formFields.slice(0, 3).map(({ key, label, value }) => (
                 <div key={key} className="">
-                  <label className="block text-sm font-medium text-gray-900 pb-1">{label}:</label>
+                  <label className="block text-sm font-medium text-gray-900 pb-1">
+                    {label}:
+                  </label>
                   <input
                     type="number"
                     value={value}
-                    onChange={e => handleInputChange({ key, value: e.target.value })}
-                    className="block w-full border rounded-md border-gray-300 px-3 py-1.5 text-gray-900 focus:border-indigo-500 focus:ring-indigo-500 sm:text-sm"
+                    onChange={(e) =>
+                      handleInputChange({ key, value: e.target.value })
+                    }
+                    className="block w-full border rounded-md border-gray-300 px-3 py-1.5 text-gray-900 focus:border-indigo-500 focus:ring-indigo-500 md:text-sm"
                   />
                 </div>
               ))}
             </div>
 
             <h2 className="text-lg font-semibold text-gray-900 py-5">
-              Process  Design
+              Process Design
             </h2>
             <h2 className="text-lg font-semibold text-gray-900 py-5 text-center">
               1. Primary Shredder
             </h2>
-            <div className="grid grid-cols-1 sm:grid-cols-3 gap-y-4 gap-x-6">
-              {/* {[
-                // Mapping input fields
-                {
-                  label: "Total Combustible Waste (kg/day)",
-                  value: totalWasteInput,
-                  setter: setTotalWasteInput,
-                },
-                {
-                  label: "Shredder Efficiency (Primary) (%)",
-                  value: shredderEfficiencyPrimary,
-                  setter: setShredderEfficiencyPrimary,
-                },
-                {
-                  label: "Primarily Shredded Waste (Kg/day)",
-                  value: shredderWastePrimary,
-                  setter: setShredderWastePrimary,
-                },
-                {
-                  label: "Retention Time (days)",
-                  value: retentionTime,
-                  setter: setRetentionTime,
-                },
-
-                {
-                  label: "Pelletalization Efficiency (%)",
-                  value: pelletizerEfficiency,
-                  setter: setPelletizerEfficiency,
-                },
-                {
-                  label: "Densification Ratio",
-                  value: densificationRatio,
-                  setter: setDensificationRatio,
-                },
-                {
-                  label: "Optimum Moisture Content (%)",
-                  value: optimumMoistureContent,
-                  setter: setOptimumMoistureContent,
-                },
-              ].map((input, index) => (
-                <div className="" key={index}>
+            <div className="grid grid-cols-1 md:grid-cols-3 gap-y-4 gap-x-6">
+              {formFields.slice(3, 8).map(({ key, label, value }) => (
+                <div key={key} className="">
                   <label className="block text-sm font-medium text-gray-900 pb-1">
-                    {input.label}
+                    {label}:
                   </label>
                   <input
                     type="number"
-                    value={input.value}
+                    value={value}
                     onChange={(e) =>
-                      input.setter(parseFloat(e.target.value) || 0)
+                      handleInputChange({ key, value: e.target.value })
                     }
-                    className="block w-full border rounded-md border-gray-300 px-3 py-1.5 text-gray-900 focus:border-indigo-500 focus:ring-indigo-500 sm:text-sm"
+                    className="block w-full border rounded-md border-gray-300 px-3 py-1.5 text-gray-900 focus:border-indigo-500 focus:ring-indigo-500 md:text-sm"
                   />
                 </div>
-              ))} */}
-              {formFields.slice(3, -1).map(({ key, label, value }) => (
+              ))}
+            </div>
+
+            <h2 className="text-lg font-semibold text-gray-900 py-5 text-center">
+              2. Secondary Shredder
+            </h2>
+            <div className="grid grid-cols-1 md:grid-cols-3 gap-y-4 gap-x-6">
+              {formFields.slice(8, 13).map(({ key, label, value }) => (
                 <div key={key} className="">
-                  <label className="block text-sm font-medium text-gray-900 pb-1">{label}:</label>
+                  <label className="block text-sm font-medium text-gray-900 pb-1">
+                    {label}:
+                  </label>
                   <input
                     type="number"
                     value={value}
-                    onChange={e => handleInputChange({ key, value: e.target.value })}
-                    className="block w-full border rounded-md border-gray-300 px-3 py-1.5 text-gray-900 focus:border-indigo-500 focus:ring-indigo-500 sm:text-sm"
+                    onChange={(e) =>
+                      handleInputChange({ key, value: e.target.value })
+                    }
+                    className="block w-full border rounded-md border-gray-300 px-3 py-1.5 text-gray-900 focus:border-indigo-500 focus:ring-indigo-500 md:text-sm"
+                  />
+                </div>
+              ))}
+            </div>
+
+            <h2 className="text-lg font-semibold text-gray-900 py-5 text-center">
+              3. Pelletizer{" "}
+            </h2>
+            <div className="grid grid-cols-1 md:grid-cols-3 gap-y-4 gap-x-6">
+              {formFields.slice(13, 21).map(({ key, label, value }) => (
+                <div key={key} className="">
+                  <label className="block text-sm font-medium text-gray-900 pb-1">
+                    {label}:
+                  </label>
+                  <input
+                    type="number"
+                    value={value}
+                    onChange={(e) =>
+                      handleInputChange({ key, value: e.target.value })
+                    }
+                    className="block w-full border rounded-md border-gray-300 px-3 py-1.5 text-gray-900 focus:border-indigo-500 focus:ring-indigo-500 md:text-sm"
+                  />
+                </div>
+              ))}
+            </div>
+            <h2 className="text-lg font-semibold text-gray-900 py-5 text-center">
+              Coal Vs RDF
+            </h2>
+            <div className="grid grid-cols-1 md:grid-cols-3 gap-y-4 gap-x-6">
+              {formFields.slice(21, -1).map(({ key, label, value }) => (
+                <div key={key} className="">
+                  <label className="block text-sm font-medium text-gray-900 pb-1">
+                    {label}:
+                  </label>
+                  <input
+                    type="number"
+                    value={value}
+                    onChange={(e) =>
+                      handleInputChange({ key, value: e.target.value })
+                    }
+                    className="block w-full border rounded-md border-gray-300 px-3 py-1.5 text-gray-900 focus:border-indigo-500 focus:ring-indigo-500 md:text-sm"
                   />
                 </div>
               ))}
@@ -362,56 +736,58 @@ function RDF() {
 
             <div className="w-full h-full flex flex-col items-center justify-center pt-5">
               <label className="block text-sm font-medium text-gray-900 pb-1 w-full text-left">
-                Waste Composition:
+                Evaluation of Energy Potential and Physical Properties of Waste
               </label>
-              <div className="w-full pt-2">
-                <div className="grid grid-cols-6 w-full font-[600]">
-                  <p className="block w-full bg-[#F2F2F2] border px-3 py-2  sm:text-sm">
+              <div className="flex md:block w-full pt-2">
+                <div className="md:grid md:grid-cols-6 flex flex-col w-full font-[600]">
+                  <p className="block w-full bg-[#F2F2F2] border px-3 py-2 text-sm">
                     Component
                   </p>
-                  <p className="block w-full bg-[#F2F2F2] border px-3 py-2  sm:text-sm">
-                    Composition  (%)
+                  <p className="block w-full bg-[#F2F2F2] border px-3 py-2 text-sm">
+                    Composition (%)
                   </p>
-                  <p className="block w-full bg-[#F2F2F2] border px-3 py-2  sm:text-sm">
+                  <p className="block w-full bg-[#F2F2F2] border px-3 py-2 text-sm">
                     Typical Densities (tonnes/m³)
                   </p>
-                  <p className="block w-full bg-[#F2F2F2] border px-3 py-2  sm:text-sm">
+                  <p className="block w-full bg-[#F2F2F2] border px-3 py-2 text-sm">
                     Moisture Content (%)
                   </p>
-                  <p className="block w-full bg-[#F2F2F2] border px-3 py-2  sm:text-sm">
+                  <p className="block w-full bg-[#F2F2F2] border px-3 py-2 text-sm">
                     Typical Calorific Values (MJ/Kg)
                   </p>
                   <p></p>
                 </div>
                 {formData.subCategories.map((ss: any) => (
-                  <div className="grid grid-cols-6 w-full" key={ss.id}>
-                    <p className="block w-full border border-gray-300 px-3 py-1.5 text-gray-900 focus:border-blue-500 focus:ring-blue-500 sm:text-sm">
+                  <div
+                    className="md:grid md:grid-cols-6 flex flex-col w-full"
+                    key={ss.id}
+                  >
+                    <p className="block w-full border border-gray-300 px-3 py-1.5 text-gray-900 focus:border-blue-500 focus:ring-blue-500 md:text-sm">
                       {ss.name}
                     </p>
-                    <p className="block w-full border border-gray-300 px-3 py-1.5 text-gray-900 focus:border-blue-500 focus:ring-blue-500 sm:text-sm">
+                    <p className="block w-full border border-gray-300 px-3 py-1.5 text-gray-900 focus:border-blue-500 focus:ring-blue-500 md:text-sm">
                       {ss.value}
                     </p>
-                    <p className="block w-full border border-gray-300 px-3 py-1.5 text-gray-900 focus:border-blue-500 focus:ring-blue-500 sm:text-sm">
+                    <p className="block w-full border border-gray-300 px-3 py-1.5 text-gray-900 focus:border-blue-500 focus:ring-blue-500 md:text-sm">
                       {ss.typicalDensity}
-
                     </p>
-                    <p className="block w-full border border-gray-300 px-3 py-1.5 text-gray-900 focus:border-blue-500 focus:ring-blue-500 sm:text-sm">
+                    <p className="block w-full border border-gray-300 px-3 py-1.5 text-gray-900 focus:border-blue-500 focus:ring-blue-500 md:text-sm">
                       {ss.moistureContent}
                     </p>
-                    <p className="block w-full border border-gray-300 px-3 py-1.5 text-gray-900 focus:border-blue-500 focus:ring-blue-500 sm:text-sm">
+                    <p className="block w-full border border-gray-300 px-3 py-1.5 text-gray-900 focus:border-blue-500 focus:ring-blue-500 md:text-sm">
                       {ss.typicalCalorificValue}
                     </p>
                     <p></p>
                   </div>
                 ))}
-                <div className="grid grid-cols-6 w-full">
+                <div className="md:grid md:grid-cols-6 flex flex-col w-full">
                   <input
                     type="text"
                     placeholder="Component Name"
                     value={newSubCatName}
                     name="subCategoryName"
                     onChange={(e) => setNewSubCatName(e.target.value)}
-                    className="block w-full border border-gray-300 px-3 py-1.5 text-gray-900 focus:border-blue-500 focus:ring-blue-500 sm:text-sm"
+                    className="block h-[38px] w-full border border-gray-300 px-3 py-1.5 text-gray-900 focus:border-blue-500 focus:ring-blue-500 md:text-sm"
                   />
                   <input
                     type="text"
@@ -421,7 +797,7 @@ function RDF() {
                     value={newSubCatValue}
                     name="subCategoryValue"
                     onChange={(e) => setNewSubCatValue(e.target.value)}
-                    className="block w-full border border-gray-300 px-3 py-1.5 text-gray-900 focus:border-blue-500 focus:ring-blue-500 sm:text-sm"
+                    className="block h-[38px] w-full border border-gray-300 px-3 py-1.5 text-gray-900 focus:border-blue-500 focus:ring-blue-500 md:text-sm"
                   />
                   <input
                     type="text"
@@ -431,7 +807,7 @@ function RDF() {
                     value={typicalDensity}
                     name="subCategoryValue"
                     onChange={(e) => setTypicalDensity(e.target.value)}
-                    className="block w-full border border-gray-300 px-3 py-1.5 text-gray-900 focus:border-blue-500 focus:ring-blue-500 sm:text-sm"
+                    className="block h-[38px] w-full border border-gray-300 px-3 py-1.5 text-gray-900 focus:border-blue-500 focus:ring-blue-500 md:text-sm"
                   />
                   <input
                     type="text"
@@ -441,7 +817,7 @@ function RDF() {
                     value={moistureContent}
                     name="subCategoryValue"
                     onChange={(e) => setMoistureContent(e.target.value)}
-                    className="block w-full border border-gray-300 px-3 py-1.5 text-gray-900 focus:border-blue-500 focus:ring-blue-500 sm:text-sm"
+                    className="block h-[38px] w-full border border-gray-300 px-3 py-1.5 text-gray-900 focus:border-blue-500 focus:ring-blue-500 md:text-sm"
                   />
                   <input
                     type="text"
@@ -451,27 +827,101 @@ function RDF() {
                     value={typicalCalorificValue}
                     name="subCategoryValue"
                     onChange={(e) => setTypicalCalorificValue(e.target.value)}
-                    className="block w-full border border-gray-300 px-3 py-1.5 text-gray-900 focus:border-blue-500 focus:ring-blue-500 sm:text-sm"
+                    className="block h-[38px] w-full border border-gray-300 px-3 py-1.5 text-gray-900 focus:border-blue-500 focus:ring-blue-500 md:text-sm"
                   />
-
 
                   <div>
                     <p
                       onClick={handleAddSubCategory}
-                      className="btn btn-primary bg-violet-700 border-0 text-sm/6 font-medium ml-2 text-white"
+                      className="md:ml-5 bg-blue-500 cursor-pointer w-fit text-white px-2 py-2 mt-8 md:mt-0 rounded-md shadow-md hover:bg-blue-600"
                     >
                       Add Component
                     </p>
                   </div>
                 </div>
               </div>
-
             </div>
 
-
-
-
-
+            <div className="overflow-x-auto w-full flex flex-col items-start">
+              <div className="mt-4 space-y-2 w-full">
+                <label className="block text-sm font-medium text-gray-900 pb-1 w-full text-left">
+                  Waste Flows{" "}
+                </label>{" "}
+                <table className="table text-left w-full md:w-[70%_!important] ">
+                  <thead>
+                    <tr className="text-left text-black">
+                      <th
+                        className="w-[35%_!important] text-left"
+                        style={{ textAlign: "left" }}
+                      >
+                        Processes
+                      </th>
+                      <th
+                        className="w-[35%_!important] text-left"
+                        style={{ textAlign: "left" }}
+                      >
+                        Efficiencies (%)
+                      </th>
+                    </tr>
+                  </thead>
+                  <tbody>
+                    <tr className="">
+                      <th style={{ textAlign: "left" }}>Primary Shredding</th>
+                      <td style={{ textAlign: "left", padding: 0 }}>
+                        <input
+                          type="number"
+                          placeholder="%"
+                          max={100}
+                          min={0}
+                          value={primaryShredder}
+                          name="primaryShredder"
+                          onChange={(e) =>
+                            setPrimaryShredder(parseFloat(e.target.value) || 0)
+                          }
+                          className="block h-[38px] w-full px-3 py-1.5 text-gray-900 focus:border-blue-500 focus:ring-blue-500 md:text-sm"
+                        />
+                      </td>
+                    </tr>
+                    <tr className="">
+                      <th style={{ textAlign: "left" }}>Secondary Shredding</th>
+                      <td style={{ textAlign: "left", padding: 0 }}>
+                        <input
+                          type="number"
+                          placeholder="%"
+                          max={100}
+                          min={0}
+                          value={secondaryShredder}
+                          name="secondaryShredder"
+                          onChange={(e) =>
+                            setSecondaryShredder(
+                              parseFloat(e.target.value) || 0
+                            )
+                          }
+                          className="block h-[38px] w-full px-3 py-1.5 text-gray-900 focus:border-blue-500 focus:ring-blue-500 md:text-sm"
+                        />
+                      </td>
+                    </tr>
+                    <tr className="">
+                      <th style={{ textAlign: "left" }}>Pelletizing</th>
+                      <td style={{ textAlign: "left", padding: 0 }}>
+                        <input
+                          type="number"
+                          placeholder="%"
+                          max={100}
+                          min={0}
+                          value={pelletizer}
+                          name="pelletizer"
+                          onChange={(e) =>
+                            setPelletizer(parseFloat(e.target.value) || 0)
+                          }
+                          className="block h-[38px] w-full px-3 py-1.5 text-gray-900 focus:border-blue-500 focus:ring-blue-500 md:text-sm"
+                        />
+                      </td>
+                    </tr>
+                  </tbody>
+                </table>
+              </div>
+            </div>
 
             <div className="flex justify-center">
               {/* Calculate Button */}
@@ -491,9 +941,9 @@ function RDF() {
             <div className="border p-8 rounded-md">
               <h2 className="text-lg font-semibold text-gray-900 ">Outputs</h2>
               <div className="overflow-x-auto w-full flex flex-col items-start">
-                <div className="mt-4 space-y-2">
-                  <table className="table text-left w-[70vw_!important] ">
-                    <thead>
+                <div className="mt-4 space-y-2 w-full">
+                  <table className="table text-left w-full">
+                    <thead className="text-[10px]">
                       <tr className="text-left">
                         <th
                           className="w-[10%_!important]"
@@ -509,13 +959,32 @@ function RDF() {
                           className="w-[35%_!important] text-left"
                           style={{ textAlign: "left" }}
                         >
-                          Percentage(%)
+                          Generation Rate (Kg/day){" "}
                         </th>
                         <th
                           className="w-[35%_!important] text-left"
                           style={{ textAlign: "left" }}
                         >
                           composition(%)
+                        </th>
+                        <th
+                          className="w-[35%_!important] text-left"
+                          style={{ textAlign: "left" }}
+                        >
+                          Density Contribution per Component (tonnes/m³)
+                        </th>
+                        <th
+                          className="w-[35%_!important] text-left"
+                          style={{ textAlign: "left" }}
+                        >
+                          Moisture Contribution per Component (%)
+                        </th>
+
+                        <th
+                          className="w-[35%_!important] text-left"
+                          style={{ textAlign: "left" }}
+                        >
+                          CV in Input Waste Stream (MJ/Kg)
                         </th>
                       </tr>
                     </thead>
@@ -524,8 +993,21 @@ function RDF() {
                         <tr className="" key={ss.id}>
                           <th style={{ textAlign: "left" }}>{id + 1}</th>
                           <td style={{ textAlign: "left" }}>{ss.name}</td>
-                          <td style={{ textAlign: "left" }}>{ss.wasteGenerated.toFixed(2)} %</td>
-                          <td style={{ textAlign: "left" }}>{ss.wasteGenerated1.toFixed(2)} %</td>
+                          <td style={{ textAlign: "left" }}>
+                            {ss.wasteGenerated.toFixed(2)}
+                          </td>
+                          <td style={{ textAlign: "left" }}>
+                            {ss.wasteGenerated1.toFixed(2)}
+                          </td>
+                          <td style={{ textAlign: "left" }}>
+                            {ss.DensityContributionPerComponent.toFixed(2)}
+                          </td>
+                          <td style={{ textAlign: "left" }}>
+                            {ss.moistureContentPerComponent.toFixed(2)}
+                          </td>
+                          <td style={{ textAlign: "left" }}>
+                            {ss.CVContentPerComponent.toFixed(2)}
+                          </td>
                           {/* <td
                             className="p-[0_!important]"
                             style={{ textAlign: "left" }}
@@ -549,37 +1031,289 @@ function RDF() {
                   </table>
                 </div>
               </div>
-              <div className="grid grid-cols-1 sm:grid-cols-3 gap-y-4 gap-x-6">
+
+              <div className="overflow-x-auto w-full flex flex-col items-start">
+                <div className="mt-4 space-y-2 w-full">
+                  <table className="table text-left w-full">
+                    <thead className="text-[10px]">
+                      <tr className="text-left">
+                        <th
+                          className="w-[35%_!important] text-left"
+                          style={{ textAlign: "left" }}
+                        >
+                          Processes
+                        </th>
+                        <th
+                          className="w-[35%_!important] text-left"
+                          style={{ textAlign: "left" }}
+                        >
+                          Efficiencies (%){" "}
+                        </th>
+                        <th
+                          className="w-[35%_!important] text-left"
+                          style={{ textAlign: "left" }}
+                        >
+                          Outflow for Production, tonnes/day{" "}
+                        </th>
+                        <th
+                          className="w-[35%_!important] text-left"
+                          style={{ textAlign: "left" }}
+                        >
+                          Residue Generated, tonnes/day{" "}
+                        </th>
+                      </tr>
+                    </thead>
+                    <tbody>
+                      <tr className="">
+                        <th style={{ textAlign: "left" }}>Primary Shredding</th>
+                        <td style={{ textAlign: "left" }}>
+                          {primaryShredder.toFixed(2)}
+                        </td>
+
+                        <td style={{ textAlign: "left" }}>
+                          {calculatedValues.ShreddedOutflowPrimary.toFixed(2)}
+                        </td>
+                        <td style={{ textAlign: "left" }}>
+                          {calculatedValues.ResidueGeneratedPrimary.toFixed(2)}
+                        </td>
+                      </tr>
+                      <tr className="">
+                        <th style={{ textAlign: "left" }}>
+                          Secondary Shredding
+                        </th>
+                        <td style={{ textAlign: "left" }}>
+                          {secondaryShredder.toFixed(2)}
+                        </td>
+
+                        <td style={{ textAlign: "left" }}>
+                          {calculatedValues.ShreddedOutflowSec.toFixed(2)}
+                        </td>
+                        <td style={{ textAlign: "left" }}>
+                          {calculatedValues.ResidueGeneratedSecondary.toFixed(
+                            2
+                          )}
+                        </td>
+                      </tr>
+                      <tr className="">
+                        <th style={{ textAlign: "left" }}>Pelletizing</th>
+                        <td style={{ textAlign: "left" }}>
+                          {pelletizer.toFixed(2)}
+                        </td>
+
+                        <td style={{ textAlign: "left" }}>
+                          {calculatedValues.RDFOutflowPell.toFixed(2)}
+                        </td>
+                        <td style={{ textAlign: "left" }}>
+                          {calculatedValues.ResidueGeneratedPelletizing.toFixed(
+                            2
+                          )}
+                        </td>
+                      </tr>
+                    </tbody>
+                  </table>
+                </div>
+              </div>
+              <div className="grid grid-cols-1 md:grid-cols-3 gap-y-4 gap-x-6">
+                {/* TotalComposition: {calculatedValues.TotalComposition} <br />
+                TotalDensityContribution:{" "}
+                {calculatedValues.TotalDensityContribution} <br />
+                TotalMoistureContribution:{" "}
+                {calculatedValues.TotalMoistureContribution} <br />
+                totalCV: {calculatedValues.TotalCVContribution} <br />
+                TotalGenerationRate: {calculatedValues.totalWasteGenerated1} */}
                 {[
-                  // Mapping output fields
                   {
-                    label: "Overall Density (tonnes/m³)",
-                    value: calculatedValues.density,
+                    label: "Total Input to RDF Plant (Kg/day)",
+                    value: calculatedValues.totalWasteGenerated,
                   },
                   {
-                    label: "Overall Moisture Content (%)",
-                    value: calculatedValues.moistureContent,
+                    label: "Total Input to RDF Plant (Tons/day)",
+                    value: calculatedValues.totalWasteGenerated / 1000,
                   },
                   {
-                    label: "Overall Calorific Value (MJ/kg)",
-                    value: calculatedValues.calorificValue,
+                    label: "Density of Combustibles (tonnes/m3)",
+                    value: calculatedValues.TotalDensityContribution,
                   },
                   {
-                    label: "Storage Volume Required (m³)",
+                    label: "Density of Combustibles (Kg/m3)",
+                    value: calculatedValues.TotalDensityContribution * 1000,
+                  },
+                  {
+                    label: "Volume (m3/day)",
+                    value:
+                      (calculatedValues.TotalDensityContribution * 1000) /
+                      calculatedValues.TotalDensityContribution,
+                  },
+                  {
+                    label: "Calorific Value (CV) of RDF (MJ/Kg)",
+                    value: calculatedValues.totalCV,
+                  },
+                  {
+                    label: "Calorific Value (CV) of RDF (KJ/Kg)",
+                    value: calculatedValues.totalCV * 1000,
+                  },
+                  {
+                    label: "Calorific Value (CV) of RDF (kcal/Kg)",
+                    value: (calculatedValues.totalCV * 1000) / 4.184,
+                  },
+                  {
+                    label: "Storage Required (m³)",
                     value: calculatedValues.storageVolume,
                   },
                   {
                     label: "Storage Area Required (m²)",
                     value: calculatedValues.storageArea,
                   },
+
                   {
-                    label: "RDF Output (kg/day)",
-                    value: calculatedValues.rdfOutput,
+                    label: "Adopted Design Capacity (Primary) (tonnes/hr)",
+                    value: calculatedValues.adoptDesign,
                   },
                   {
-                    label: "Equivalent Coal (kg/day)",
-                    value: calculatedValues.equivalentCoal,
+                    label: "Power Required per day (Primary) (kWh)",
+                    value: calculatedValues.powerRequiredPerDayPrimary,
                   },
+                  {
+                    label: "Shredded Outflow (Primary) (tonnes/day)",
+                    value: calculatedValues.ShreddedOutflowPrimary,
+                  },
+
+                  {
+                    label: "Adopted Design Capacity (Secondary) (tonnes/hr)",
+                    value: calculatedValues.adoptDesignSec,
+                  },
+                  {
+                    label: "Power Required per day (Secondary) (kWh)",
+                    value: calculatedValues.powerRequiredPerDaySec,
+                  },
+                  {
+                    label: "Shredded Outflow (Secondary) (tonnes/day)",
+                    value: calculatedValues.ShreddedOutflowSec,
+                  },
+                  {
+                    label: "Adopted Design Capacity (Pelletizer) (tonnes/hr)",
+                    value: calculatedValues.adoptDesignPell,
+                  },
+                  {
+                    label: "RDF Outflow, Pellets (tonnes/day)",
+                    value: calculatedValues.RDFOutflowPell,
+                  },
+                  {
+                    label: "Initial Volume (Pellets) m3/day",
+                    value:
+                      calculatedValues.RDFOutflowPell /
+                      calculatedValues.TotalDensityContribution,
+                  },
+                  {
+                    label: "Final Volume, Pellets (m3/day)",
+                    value:
+                      calculatedValues.RDFOutflowPell /
+                      calculatedValues.densificationRatioPelletizer,
+                  },
+                  {
+                    label: "Volume Reduction (%)",
+                    value:
+                      (calculatedValues.RDFOutflowPell /
+                        calculatedValues.TotalDensityContribution -
+                        calculatedValues.RDFOutflowPell /
+                          calculatedValues.densificationRatioPelletizer /
+                          calculatedValues.RDFOutflowPell /
+                          calculatedValues.TotalDensityContribution) *
+                      100,
+                  },
+                  {
+                    label: "Total Power Requirement (kW)",
+                    value: calculatedValues.totalPowerRequirementPelletizer,
+                  },
+                  {
+                    label: "Power Required Per Day (kWh)",
+                    value: calculatedValues.powerRequiredPerDay,
+                  },
+
+                  {
+                    label: "Moisture Addition Required (%)",
+                    value: calculatedValues.moistureAdditionRequired,
+                  },
+                  {
+                    label: "Water Addition Required (m3/day)",
+                    value: calculatedValues.waterAdditionRequired,
+                  },
+                  {
+                    label: "Total Residue Generated (tonnes/day)",
+                    value:
+                      calculatedValues.ResidueGeneratedPrimary +
+                      calculatedValues.ResidueGeneratedSecondary +
+                      calculatedValues.ResidueGeneratedPelletizing,
+                  },
+
+                  {
+                    label: "CV of RDF : CV of Coal",
+                    value: calculatedValues.ratioRDFCoal,
+                  },
+
+                  {
+                    label: "Total Amount of Equivalent Coal (tonnes/day)",
+                    value: calculatedValues.totalAmountCoalEqualTonnePerDay,
+                  },
+
+                  {
+                    label: "Total Amount of RDF Produced (Gg/year)",
+                    value: calculatedValues.totalAmountRDFProduced,
+                  },
+
+                  {
+                    label: "Total Amount of Equivalent Coal (Gg/year)",
+                    value: calculatedValues.totalAmountCoalEqualGgPerYear,
+                  },
+
+                  {
+                    label: "Total Price of RDF Produced (Rs./year)",
+                    value: calculatedValues.totaPriceRDFProduce,
+                  },
+
+                  {
+                    label: "Total Price of Coal Equivalent (to RDF) (Rs./year)",
+                    value: calculatedValues.totalAmountCoalEqual,
+                  },
+
+                  {
+                    label: "RDF",
+                    value: calculatedValues.RDF,
+                  },
+
+                  {
+                    label: "Coal (Equivalent to RDF)",
+                    value: calculatedValues.RDF,
+                  },
+
+                  // ratioRDFCoal,
+      // totalAmountCoalEqualTonnePerDay,
+      // totalAmountRDFProduced,
+      // totalAmountCoalEqualGgPerYear,
+      // totaPriceRDFProduce,
+      // totalAmountCoalEqual,
+      // RDF,
+      // RDF,
+                  // {
+                  //   label: "Overall Density (tonnes/m³)",
+                  //   value: calculatedValues.density,
+                  // },
+                  // {
+                  //   label: "Overall Moisture Content (%)",
+                  //   value: calculatedValues.moistureContent,
+                  // },
+                  // {
+                  //   label: "Overall Calorific Value (MJ/kg)",
+                  //   value: calculatedValues.calorificValue,
+                  // },
+                  // {
+                  //   label: "RDF Output (kg/day)",
+                  //   value: calculatedValues.rdfOutput,
+                  // },
+                  // {
+                  //   label: "Equivalent Coal (kg/day)",
+                  //   value: calculatedValues.equivalentCoal,
+                  // },
                 ].map((output, index) => (
                   <div className="border p-3 rounded-md" key={index}>
                     <label className="block text-sm font-medium text-gray-900">
@@ -594,6 +1328,7 @@ function RDF() {
             </div>
           </div>
         )}
+
         <div className="bg-white w-full pt-2">
           <p className=" text-center py-2 mt-0">Waste Management Tracking</p>
         </div>
