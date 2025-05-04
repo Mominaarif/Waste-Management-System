@@ -1,15 +1,9 @@
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import "../Styles/App.css";
 import Landfill1 from "./landfill1";
 
 const Landfill = () => {
-  // Default inputs for waste quantities
-  const defaultWasteInputs = {
-    mswResidue: 48.65, // Residue from MSW stream (tonnes/day)
-    diapers: 120.71, // Diapers (tonnes/day)
-    glassResidue: 11.96, // Residue from Recyclables (Glass) (tonnes/day)
-    combustibles: 160, // Residue from Combustibles (tonnes/day)
-  };
+
 
   // Default inputs for design parameters
   const defaultDesignParams = {
@@ -28,8 +22,59 @@ const Landfill = () => {
     workHoursPerDay: 8, // Work hours per day (hrs/day)
   };
 
+
+  const [data1, setData1] = useState([]);
+  const [totalWasteInput, setTotalWasteInput] = useState(4053473.96110292); // in kg/day
+
+  useEffect(() => {
+    const stored = localStorage.getItem("componentWasteDataOthers");
+    if (stored) {
+      const parsed = JSON.parse(stored);
+      setData1(parsed);
+    }
+
+    
+  }, []);
+
+  useEffect(() => {
+    if (data1.length > 0) {
+      getCategories();
+    }
+  }, [data1]);
+
+  const getCategories = () => {
+    const totalSubCatValue = data1.reduce((sum, subCat: any) => {
+      const val = parseFloat(subCat.waste) || 0;
+      return sum + val;
+    }, 0);
+    setTotalWasteInput(totalSubCatValue);
+  };
+
+  // useEffect(() => {
+  //   if (data1.length > 0) {
+  //     getCategories();
+  //   }
+  // }, [data1]);
+
+  const defaultWasteInputs = data1.map((item: any) => ({
+    name: item.name,
+    waste: parseFloat(item.waste),
+    // mswResidue: 48.65, // Residue from MSW stream (tonnes/day)
+    // diapers: 120.71, // Diapers (tonnes/day)
+    // glassResidue: 11.96, // Residue from Recyclables (Glass) (tonnes/day)
+    // combustibles: 160, // Residue from Combustibles (tonnes/day)
+  }));
+
+  // const getCategories = () => {
+  //   const totalSubCatValue = data1.reduce((sum, subCat: any) => {
+  //     const val = parseFloat(subCat.waste) || 0;
+  //     return sum + val;
+  //   }, 0);
+  //   setTotalWasteInput(totalSubCatValue);
+  // };
+
   // State for waste inputs
-  const [wasteInputs, setWasteInputs] = useState(defaultWasteInputs);
+  // const [wasteInputs, setWasteInputs] = useState(defaultWasteInputs);
 
   // State for design parameters
   const [designParams, setDesignParams] = useState(defaultDesignParams);
@@ -54,12 +99,12 @@ const Landfill = () => {
   // Function to calculate outputs
   const calculateLandfillDesign = () => {
     // Use default values if user leaves input fields blank
-    const mswResidue = wasteInputs.mswResidue || defaultWasteInputs.mswResidue;
-    const diapers = wasteInputs.diapers || defaultWasteInputs.diapers;
-    const glassResidue =
-      wasteInputs.glassResidue || defaultWasteInputs.glassResidue;
-    const combustibles =
-      wasteInputs.combustibles || defaultWasteInputs.combustibles;
+    // const mswResidue = wasteInputs.mswResidue || defaultWasteInputs.mswResidue;
+    // const diapers = wasteInputs.diapers || defaultWasteInputs.diapers;
+    // const glassResidue =
+    //   wasteInputs.glassResidue || defaultWasteInputs.glassResidue;
+    // const combustibles =
+    //   wasteInputs.combustibles || defaultWasteInputs.combustibles;
 
     const density = designParams.density || defaultDesignParams.density;
     const designPeriod =
@@ -89,9 +134,12 @@ const Landfill = () => {
       designParams.workHoursPerDay || defaultDesignParams.workHoursPerDay;
 
     // Step 1: Calculate total waste per day and year
-    const totalWastePerDay = mswResidue + diapers + glassResidue + combustibles;
-    const totalWastePerYear = totalWastePerDay * 365;
+    const totalWastePerDay = data1.reduce((sum, subCat: any) => {
+      const val = parseFloat(subCat.waste) || 0;
+      return sum + val;
+    }, 0);
 
+    const totalWastePerYear = totalWastePerDay * 365;
     // Step 2: Calculate daily volume inflow of waste
     const dailyVolumeInflow = totalWastePerDay / density;
 
@@ -166,8 +214,20 @@ const Landfill = () => {
                   <h2 className="text-lg font-semibold text-gray-900 pb-5">
                     Waste Inputs
                   </h2>
-                  <div className="grid grid-cols-1 sm:grid-cols-3 gap-y-4 gap-x-6">
-                    <div className=" ">
+                  <div className={`grid grid-cols-1 ${data1.length > 2 ? "md:grid-cols-3" : "md:grid-cols-2"} gap-y-4 gap-x-6`}>
+                  {data1.map((item: any, index: number) => (
+                      <div key={index} className=" ">
+                        <label className="block text-sm/6 font-medium text-gray-900 my-0">
+                          Residue from MSW Stream ({item.name}) (tonnes/day):
+                        </label>
+                        <div className="mt-2">
+                          <p className="block w-full rounded-md bg-white px-3 py-1.5 text-base text-gray-900 outline-1 -outline-offset-1 outline-gray-300 placeholder:text-gray-400 focus:outline-2 focus:-outline-offset-2 focus:outline-indigo-600 sm:text-sm/6">
+                            {item.waste}
+                          </p>
+                        </div>
+                      </div>
+                    ))}
+                    {/* <div className=" ">
                       <label className="block text-sm/6 font-medium text-gray-900 my-0">
                         Residue from MSW Stream (C & D Waste ) (tonnes/day):
                       </label>
@@ -246,7 +306,7 @@ const Landfill = () => {
                           className="block w-full rounded-md bg-white px-3 py-1.5 text-base text-gray-900 outline-1 -outline-offset-1 outline-gray-300 placeholder:text-gray-400 focus:outline-2 focus:-outline-offset-2 focus:outline-indigo-600 sm:text-sm/6"
                         />
                       </div>
-                    </div>
+                    </div> */}
                   </div>
                 </div>
 
@@ -562,10 +622,13 @@ const Landfill = () => {
                     </div>
                     <div className=" border p-3 rounded-md">
                       <label className="block text-sm font-medium text-gray-900">
-                      Total Volume of Landfill required in 1 year:
+                        Total Volume of Landfill required in 1 year:
                       </label>
                       <span className="text-gray-700">
-                        {(outputs.totalWastePerYear / designParams.density).toFixed(2)} m³/year
+                        {(
+                          outputs.totalWastePerYear / designParams.density
+                        ).toFixed(2)}{" "}
+                        m³/year
                       </span>
                     </div>
                     <div className=" border p-3 rounded-md">

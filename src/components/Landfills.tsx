@@ -1,4 +1,4 @@
-import React, { useCallback, useState, useRef } from "react";
+import React, { useCallback, useState, useRef, useEffect } from "react";
 import {
   GoogleMap,
   LoadScript,
@@ -116,6 +116,8 @@ const Landfills = ({ open }: { open?: boolean }) => {
     
     reader.readAsText(file);
   };
+
+
 
   return (
     <div className="w-full bg-white relative">

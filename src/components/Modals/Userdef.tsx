@@ -19,6 +19,9 @@ interface GeneateMap1Props {
   newSubCatName: string;
   setNewSubCatName: React.Dispatch<React.SetStateAction<string>>;
   newSubCatValue: string;
+  subCatError: string;  
+  fName: string;
+  totalSubCatValue: number;
   setNewSubCatValue: React.Dispatch<React.SetStateAction<string>>;
   handleAddSubCategory: () => void;
   // isPolygonDrawn: boolean;
@@ -38,7 +41,9 @@ const Userdef: React.FC<GeneateMap1Props> = ({
   newSubCatValue,
   setNewSubCatValue,
   handleAddSubCategory,
-  // isPolygonDrawn
+  subCatError,
+  fName,
+  totalSubCatValue
 }: any) => {
 
 
@@ -55,17 +60,32 @@ const Userdef: React.FC<GeneateMap1Props> = ({
             className="w-full h-full flex flex-col items-center justify-center"
           >
             <div className="w-full h-full flex flex-col py-5 gap-5 items-start">
-              <div className="w-full h-full grid grid-cols-2 gap-5 items-center justify-center">
+              <div className="w-full h-full grid grid-cols-3 gap-5 items-center justify-center">
                 <div className="w-full h-full flex flex-col items-center justify-center">
                   <label className="block text-sm font-medium text-gray-900  pb-1 text-left w-full">
                     Area (m²):
                   </label>
                   <input
                     onChange={handleInputChange}
-                    value={roundedArea}
+                    value={roundedArea ?? ""}
                     className="block w-full border rounded-md border-gray-300 px-3 py-1.5 text-gray-900 focus:border-blue-500 focus:ring-blue-500 sm:text-sm"
                   />
                 </div>
+
+                <div className="w-full h-full flex flex-col items-center justify-center">
+                  <label className="block text-sm font-medium text-gray-900  pb-1 text-left w-full">
+                    Area Name:
+                  </label>
+                  <input
+                    type="text"
+                    name="ucName"
+                    value={fName ?? ""}
+                    onChange={handleInputChange}
+                    required
+                    className="block w-full border rounded-md border-gray-300 px-3 py-1.5 text-gray-900 focus:border-blue-500 focus:ring-blue-500 sm:text-sm"
+                  />
+                </div>
+
 
                 <div className="w-full h-full flex flex-col items-center justify-center">
                   <label className="block text-sm font-medium text-gray-900  pb-1 text-left w-full">
@@ -74,7 +94,7 @@ const Userdef: React.FC<GeneateMap1Props> = ({
                   <input
                     type="number"
                     name="population"
-                    value={fPopulation}
+                    value={fPopulation ?? ""}
                     onChange={handleInputChange}
                     required
                     className="block w-full border rounded-md border-gray-300 px-3 py-1.5 text-gray-900 focus:border-blue-500 focus:ring-blue-500 sm:text-sm"
@@ -94,7 +114,7 @@ const Userdef: React.FC<GeneateMap1Props> = ({
                   max="100"
                   name="growthRate"
                   placeholder="0-100"
-                  value={fGrowthRate}
+                  value={fGrowthRate ?? ""}
                   onChange={handleInputChange}
                   className="block w-full border rounded-md border-gray-300 px-3 py-1.5 text-gray-900 focus:border-blue-500 focus:ring-blue-500 sm:text-sm"
                 />
@@ -109,7 +129,7 @@ const Userdef: React.FC<GeneateMap1Props> = ({
                   name="forecast"
                   placeholder="0-100"
                   min="0"
-                  value={fForecast}
+                  value={fForecast ?? ""}
                   onChange={handleInputChange}
                   className="block w-full border rounded-md border-gray-300 px-3 py-1.5 text-gray-900 focus:border-blue-500 focus:ring-blue-500 sm:text-sm"
                 />
@@ -124,7 +144,7 @@ const Userdef: React.FC<GeneateMap1Props> = ({
                   name="generationRate"
                   placeholder="0-100"
                   min="0"
-                  value={fGenerationRate}
+                  value={fGenerationRate ?? ""}
                   onChange={handleInputChange}
                   className="block w-full border rounded-md border-gray-300 px-3 py-1.5 text-gray-900 focus:border-blue-500 focus:ring-blue-500 sm:text-sm"
                 />
@@ -133,7 +153,7 @@ const Userdef: React.FC<GeneateMap1Props> = ({
 
             <div className="w-full h-full flex flex-col items-center justify-center pt-5">
               <label className="block text-sm font-medium text-gray-900 pb-1 w-full text-left">
-                Waste Composition:
+                Waste Composition: <span className="text-red-500">{subCatError}</span>
               </label>
               <div className="w-full grid grid-cols-1 pt-2">
                 <div className="grid grid-cols-3 w-full font-[600]">
@@ -160,7 +180,7 @@ const Userdef: React.FC<GeneateMap1Props> = ({
                   <input
                     type="text"
                     placeholder="Component Name"
-                    value={newSubCatName}
+                    value={newSubCatName ?? ""}
                     name="subCategoryName"
                     onChange={(e) => setNewSubCatName(e.target.value)}
                     className="block w-full border border-gray-300 px-3 py-1.5 text-gray-900 focus:border-blue-500 focus:ring-blue-500 sm:text-sm"
@@ -170,18 +190,19 @@ const Userdef: React.FC<GeneateMap1Props> = ({
                     placeholder="%"
                     max={100}
                     min={0}
-                    value={newSubCatValue}
+                    value={newSubCatValue ?? ""}
                     name="subCategoryValue"
                     onChange={(e) => setNewSubCatValue(e.target.value)}
                     className="block w-full border border-gray-300 px-3 py-1.5 text-gray-900 focus:border-blue-500 focus:ring-blue-500 sm:text-sm"
                   />
-                  <div>
+                  <div className="flex items-center gap-2">
                     <p
                       onClick={handleAddSubCategory}
                       className="btn btn-primary bg-violet-700 border-0 text-sm/6 font-medium ml-2 text-white"
                     >
                       Add Component
                     </p>
+                    <p  className="btn btn-primary bg-violet-700 border-0 text-sm/6 font-medium text-white">Total: {totalSubCatValue}</p>
                   </div>
                 </div>
               </div>
@@ -241,12 +262,19 @@ const Userdef: React.FC<GeneateMap1Props> = ({
             </div>
 
             <div className="flex w-full justify-end">
-              <button
-                // type="submit"
+              <p
+                 onClick={() => {
+                  const modal = document.getElementById(
+                    "my_modal_3"
+                  ) as HTMLDialogElement | null;
+                  if (modal) {
+                    modal.close();
+                  }
+                }}
                 className=" bg-violet-700 cursor-pointer text-white px-8 py-2 mt-5 text-sm rounded-md shadow-md hover:bg-violet-600"
               >
-                Proceed
-              </button>
+                Save
+              </p> 
             </div>
           </form>
         </div>

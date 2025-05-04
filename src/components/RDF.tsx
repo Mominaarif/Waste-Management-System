@@ -1,5 +1,5 @@
 "use client";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import "../Styles/App.css";
 import { set } from "firebase/database";
 
@@ -55,6 +55,18 @@ interface Results {
     CVContentPerComponent: number;
   }[];
 }
+
+type Subcategory = {
+  id: string;
+  name: string;
+  value: string;
+};
+
+type SelectedSubcategory = {
+  mainCategoryId: string;
+  subCategoryId: string;
+  subCategory: Subcategory;
+};
 
 interface SubCategory {
   id: string;
@@ -190,7 +202,38 @@ function RDF() {
     wood: 10.65,
   });
 
-  const [totalWasteInput, setTotalWasteInput] = useState(1387860); // in kg/day
+  const [data1, setData1] = useState([]);
+  const [totalWasteInput, setTotalWasteInput] = useState(4053473.96110292); // in kg/day
+
+  useEffect(() => {
+    const stored = localStorage.getItem("componentWasteData");
+    if (stored) {
+      const parsed = JSON.parse(stored);
+      const filtered = parsed.filter(
+        (item: any) => item.mainCategoryId === "combustibles"
+      );
+      setData1(filtered);
+    }
+  }, []);
+  
+  // ✅ Run getCategories only after data1 is updated
+  useEffect(() => {
+    if (data1.length > 0) {
+      getCategories();
+    }
+  }, [data1]);
+  
+  const getCategories = () => {
+    const totalSubCatValue = data1.reduce((sum, subCat: any) => {
+      const val = parseFloat(subCat.waste) || 0;
+      console.log(sum + val);
+      return sum + val;
+    }, 0);
+    setTotalWasteInput(totalSubCatValue);
+  };
+  
+
+
   const [retentionTime, setRetentionTime] = useState(3); // in days
   const [shredderEfficiencyPrimary, setShredderEfficiencyPrimary] = useState(
     95
@@ -488,7 +531,6 @@ function RDF() {
     const RDFUnitPrice =
       formFields.find((field) => field.key === "RDFUnitPrice")?.value || 0;
 
-
     const ratioRDFCoal = calorificValueRDF / calorificValueCoal;
     const totalAmountCoalEqualTonnePerDay =
       totalAmountRDFProduce * ratioRDFCoal;
@@ -500,8 +542,6 @@ function RDF() {
       totalAmountCoalEqualTonnePerDay * 365 * coalUnitPrice;
     const RDF = totaPriceRDFProduce / 1000000000;
     const Coal = totalAmountCoalEqual / 1000000000;
-
-    
 
     setCalculatedValues({
       density,
@@ -565,30 +605,85 @@ function RDF() {
   const [moistureContent, setMoistureContent] = useState("");
   const [typicalCalorificValue, setTypicalCalorificValue] = useState("");
 
-  const handleAddSubCategory = () => {
-    if (newSubCatName.trim() === "" || newSubCatValue.trim() === "") return;
+  // const handleAddSubCategory = () => {
+  //   if (newSubCatName.trim() === "" || newSubCatValue.trim() === "") return;
 
-    const newSubCategory = {
-      id: `s${formData.subCategories.length + 1}`,
-      name: newSubCatName.trim(),
-      value: newSubCatValue.trim(),
-      typicalDensity: typicalDensity.trim(),
-      moistureContent: moistureContent,
-      typicalCalorificValue: typicalCalorificValue, // Add this property with a default value
-    };
+  //   const newSubCategory = {
+  //     id: `s${formData.subCategories.length + 1}`,
+  //     name: newSubCatName.trim(),
+  //     value: newSubCatValue.trim(),
+  //     typicalDensity: typicalDensity.trim(),
+  //     moistureContent: moistureContent,
+  //     typicalCalorificValue: typicalCalorificValue, // Add this property with a default value
+  //   };
+
+  //   setFormData((prev) => ({
+  //     ...prev,
+  //     subCategories: [...prev.subCategories, newSubCategory],
+  //   }));
+
+  //   // Clear inputs
+  //   setNewSubCatName("");
+  //   setNewSubCatValue("");
+  //   setTypicalDensity("");
+  //   setTypicalCalorificValue("");
+  //   setMoistureContent("");
+  // };
+  const [editableSubcategories, setEditableSubcategories] = useState<any[]>([]);
+
+  useEffect(() => {
+    const stored = localStorage.getItem("formData");
+    if (stored) {
+      const parsed = JSON.parse(stored);
+      const combined = [
+        ...(parsed.selectedSubcategories || []),
+        ...(parsed.selectedOtherSubcategories || []),
+      ];
+
+      // ✅ Filter where mainCategoryId is 'combustibles'
+      const filtered = combined.filter(
+        (item) => item.mainCategoryId === "combustibles"
+      );
+
+      // ✅ Map and keep the necessary fields
+      const withExtraFields = filtered.map((item) => ({
+        ...item.subCategory,
+        typicalDensity: "",
+        moistureContent: "",
+        typicalCalorificValue: "",
+      }));
+
+      setEditableSubcategories(withExtraFields);
+    }
+  }, []);
+
+  const handleAddAllComponents = () => {
+    const formatted = editableSubcategories.map((item, index) => ({
+      id: `s${formData.subCategories.length + index + 1}`,
+      name: item.name,
+      value: item.value,
+      typicalDensity: item.typicalDensity.trim(),
+      moistureContent: item.moistureContent.trim(),
+      typicalCalorificValue: item.typicalCalorificValue.trim(),
+    }));
 
     setFormData((prev) => ({
       ...prev,
-      subCategories: [...prev.subCategories, newSubCategory],
+      subCategories: [...prev.subCategories, ...formatted],
     }));
-
-    // Clear inputs
-    setNewSubCatName("");
-    setNewSubCatValue("");
-    setTypicalDensity("");
-    setTypicalCalorificValue("");
-    setMoistureContent("");
   };
+
+  // const arrayOne = JSON.parse(localStorage.getItem('formData.selectedSubcategories') || '[]');
+
+  // const [data1, setData1] = useState<any[]>([]);
+
+  // useEffect(() => {
+  //   if (Array.isArray(arrayOne)) {
+  //     const filtered = arrayOne.filter((item) => item.mainCategoryId === 'biodegradables');
+  //     setData1(filtered);
+  //   }
+  // }, []);
+
 
   return (
     <div className="w-full h-[calc(100vh-85px)] overflow-y-auto bg-white">
@@ -596,6 +691,12 @@ function RDF() {
         RDF Design
       </h1> */}
       <div className="">
+        {/* {data1.map((item: any) => (
+            <p key={item.name} className="">
+              {item.name} --------
+              {item.waste}<br />
+            </p>
+        ))} */}
         {/* Input Section */}
         <div className="pt-10 px-5 md:px-8">
           <div className="border p-8 rounded-md">
@@ -616,14 +717,15 @@ function RDF() {
                   <label className="block text-sm font-medium text-gray-900 pb-1">
                     {input.label}
                   </label>
-                  <input
+                  <p  className="block w-full border rounded-md border-gray-300 px-3 py-1.5 text-gray-900 focus:border-indigo-500 focus:ring-indigo-500 md:text-sm" >{input.value}</p>
+                  {/* <input
                     type="number"
                     value={input.value}
                     onChange={(e) =>
-                      input.setter(parseFloat(e.target.value) || 0)
+                      input.setter(parseFloat(e.target.value))
                     }
                     className="block w-full border rounded-md border-gray-300 px-3 py-1.5 text-gray-900 focus:border-indigo-500 focus:ring-indigo-500 md:text-sm"
-                  />
+                  /> */}
                 </div>
               ))}
             </div>
@@ -738,49 +840,83 @@ function RDF() {
               <label className="block text-sm font-medium text-gray-900 pb-1 w-full text-left">
                 Evaluation of Energy Potential and Physical Properties of Waste
               </label>
-              <div className="flex md:block w-full pt-2">
-                <div className="md:grid md:grid-cols-6 flex flex-col w-full font-[600]">
-                  <p className="block w-full bg-[#F2F2F2] border px-3 py-2 text-sm">
-                    Component
-                  </p>
-                  <p className="block w-full bg-[#F2F2F2] border px-3 py-2 text-sm">
-                    Composition (%)
-                  </p>
-                  <p className="block w-full bg-[#F2F2F2] border px-3 py-2 text-sm">
-                    Typical Densities (tonnes/m³)
-                  </p>
-                  <p className="block w-full bg-[#F2F2F2] border px-3 py-2 text-sm">
-                    Moisture Content (%)
-                  </p>
-                  <p className="block w-full bg-[#F2F2F2] border px-3 py-2 text-sm">
-                    Typical Calorific Values (MJ/Kg)
-                  </p>
-                  <p></p>
-                </div>
-                {formData.subCategories.map((ss: any) => (
-                  <div
-                    className="md:grid md:grid-cols-6 flex flex-col w-full"
-                    key={ss.id}
-                  >
-                    <p className="block w-full border border-gray-300 px-3 py-1.5 text-gray-900 focus:border-blue-500 focus:ring-blue-500 md:text-sm">
-                      {ss.name}
+              <div className="flex flex-row w-full pt-2">
+                <div className="w-[83%]">
+                  <div className="md:grid md:grid-cols-5 flex flex-col w-full font-[600]">
+                    <p className="block w-full bg-[#F2F2F2] border px-3 py-2 text-sm">
+                      Component
                     </p>
-                    <p className="block w-full border border-gray-300 px-3 py-1.5 text-gray-900 focus:border-blue-500 focus:ring-blue-500 md:text-sm">
-                      {ss.value}
+                    <p className="block w-full bg-[#F2F2F2] border px-3 py-2 text-sm">
+                      Composition (%)
                     </p>
-                    <p className="block w-full border border-gray-300 px-3 py-1.5 text-gray-900 focus:border-blue-500 focus:ring-blue-500 md:text-sm">
-                      {ss.typicalDensity}
+                    <p className="block w-full bg-[#F2F2F2] border px-3 py-2 text-sm">
+                      Typical Densities (tonnes/m³)
                     </p>
-                    <p className="block w-full border border-gray-300 px-3 py-1.5 text-gray-900 focus:border-blue-500 focus:ring-blue-500 md:text-sm">
-                      {ss.moistureContent}
+                    <p className="block w-full bg-[#F2F2F2] border px-3 py-2 text-sm">
+                      Moisture Content (%)
                     </p>
-                    <p className="block w-full border border-gray-300 px-3 py-1.5 text-gray-900 focus:border-blue-500 focus:ring-blue-500 md:text-sm">
-                      {ss.typicalCalorificValue}
+                    <p className="block w-full bg-[#F2F2F2] border px-3 py-2 text-sm">
+                      Typical Calorific Values (MJ/Kg)
                     </p>
-                    <p></p>
                   </div>
-                ))}
-                <div className="md:grid md:grid-cols-6 flex flex-col w-full">
+                  {editableSubcategories.map((item: any, index) => (
+                    <div
+                      className="md:grid md:grid-cols-5 flex flex-col w-full"
+                      key={item.id}
+                    >
+                      <p className="block w-full border border-gray-300 px-3 py-1.5 text-gray-900 focus:border-blue-500 focus:ring-blue-500 md:text-sm">
+                        {item.name}
+                      </p>
+                      <p className="block w-full border border-gray-300 px-3 py-1.5 text-gray-900 focus:border-blue-500 focus:ring-blue-500 md:text-sm">
+                        {item.value}
+                      </p>
+                      <input
+                        type="text"
+                        placeholder="%"
+                        max={100}
+                        min={0}
+                        name="subCategoryValue"
+                        value={item.typicalDensity}
+                        onChange={(e) => {
+                          const updated = [...editableSubcategories];
+                          updated[index].typicalDensity = e.target.value;
+                          setEditableSubcategories(updated);
+                        }}
+                        className="block h-[38px] w-full border border-gray-300 px-3 py-1.5 text-gray-900 focus:border-blue-500 focus:ring-blue-500 md:text-sm"
+                      />
+                      <input
+                        type="text"
+                        placeholder="%"
+                        max={100}
+                        min={0}
+                        // value={moistureContent}
+                        name="subCategoryValue"
+                        value={item.moistureContent}
+                        onChange={(e) => {
+                          const updated = [...editableSubcategories];
+                          updated[index].moistureContent = e.target.value;
+                          setEditableSubcategories(updated);
+                        }}
+                        className="block h-[38px] w-full border border-gray-300 px-3 py-1.5 text-gray-900 focus:border-blue-500 focus:ring-blue-500 md:text-sm"
+                      />
+                      <input
+                        type="text"
+                        placeholder="%"
+                        max={100}
+                        min={0}
+                        name="subCategoryValue"
+                        value={item.typicalCalorificValue}
+                        onChange={(e) => {
+                          const updated = [...editableSubcategories];
+                          updated[index].typicalCalorificValue = e.target.value;
+                          setEditableSubcategories(updated);
+                        }}
+                        className="block h-[38px] w-full border border-gray-300 px-3 py-1.5 text-gray-900 focus:border-blue-500 focus:ring-blue-500 md:text-sm"
+                      />
+                    </div>
+                  ))}
+                </div>
+                {/* <div className="md:grid md:grid-cols-6 flex flex-col w-full">
                   <input
                     type="text"
                     placeholder="Component Name"
@@ -830,14 +966,15 @@ function RDF() {
                     className="block h-[38px] w-full border border-gray-300 px-3 py-1.5 text-gray-900 focus:border-blue-500 focus:ring-blue-500 md:text-sm"
                   />
 
-                  <div>
-                    <p
-                      onClick={handleAddSubCategory}
-                      className="md:ml-5 bg-blue-500 cursor-pointer w-fit text-white px-2 py-2 mt-8 md:mt-0 rounded-md shadow-md hover:bg-blue-600"
-                    >
-                      Add Component
-                    </p>
-                  </div>
+                  
+                </div> */}
+                <div className="w-[17%] flex justify-center items-center">
+                  <p
+                    onClick={handleAddAllComponents}
+                    className="bg-blue-500 ml-3 cursor-pointer w-full text-center text-white px-2 py-2 mt-8 md:mt-0 rounded-md shadow-md hover:bg-blue-600"
+                  >
+                    Add Component
+                  </p>
                 </div>
               </div>
             </div>
@@ -1287,13 +1424,13 @@ function RDF() {
                   },
 
                   // ratioRDFCoal,
-      // totalAmountCoalEqualTonnePerDay,
-      // totalAmountRDFProduced,
-      // totalAmountCoalEqualGgPerYear,
-      // totaPriceRDFProduce,
-      // totalAmountCoalEqual,
-      // RDF,
-      // RDF,
+                  // totalAmountCoalEqualTonnePerDay,
+                  // totalAmountRDFProduced,
+                  // totalAmountCoalEqualGgPerYear,
+                  // totaPriceRDFProduce,
+                  // totalAmountCoalEqual,
+                  // RDF,
+                  // RDF,
                   // {
                   //   label: "Overall Density (tonnes/m³)",
                   //   value: calculatedValues.density,

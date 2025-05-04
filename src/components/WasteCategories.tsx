@@ -1,11 +1,18 @@
 import { X } from "lucide-react";
-import { useEffect, useRef, useState, ChangeEvent } from "react";
+import {
+  useEffect,
+  useRef,
+  useState,
+  ChangeEvent,
+  useCallback,
+  FormEvent,
+} from "react";
 import { doc, setDoc } from "firebase/firestore";
 import { db } from "../firebase";
 import { getAuth, User } from "firebase/auth";
 import GeneateMap1 from "./Map1";
 import Userdef from "./Modals/Userdef";
-import { useLocation } from "react-router-dom";
+import { useLocation, useNavigate } from "react-router-dom";
 
 declare global {
   interface Window {
@@ -25,6 +32,30 @@ interface MainCategory {
   isDone: boolean;
 }
 
+interface LatLng {
+  lat: number;
+  lng: number;
+}
+
+interface WasteCategory {
+  [key: string]: number;
+}
+
+interface WasteCategories {
+  residential: WasteCategory;
+  commercial: WasteCategory;
+  industrial: WasteCategory;
+  hazardous: WasteCategory;
+}
+
+interface PolygonData {
+  id: number;
+  name: string;
+  paths: LatLng[];
+  wasteCategories: WasteCategories;
+  options: google.maps.PolygonOptions;
+  position?: LatLng; // Add this line
+}
 // interface WasteCategory {
 //   checked: boolean;
 //   subcategories: {
@@ -115,10 +146,9 @@ export default function WasteCategories(open: any) {
     null
   );
 
-
   const location = useLocation();
   // const formData = location.state;
-  const [dataOption, setDataOption] = useState<number | undefined>();
+  // const [dataOption, setDataOption] =  useState<number | undefined>();
 
   const [formData, setFormData] = useState<FormData>({
     ucName: "",
@@ -140,7 +170,26 @@ export default function WasteCategories(open: any) {
     selectedOtherSubcategories: [],
   });
 
-  const getRemainingSubcategories = () => {
+  
+  // const handleDataOptionChange = () => {
+  //   const selectedOption = (document.querySelector(
+  //     'input[name="dataDef"]:checked'
+  //   ) as HTMLInputElement).value;
+  //   setDataOption(Number(selectedOption));
+  // };
+  const firstThreeDone = formData.mainCategories
+    .slice(0, 3)
+    .every((mc: any) => mc.isDone);
+
+  const handleCompleteCategory = (categoryId: string) => {
+    setFormData((prev) => ({
+      ...prev,
+      mainCategories: prev.mainCategories.map((mc) =>
+        mc.id === categoryId ? { ...mc, isDone: true } : mc
+      ),
+    }));
+  };
+const getRemainingSubcategories = () => {
     const allSelected = [
       ...formData.selectedSubcategories,
       ...formData.selectedOtherSubcategories.map((id) => ({
@@ -151,52 +200,111 @@ export default function WasteCategories(open: any) {
     return formData.subCategories.filter((sc) => !selectedIds.has(sc.id));
   };
 
-  const firstThreeDone = formData.mainCategories
-    .slice(0, 3)
-    .every((mc:any) => mc.isDone);
-
-  const handleCompleteCategory = (categoryId: string) => {
-    setFormData((prev) => ({
-      ...prev,
-      mainCategories: prev.mainCategories.map((mc) =>
-        mc.id === categoryId ? { ...mc, isDone: true } : mc
-      ),
-    }));
-  };
-
-  const handleDataOptionChange = () => {
-    const selectedOption = (document.querySelector(
-      'input[name="dataDef"]:checked'
-    ) as HTMLInputElement).value;
-    setDataOption(Number(selectedOption));
-  };
-
 
   useEffect(() => {
     if (firstThreeDone) {
-      const remaining = getRemainingSubcategories();
-      setFormData((prev:any) => {
-        const newIds = remaining
-          .map((sub:any) => sub.id)
-          .filter((id:any) => !prev.selectedOtherSubcategories.includes(id));
-
-        return {
-          ...prev,
-          selectedOtherSubcategories: [
-            ...prev.selectedOtherSubcategories,
-            ...newIds,
-          ],
-        };
-      });
+      const residuesCategory = formData.mainCategories[3]; // 4th item
+      if (!residuesCategory) return;
+  
+      const selectedIds = new Set([
+        ...formData.selectedSubcategories.map((s: any) => s.subCategoryId),
+        ...formData.selectedOtherSubcategories.map((s: any) => s.subCategoryId),
+      ]);
+  
+      const remaining = formData.subCategories.filter(
+        (sub: any) => !selectedIds.has(sub.id)
+      );
+  
+      const newOtherSubcategories = remaining.map((sub: any) => ({
+        mainCategoryId: residuesCategory.id, // hard-coded to 4th category
+        subCategoryId: sub.id,
+        subCategory: {
+          id: sub.id,
+          name: sub.name,
+          value: sub.value,
+        },
+      }));
+  
+      setFormData((prev: any) => ({
+        ...prev,
+        selectedOtherSubcategories: [
+          ...prev.selectedOtherSubcategories,
+          ...newOtherSubcategories,
+        ],
+      }));
     }
   }, [firstThreeDone]);
+  
+  
+  
+
+console.log(formData.selectedOtherSubcategories)
 
   const [newSubCatName, setNewSubCatName] = useState("");
   const [newSubCatValue, setNewSubCatValue] = useState("");
   const [subCatError, setSubCatError] = useState("");
+  const [totalSubCatValue, setTotalSubCatValue] = useState(0);
+
+  //   const handleAddSubCategory = () => {
+  //     if (newSubCatName.trim() === "" || newSubCatValue.trim() === "") return;
+
+  //     const totalWasteGenerated = formData.subCategories.reduce((sum, subCat) => {
+  //       let percentage;// Ensure it's a number
+  //       if (parseFloat(subCat.value) === 0) {
+  //         percentage = newSubCatValue.trim() === "0" ? 0 : parseFloat(newSubCatValue);
+  //       }
+  //       else {
+  //         percentage = parseFloat(subCat.value);
+  //       }
+  //       return sum + percentage;
+
+  //     }, 0);
+  // const newSubCategory = {
+  //       id: `s${formData.subCategories.length + 1}`,
+  //       name: newSubCatName.trim(),
+  //       value: newSubCatValue.trim(),
+  //     };
+  //     // let newSubCategory:any;
+  //     if (totalWasteGenerated + parseFloat(newSubCatValue) > 100) {
+  //       setSubCatError("Total waste generated cannot exceed 100%");
+  //       return;
+  //     } else {
+  //       setSubCatError("");
+
+  //     }
+
+  //     setFormData((prev) => ({
+  //       ...prev,
+  //       subCategories: [...prev.subCategories, newSubCategory],
+  //     }));
+
+  //     // Clear inputs
+  //     setNewSubCatName("");
+  //     setNewSubCatValue("");
+  //     console.log("sum", totalWasteGenerated);
+  //   };
 
   const handleAddSubCategory = () => {
     if (newSubCatName.trim() === "" || newSubCatValue.trim() === "") return;
+
+    const parsedNewValue = parseFloat(newSubCatValue.trim());
+
+    if (isNaN(parsedNewValue)) {
+      setSubCatError("Please enter a valid number.");
+      return;
+    }
+
+    const totalWasteGenerated = formData.subCategories.reduce((sum, subCat) => {
+      const percentage = parseFloat(subCat.value) || 0;
+      return sum + percentage;
+    }, 0);
+
+    if (totalWasteGenerated + parsedNewValue > 100) {
+      setSubCatError("Total waste generated cannot exceed 100%");
+      return;
+    } else {
+      setSubCatError("");
+    }
 
     const newSubCategory = {
       id: `s${formData.subCategories.length + 1}`,
@@ -208,6 +316,9 @@ export default function WasteCategories(open: any) {
       ...prev,
       subCategories: [...prev.subCategories, newSubCategory],
     }));
+
+    // 🟢 Update total value state
+    setTotalSubCatValue(totalWasteGenerated + parsedNewValue);
 
     // Clear inputs
     setNewSubCatName("");
@@ -223,12 +334,457 @@ export default function WasteCategories(open: any) {
     return total === 100;
   };
 
-  // console.log(formData.subCategories);
+  const [viewType, setViewType] = useState<
+    "district" | "unionCouncil" | "province"
+  >("district");
+  const [selectedCategory, setSelectedCategory] = useState<string>(
+    "residential"
+  );
+
+  const [roundedArea, setRoundedArea] = useState<number | undefined>();
+  const [
+    existingPolygon,
+    setExistingPolygon,
+  ] = useState<google.maps.Polygon | null>(null);
+
+  const navigate = useNavigate();
+
+  // const [roundedArea, setRoundedArea] =  useState<number | undefined>();
+  const [adminBoundaries, setAdminBoundaries] = useState<PolygonData[]>([]);
+  const [selectedBoundary, setSelectedBoundary] = useState<PolygonData | null>(
+    null
+  );
+
+  const [dataOption, setDataOption] = useState<number | undefined>();
+
+  const [isPolygonDrawn, setIsPolygonDrawn] = useState<boolean>(false);
+  const [
+    selectedPolygon,
+    setSelectedPolygon,
+  ] = useState<google.maps.Polygon | null>(null);
+
+  const searchBoxRef = useRef<google.maps.places.SearchBox | null>(null);
+
+  // Load administrative boundaries
+  useEffect(() => {
+    const loadAdminBoundaries = async () => {
+      try {
+        const url = getGeoJsonUrl();
+        const response = await fetch(url);
+        const data = await response.json();
+
+        const boundaries = data.features.map((feature: any, index: number) => ({
+          id: index,
+          name: feature.properties.name || feature.properties.DISTRICT,
+          paths: feature.geometry.coordinates[0]
+            .filter((coord: any) => Array.isArray(coord) && coord.length === 2)
+            .map((coord: [number, number]) => {
+              const [lng, lat] = coord;
+              return {
+                lat: parseFloat(lat as any),
+                lng: parseFloat(lng as any),
+              };
+            }),
+          wasteCategories: generateWasteCategories(),
+          options: {
+            strokeColor: "#0f6175",
+            strokeOpacity: 0.8,
+            strokeWeight: 2,
+            fillColor: "#ada5a5",
+            fillOpacity: 0.35,
+          },
+        }));
+
+        setAdminBoundaries(boundaries);
+      } catch (error) {
+        console.error("Error loading administrative boundaries:", error);
+      }
+    };
+
+    loadAdminBoundaries();
+  }, [viewType]);
+
+  const getGeoJsonUrl = () => {
+    switch (viewType) {
+      case "unionCouncil":
+        return "/Union_Council_VF.json";
+      case "province":
+        return "/Provinces_VF.json";
+      default:
+        return "/District_Boundary.json";
+    }
+  };
+
+  const generateWasteCategories = (): WasteCategories => ({
+    residential: generateRandomWaste(),
+    commercial: generateRandomWaste(),
+    industrial: generateRandomWaste(),
+    hazardous: generateRandomWaste(),
+  });
+
+  const generateRandomWaste = (): WasteCategory => ({
+    paper: Math.floor(Math.random() * 500) + 50,
+    cardboard: Math.floor(Math.random() * 300) + 30,
+    plastic: Math.floor(Math.random() * 200) + 20,
+    metal: Math.floor(Math.random() * 100) + 10,
+    organic: Math.floor(Math.random() * 600) + 60,
+  });
+
+  const onLoad = useCallback((map: google.maps.Map) => {
+    mapRef.current = map;
+    initializeDrawingManager(map);
+  }, []);
+
+  const initializeDrawingManager = (map: google.maps.Map) => {
+    // Remove existing DrawingManager if already present
+    if (drawingManagerRef.current) {
+      drawingManagerRef.current.setMap(null);
+      google.maps.event.clearInstanceListeners(drawingManagerRef.current);
+    }
+
+    // Create new DrawingManager
+    const manager = new google.maps.drawing.DrawingManager({
+      drawingMode: null,
+      drawingControl: true,
+      drawingControlOptions: {
+        position: google.maps.ControlPosition.TOP_CENTER,
+        drawingModes: [google.maps.drawing.OverlayType.POLYGON],
+      },
+      polygonOptions: {
+        editable: false,
+        draggable: false,
+        fillColor: "#000",
+        fillOpacity: 0.2,
+        strokeColor: "#000",
+        strokeWeight: 1,
+      },
+    });
+
+    manager.setMap(map);
+    drawingManagerRef.current = manager;
+
+    // Handle drawing complete
+
+    window.google.maps.event.addListener(
+      manager,
+      "overlaycomplete",
+      (event: google.maps.drawing.OverlayCompleteEvent) => {
+        if (event.type === window.google.maps.drawing.OverlayType.POLYGON) {
+          const polygon = event.overlay as google.maps.Polygon;
+          calculateArea(polygon);
+
+          manager.setOptions({
+            drawingMode: null,
+            drawingControl: false,
+          });
+
+          polygon.setOptions({
+            editable: false,
+            draggable: false,
+          });
+
+          setIsPolygonDrawn(true);
+          setSelectedPolygon(polygon);
+          // window.google.maps.event.addListener(polygon, "click", () => {
+          //   setSelectedPolygon(polygon);
+          // });
+
+          window.google.maps.event.addListener(
+            polygon.getPath(),
+            "set_at",
+            () => calculateArea(polygon)
+          );
+          window.google.maps.event.addListener(
+            polygon.getPath(),
+            "insert_at",
+            () => calculateArea(polygon)
+          );
+        }
+      }
+    );
+  };
+
+  const handlePlacesChanged = () => {
+    const places = searchBoxRef.current?.getPlaces();
+    if (places?.[0]?.geometry?.location) {
+      mapRef.current?.panTo(places[0].geometry.location);
+      mapRef.current?.setZoom(14);
+    }
+  };
+
+  const calculateArea = (polygon: google.maps.Polygon) => {
+    const area = google.maps.geometry.spherical.computeArea(polygon.getPath());
+    const roundedArea = Math.round(area * 100) / 100;
+
+    console.log("Area (m²):", roundedArea);
+    setRoundedArea(roundedArea);
+  };
+
+  const handleBoundaryClick = (
+    boundary: PolygonData,
+    event: google.maps.MapMouseEvent
+  ) => {
+    setSelectedBoundary({
+      ...boundary,
+      position: event.latLng?.toJSON() || { lat: 0, lng: 0 },
+    });
+  };
+
+  const handleDataOptionChange = () => {
+    const selectedOption = (document.querySelector(
+      'input[name="dataDef"]:checked'
+    ) as HTMLInputElement).value;
+    setDataOption(Number(selectedOption));
+  };
+
+  useEffect(() => {
+    if (dataOption === 0) {
+      //   DefaultDataValues();
+      // alert("Proceeded to default data");
+    } else if (dataOption === 1) {
+      const modal = document.getElementById(
+        "my_modal_3"
+      ) as HTMLDialogElement | null;
+      if (modal) {
+        modal.showModal();
+      }
+    }
+  }, [dataOption]);
+
+  useEffect(() => {
+    if (isPolygonDrawn) {
+      const modal = document.getElementById(
+        "my_modal_1"
+      ) as HTMLDialogElement | null;
+      if (modal) {
+        modal.close();
+      }
+    }
+  }, [isPolygonDrawn]);
+
+  const handleInputChange = (
+    e: ChangeEvent<HTMLInputElement | HTMLSelectElement>
+  ) => {
+    const { name, value } = e.target;
+    setFormData((prev) => ({
+      ...prev,
+      [name]: value,
+    }));
+  };
+
+  const handleSubmit = async (e: FormEvent) => {
+    e.preventDefault();
+    const auth = getAuth();
+    const user: User | null = auth.currentUser;
+
+    // const user = auth.currentUser;
+    console.log("User:", user);
+
+    if (!user) {
+      alert("You must be logged in to submit data");
+      return;
+    }
+
+    if (!isPolygonDrawn) {
+      alert("Please draw a polygon on the map before submitting--");
+      return;
+    }
+
+    try {
+      const polygonPath = selectedPolygon
+        ?.getPath()
+        .getArray()
+        .map((latLng) => ({
+          lat: latLng.lat(),
+          lng: latLng.lng(),
+        }));
+      if (!polygonPath || polygonPath.length === 0) {
+        console.error("Polygon path is missing.");
+        // setError("Please draw a polygon before saving.");
+        return;
+      }
+
+      const dataToSave = {
+        ...formData,
+        area: roundedArea,
+        polygonPath: polygonPath, // must be a valid array, not undefined
+
+        createdAt: new Date(),
+        createdBy: user.uid,
+      };
+      console.log(dataToSave);
+
+      calculate();
+      calculate1();
+
+      // Create a document with UC name as ID
+      await setDoc(doc(db, "wasteData", formData.ucName), dataToSave);
+      alert("Data saved successfully!");
+
+      setRoundedArea(0);
+      // setFormData({
+      //   ucName: "",
+      //   population: "",
+      //   households: "",
+      //   incomeGroup: "",
+      //   growthRate: "",
+      //   forecast: "",
+      //   generationRate: "",
+      //   area: "",
+      //   mainCategories: [
+      //     { id: "biodegradables", name: "Biodegradables", isDone: false },
+      //     { id: "combustibles", name: "Combustibles", isDone: false },
+      //     { id: "recyclables", name: "Recyclables", isDone: false },
+      //     { id: "residues", name: "Residues", isDone: false },
+      //   ],
+      //   subCategories: [],
+      //   selectedSubcategories: [],
+      //   selectedOtherSubcategories: [],
+      // });
+
+      if (selectedPolygon) {
+        selectedPolygon.setMap(null);
+      }
+      setRoundedArea(undefined);
+      setIsPolygonDrawn(false);
+      setSelectedPolygon(null);
+
+      console.log("Data saved successfully!");
+    } catch (error) {
+      console.error("Error saving data:", error);
+      const polygonPath = selectedPolygon
+        ?.getPath()
+        .getArray()
+        .map((latLng) => ({
+          lat: latLng.lat(),
+          lng: latLng.lng(),
+        }));
+
+      const dataToSave = {
+        ...formData,
+        area: roundedArea,
+        polygonPath,
+        createdAt: new Date(),
+        createdBy: user.uid,
+      };
+      console.log(dataToSave);
+      alert("Failed to save data");
+    }
+  };
+
+  // useEffect(() => {
+  //   if (firstThreeDone) {
+  //     const remaining = getRemainingSubcategories();
+  //     setFormData((prev) => {
+  //       const newIds = remaining
+  //         .map((sub) => sub.id)
+  //         .filter((id) => !prev.selectedOtherSubcategories.includes(id));
+
+  //       return {
+  //         ...prev,
+  //         selectedOtherSubcategories: [
+  //           ...prev.selectedOtherSubcategories,
+  //           ...newIds,
+  //         ],
+  //       };
+  //     });
+  //   }
+  // }, [firstThreeDone]);
+
+  localStorage.setItem(
+    "formData",
+    JSON.stringify({
+      selectedSubcategories: formData.selectedSubcategories,
+      selectedOtherSubcategories: formData.selectedOtherSubcategories,
+    })
+  );
+
+  // console.log(formData.selectedOtherSubcategories);
+
+  useEffect(() => {
+    const stored = localStorage.getItem("formData");
+    if (stored) {
+      const parsedData = JSON.parse(stored);
+      console.log("Parsed Data:", parsedData);
+      setFormData((prev) => ({
+        ...prev,
+        selectedSubcategories: parsedData.selectedSubcategories,
+        selectedOtherSubcategories: parsedData.selectedOtherSubcategories,
+      }));
+    }
+  }, []);
+
+  const calculate = () => {
+    const totalWaste =
+      parseFloat(formData.population) * parseFloat(formData.generationRate);
+  
+    const totalSubCatValue = formData.selectedSubcategories.reduce((sum, subCat) => {
+      const val = parseFloat(subCat?.subCategory?.value || "0");
+      return sum + (isNaN(val) ? 0 : val);
+    }, 0);
+  
+    if (totalSubCatValue === 0 || isNaN(totalWaste)) {
+      console.warn("Invalid input: Cannot calculate waste");
+      return;
+    }
+  
+    const componentWasteData = formData.selectedSubcategories.map((subCat) => {
+      const percentage = parseFloat(subCat?.subCategory?.value || "0");
+      const componentWaste = totalWaste * (percentage / totalSubCatValue);
+  
+      return {
+        name: subCat?.subCategory?.name || "Unknown",
+        percentage: percentage.toFixed(2),
+        waste: componentWaste.toFixed(2),
+        mainCategoryId: subCat?.mainCategoryId || "unknown",
+      };
+    });
+  
+    console.log(componentWasteData);
+  
+    // Save to localStorage
+    localStorage.setItem("componentWasteData", JSON.stringify(componentWasteData));
+  };
+
+  const calculate1 = () => {
+    const totalWaste =
+      parseFloat(formData.population) * parseFloat(formData.generationRate);
+  
+    const totalSubCatValue = formData.selectedOtherSubcategories.reduce((sum, subCat:any) => {
+      const val = parseFloat(subCat?.subCategory?.value || "0");
+      return sum + (isNaN(val) ? 0 : val);
+    }, 0);
+  
+    if (totalSubCatValue === 0 || isNaN(totalWaste)) {
+      console.warn("Invalid input: Cannot calculate waste");
+      return;
+    }
+  
+    const componentWasteData = formData.selectedOtherSubcategories.map((subCat:any) => {
+      const percentage = parseFloat(subCat?.subCategory?.value || "0");
+      const componentWaste = totalWaste * (percentage / totalSubCatValue);
+  
+      return {
+        name: subCat?.subCategory?.name || "Unknown",
+        percentage: percentage.toFixed(2),
+        waste: componentWaste.toFixed(2),
+        mainCategoryId: subCat?.mainCategoryId || "unknown",
+      };
+    });
+  
+    console.log(componentWasteData);
+  
+    // Save to localStorage
+    localStorage.setItem("componentWasteDataOthers", JSON.stringify(componentWasteData));
+  };
+  
+  
+
   return (
-    <div className="w-full h-[calc(100vh-85px)] overflow-y-auto bg-white pt-10 px-5 md:px-8">
+    <form onSubmit={handleSubmit} className="w-full h-[calc(100vh-85px)] overflow-y-auto bg-white pt-10 px-5 md:px-8">
       <div className="border p-8 rounded-md">
-          <div className="w-full h-full flex flex-col py-5 gap-5 items-start">  
-            <button
+        <div className="w-full h-full flex flex-col py-5 gap-5 items-start">
+          <p
             onClick={() => {
               const modal = document.getElementById(
                 "my_modal_1"
@@ -240,12 +796,12 @@ export default function WasteCategories(open: any) {
             className="bg-violet-700 text-sm not-last:cursor-pointer w-fit text-white px-8 py-2 mt-1 rounded-md shadow-xs hover:bg-violet-600"
           >
             Select The Area
-          </button>  
-            <div className="flex flex-col gap-1 items-start">  
-              <p className="text-sm font-bold text-gray-900  pb-1 text-left w-full">
-              Choose Data Source:
-            </p>  
-              <div className="flex gap-3">
+          </p>
+          <div className="flex flex-col gap-1 items-start">
+            <p className="text-sm font-bold text-gray-900  pb-1 text-left w-full">
+              Choose Data Source: {selectedBoundary?.name}
+            </p>
+            <div className="flex gap-3">
               <div className="flex h-6 shrink-0 items-center">
                 <div className="group grid size-4 grid-cols-1">
                   <input
@@ -267,9 +823,9 @@ export default function WasteCategories(open: any) {
                   Default Data
                 </label>
               </div>
-            </div>  
+            </div>
 
-              <div className="flex gap-3">
+            <div className="flex gap-3">
               <div className="flex h-6 shrink-0 items-center">
                 <div className="group grid size-4 grid-cols-1">
                   <input
@@ -288,9 +844,9 @@ export default function WasteCategories(open: any) {
                   User Define Data
                 </label>
               </div>
-            </div>  
-            </div>  
-          </div>  
+            </div>
+          </div>
+        </div>
         {formData.subCategories.length > 0 && (
           <div className="">
             <p className="text-sm font-bold text-gray-900  pb-1 text-left w-full mb-3">
@@ -298,19 +854,19 @@ export default function WasteCategories(open: any) {
             </p>
 
             <div className="grid grid-cols-2 gap-5">
-              {formData.mainCategories.slice(0, 3).map((category:any) => (
+              {formData.mainCategories.slice(0, 3).map((category: any) => (
                 <div key={category.id} className="border">
                   <div className="flex justify-between items-center bg-violet-700 text-white border-b px-5 py-3">
                     <h2 className="text-sm font-medium text-left w-full">
                       {category.name}
                     </h2>
                     {!category.isDone && (
-                      <button
+                      <p
                         onClick={() => handleCompleteCategory(category.id)}
                         className="underline text-sm cursor-pointer w-fit"
                       >
                         Done
-                      </button>
+                      </p>
                     )}
                   </div>
 
@@ -318,18 +874,20 @@ export default function WasteCategories(open: any) {
                     <div className="space-y-2">
                       <div className=" flex flex-col">
                         {formData.selectedSubcategories
-                          .filter((ss:any) => ss.mainCategoryId === category.id)
-                          .map((ss:any) => {
+                          .filter(
+                            (ss: any) => ss.mainCategoryId === category.id
+                          )
+                          .map((ss: any) => {
                             const sub = formData.subCategories.find(
                               (sc) => sc.id === ss.subCategoryId
                             );
                             return sub ? (
                               <div
                                 key={sub.id}
-                                className="text-sm flex justify-between items-center border-b px-5 py-2"
+                                className="text-sm flex justify-between items-center border-b px-5 py-2 pl-6"
                               >
                                 {sub.name}
-                                <button
+                                <p
                                   className="text-xs text-red-500 w-[33px]"
                                   onClick={() =>
                                     setTimeout(() => {
@@ -343,7 +901,7 @@ export default function WasteCategories(open: any) {
                                   }
                                 >
                                   ✕
-                                </button>
+                                </p>
                               </div>
                             ) : null;
                           })}
@@ -354,7 +912,7 @@ export default function WasteCategories(open: any) {
                         onChange={(e) => {
                           const subId = e.target.value;
                           const sub = formData.subCategories.find(
-                            (s:any) => s.id === subId
+                            (s: any) => s.id === subId
                           );
                           if (sub) {
                             setTimeout(() => {
@@ -379,56 +937,56 @@ export default function WasteCategories(open: any) {
                         </option>
                         {formData.subCategories
                           .filter(
-                            (sc:any) =>
+                            (sc: any) =>
                               !formData.selectedSubcategories.some(
                                 (ss) => ss.subCategoryId === sc.id
                               )
                           )
-                          .map((sub:any) => (
+                          .map((sub: any) => (
                             <option key={sub.id} value={sub.id}>
                               {sub.name}
                             </option>
                           ))}
                       </select>
 
-                        <div className="mt-2 flex flex-wrap gap-2">
-                      {formData.selectedSubcategories
-                        .filter((ss) => ss.mainCategoryId === category.id)
-                        .map((ss) => {
-                          const sub = formData.subCategories.find(
-                            (sc) => sc.id === ss.subCategoryId
-                          );
-                          return sub ? (
-                            <div
-                              key={sub.id}
-                              className="badge badge-outline gap-1 flex items-center"
-                            >
-                              {sub.name}
-                              <button
-                                className="ml-1 text-xs text-red-500"
-                                onClick={() =>
-                                  setTimeout(() => {
-                                    setFormData((prev) => ({
-                                      ...prev,
-                                      selectedSubcategories: prev.selectedSubcategories.filter(
-                                        (s) => s.subCategoryId !== sub.id
-                                      ),
-                                    }));
-                                  }, 500)
-                                }
+                      {/* <div className="mt-2 flex flex-wrap gap-2">
+                        {formData.selectedSubcategories
+                          .filter((ss) => ss.mainCategoryId === category.id)
+                          .map((ss) => {
+                            const sub = formData.subCategories.find(
+                              (sc) => sc.id === ss.subCategoryId
+                            );
+                            return sub ? (
+                              <div
+                                key={sub.id}
+                                className="badge badge-outline gap-1 flex items-center"
                               >
-                                ✕
-                              </button>
-                            </div>
-                          ) : null;
-                        })}
-                    </div>  
+                                 {sub.name}
+                                <button
+                                  className="ml-1 text-xs text-red-500"
+                                  onClick={() =>
+                                    setTimeout(() => {
+                                      setFormData((prev) => ({
+                                        ...prev,
+                                        selectedSubcategories: prev.selectedSubcategories.filter(
+                                          (s) => s.subCategoryId !== sub.id
+                                        ),
+                                      }));
+                                    }, 500)
+                                  }
+                                >
+                                  ✕
+                                </button> 
+                              </div>
+                            ) : null;
+                          })}
+                      </div> */}
                     </div>
                   ) : (
                     <div className="flex flex-col">
                       {formData.selectedSubcategories
-                        .filter((ss:any) => ss.mainCategoryId === category.id)
-                        .map((ss:any) => {
+                        .filter((ss: any) => ss.mainCategoryId === category.id)
+                        .map((ss: any) => {
                           const sub = formData.subCategories.find(
                             (sc) => sc.id === ss.subCategoryId
                           );
@@ -452,50 +1010,22 @@ export default function WasteCategories(open: any) {
                     <h2 className="text-sm font-normal text-left w-full flex justify-between items-center bg-violet-700 text-white border-b px-5 py-3">
                       Residues
                     </h2>
-
-                      Selected Subcategories  
                     <div className="">
-                      {formData.selectedOtherSubcategories.map((subId:any) => {
-                        const sub = formData.subCategories.find(
-                          (sc) => sc.id === subId
-                        );
-                        return sub ? (
+                      {formData.selectedOtherSubcategories.map((sub: any) => (
                           <div
-                            key={sub.id}
-                            className="text-sm flex justify-between items-center last:border-0 border-b px-5 py-2"
+                            key={sub.subCategoryId}
+                            className="text-sm flex h-[37px] justify-between items-center last:border-0 border-b px-5 py-2"
                           >
-                            <span className="flex-1">{sub.name}</span>
-                              <input
-                            type="number"
-                            placeholder="kg"
-                            value={sub.value || ""}
-                            onChange={(e) =>
-                              setFormData((prev) => ({
-                                ...prev,
-                                subCategories: prev.subCategories.map((sc) =>
-                                  sc.id === sub.id
-                                    ? { ...sc, value: e.target.value }
-                                    : sc
-                                ),
-                              }))
-                            }
-                            className="input input-bordered input-sm w-20"
-                          />
-                          {/* <button
-                            onClick={() => handleRemoveFromOther(sub.id)}
-                            className="btn btn-circle btn-xs btn-ghost"
-                          >
-                            ✕
-                          </button>   */}
+                            <span className="flex-1">{sub.subCategory.name}</span>
                           </div>
-                        ) : null;
-                      })}
+                        
+                      ))}
                     </div>
                   </div>
                 </div>
               )}
             </div>
-
+            {/* 
               <div className="">
             {formData.mainCategories.slice(0, 3).map((category) => (
               <div className="">
@@ -726,20 +1256,51 @@ export default function WasteCategories(open: any) {
                 </div>
               </div>
             )}
-          </div>  
-
-              <ul>
-            {formData.subCategories.map((sub) => (
-              <li key={sub.id}>
-                {sub.name} – Value: {sub.value}
-              </li>
-            ))}
-          </ul>  
+          </div>   */}
           </div>
         )}
       </div>
-<GeneateMap1 />
-      
-    </div>
+      <div>
+      <button
+                type="submit"
+                className=" bg-violet-700 cursor-pointer text-white px-8 py-2 mt-5 text-sm rounded-md shadow-md hover:bg-violet-600"
+              >
+                Proceed
+              </button> 
+      </div>
+      <GeneateMap1
+        onLoad={onLoad}
+        searchBoxRef={searchBoxRef}
+        handlePlacesChanged={handlePlacesChanged}
+        viewType={viewType}
+        setViewType={setViewType}
+        adminBoundaries={adminBoundaries}
+        roundedArea={roundedArea}
+        selectedBoundary={selectedBoundary}
+        setSelectedBoundary={setSelectedBoundary}
+        selectedCategory={selectedCategory}
+        setSelectedCategory={setSelectedCategory}
+        handleBoundaryClick={handleBoundaryClick}
+      />
+
+      <Userdef
+        roundedArea={roundedArea}
+        totalSubCatValue={totalSubCatValue}
+        subCatError={subCatError}
+        handleSubmit={handleSubmit}
+        handleInputChange={handleInputChange}
+        fPopulation={formData.population}
+        fName={formData.ucName}
+        fForecast={formData.forecast}
+        fGrowthRate={formData.growthRate}
+        fGenerationRate={formData.generationRate}
+        fSubCategories={formData.subCategories}
+        newSubCatName={newSubCatName}
+        setNewSubCatName={setNewSubCatName}
+        newSubCatValue={newSubCatValue}
+        setNewSubCatValue={setNewSubCatValue}
+        handleAddSubCategory={handleAddSubCategory}
+      />
+    </form>
   );
 }

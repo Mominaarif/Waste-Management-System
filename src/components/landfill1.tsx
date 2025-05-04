@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import "../Styles/App.css";
 
 const Landfill1 = () => {
@@ -24,6 +24,33 @@ const Landfill1 = () => {
     excavationPerformance: 20, 
     workHoursPerDay: 8, 
   };
+
+    const [data1, setData1] = useState([]);
+    const [totalWasteInput, setTotalWasteInput] = useState(4053473.96110292); // in kg/day
+  
+    useEffect(() => {
+      const stored = localStorage.getItem("componentWasteDataOthers");
+      if (stored) {
+        const parsed = JSON.parse(stored);
+        setData1(parsed);
+      }
+  
+      
+    }, []);
+  
+    useEffect(() => {
+      if (data1.length > 0) {
+        getCategories();
+      }
+    }, [data1]);
+  
+    const getCategories = () => {
+      const totalSubCatValue = data1.reduce((sum, subCat: any) => {
+        const val = parseFloat(subCat.waste) || 0;
+        return sum + val;
+      }, 0);
+      setTotalWasteInput(totalSubCatValue);
+    };
 
   const [wasteInputs, setWasteInputs] = useState(defaultWasteInputs);
 
@@ -81,8 +108,10 @@ const Landfill1 = () => {
     const workHoursPerDay =
       designParams.workHoursPerDay || defaultDesignParams.workHoursPerDay;
 
-    const totalWastePerDay = mswResidue + diapers + glassResidue + combustibles;
-    const totalWastePerYear = totalWastePerDay * 365;
+      const totalWastePerDay = data1.reduce((sum, subCat: any) => {
+        const val = parseFloat(subCat.waste) || 0;
+        return sum + val;
+      }, 0);    const totalWastePerYear = totalWastePerDay * 365;
 
     const dailyVolumeInflow = totalWastePerDay / density;
 
@@ -147,86 +176,19 @@ const Landfill1 = () => {
             <h2 className="text-lg font-semibold text-gray-900 pb-5">
               Waste Inputs
             </h2>
-            <div className="grid grid-cols-1 sm:grid-cols-3 gap-y-4 gap-x-6">
-              <div className=" ">
-                <label className="block text-sm/6 font-medium text-gray-900 my-0">
-                  Residue from MSW Stream (C & D Waste ) (tonnes/day):
-                </label>
-                <div className="mt-2">
-                  <input
-                    type="number"
-                    value={wasteInputs.mswResidue}
-                    onChange={(e) =>
-                      setWasteInputs({
-                        ...wasteInputs,
-                        mswResidue: parseFloat(e.target.value),
-                      })
-                    }
-                    placeholder="Enter value (default: 48.65)"
-                    className="block w-full rounded-md bg-white px-3 py-1.5 text-base text-gray-900 outline-1 -outline-offset-1 outline-gray-300 placeholder:text-gray-400 focus:outline-2 focus:-outline-offset-2 focus:outline-indigo-600 sm:text-sm/6"
-                  />
-                </div>
-              </div>
-
-              <div className=" ">
-                <label className="block text-sm/6 font-medium text-gray-900">
-                Residue from MSW Stream (Diapers) (tonnes/day): {}
-                </label>
-                <div className="mt-2">
-                  <input
-                    type="number"
-                    value={wasteInputs.diapers}
-                    onChange={(e) =>
-                      setWasteInputs({
-                        ...wasteInputs,
-                        diapers: parseFloat(e.target.value),
-                      })
-                    }
-                    placeholder="Enter value (default: 120.71)"
-                    className="block w-full rounded-md bg-white px-3 py-1.5 text-base text-gray-900 outline-1 -outline-offset-1 outline-gray-300 placeholder:text-gray-400 focus:outline-2 focus:-outline-offset-2 focus:outline-indigo-600 sm:text-sm/6"
-                  />
-                </div>
-              </div>
-
-              <div className=" ">
-                <label className="block text-sm/6 font-medium text-gray-900">
-                  Residue from Recyclables (Glass) (tonnes/day):
-                </label>
-                <div className="mt-2">
-                  <input
-                    type="number"
-                    value={wasteInputs.glassResidue}
-                    onChange={(e) =>
-                      setWasteInputs({
-                        ...wasteInputs,
-                        glassResidue: parseFloat(e.target.value),
-                      })
-                    }
-                    placeholder="Enter value (default: 11.96)"
-                    className="block w-full rounded-md bg-white px-3 py-1.5 text-base text-gray-900 outline-1 -outline-offset-1 outline-gray-300 placeholder:text-gray-400 focus:outline-2 focus:-outline-offset-2 focus:outline-indigo-600 sm:text-sm/6"
-                  />
-                </div>
-              </div>
-
-              <div className=" ">
-                <label className="block text-sm/6 font-medium text-gray-900">
-                  Residue from Combustibles (Mixed Combustibles) (tonnes/day):
-                </label>
-                <div className="mt-2">
-                  <input
-                    type="number"
-                    value={wasteInputs.combustibles}
-                    onChange={(e) =>
-                      setWasteInputs({
-                        ...wasteInputs,
-                        combustibles: parseFloat(e.target.value),
-                      })
-                    }
-                    placeholder="Enter value (default: 160)"
-                    className="block w-full rounded-md bg-white px-3 py-1.5 text-base text-gray-900 outline-1 -outline-offset-1 outline-gray-300 placeholder:text-gray-400 focus:outline-2 focus:-outline-offset-2 focus:outline-indigo-600 sm:text-sm/6"
-                  />
-                </div>
-              </div>
+            <div className={`grid grid-cols-1 ${data1.length > 2 ? "md:grid-cols-3" : "md:grid-cols-2"} gap-y-4 gap-x-6`}>
+            {data1.map((item: any, index: number) => (
+                      <div key={index} className=" ">
+                        <label className="block text-sm/6 font-medium text-gray-900 my-0">
+                          Residue from MSW Stream ({item.name}) (tonnes/day):
+                        </label>
+                        <div className="mt-2">
+                          <p className="block w-full rounded-md bg-white px-3 py-1.5 text-base text-gray-900 outline-1 -outline-offset-1 outline-gray-300 placeholder:text-gray-400 focus:outline-2 focus:-outline-offset-2 focus:outline-indigo-600 sm:text-sm/6">
+                            {item.waste}
+                          </p>
+                        </div>
+                      </div>
+                    ))}
             </div>
           </div>
 

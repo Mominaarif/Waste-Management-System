@@ -47,7 +47,7 @@ interface PolygonData {
 
 const containerStyle: React.CSSProperties = {
   width: "100%",
-  height: "calc(100vh - 85px)",
+  height: "calc(100vh - 55px)",
   position: "fixed",
   top: "0",
   zIndex: 1,
@@ -115,402 +115,418 @@ interface GeneateMap1Props {
   isPolygonDrawn: boolean;
 }
 
-const GeneateMap1 = ({}) => {
-  const [viewType, setViewType] = useState<
-    "district" | "unionCouncil" | "province"
-  >("district");
-  const [selectedCategory, setSelectedCategory] = useState<string>(
-    "residential"
-  );
-
-  const [roundedArea, setRoundedArea] = useState<number | undefined>();
-  const [
-    existingPolygon,
-    setExistingPolygon,
-  ] = useState<google.maps.Polygon | null>(null);
-
-  const navigate = useNavigate();
+const GeneateMap1 = ({
+  onLoad,
+searchBoxRef,
+handlePlacesChanged,
+viewType,
+setViewType,
+adminBoundaries,
+roundedArea,
+selectedBoundary,
+setSelectedBoundary,
+selectedCategory,
+setSelectedCategory,
+handleBoundaryClick
+}:any) => {
+  // const [viewType, setViewType] = useState<
+  //   "district" | "unionCouncil" | "province"
+  // >("district");
+  // const [selectedCategory, setSelectedCategory] = useState<string>(
+  //   "residential"
+  // );
 
   // const [roundedArea, setRoundedArea] = useState<number | undefined>();
-  const [adminBoundaries, setAdminBoundaries] = useState<PolygonData[]>([]);
-  const [selectedBoundary, setSelectedBoundary] = useState<PolygonData | null>(
-    null
-  );
+  // const [
+  //   existingPolygon,
+  //   setExistingPolygon,
+  // ] = useState<google.maps.Polygon | null>(null);
 
-  const [dataOption, setDataOption] = useState<number | undefined>();
+  // const navigate = useNavigate();
 
-  const [isPolygonDrawn, setIsPolygonDrawn] = React.useState<boolean>(false);
-  const [
-    selectedPolygon,
-    setSelectedPolygon,
-  ] = React.useState<google.maps.Polygon | null>(null);
+  // // const [roundedArea, setRoundedArea] = useState<number | undefined>();
+  // const [adminBoundaries, setAdminBoundaries] = useState<PolygonData[]>([]);
+  // const [selectedBoundary, setSelectedBoundary] = useState<PolygonData | null>(
+  //   null
+  // );
 
-  const mapRef = useRef<google.maps.Map | null>(null);
-  const drawingManagerRef = useRef<google.maps.drawing.DrawingManager | null>(
-    null
-  );
-  const searchBoxRef = useRef<google.maps.places.SearchBox | null>(null);
+  // const [dataOption, setDataOption] = useState<number | undefined>();
 
-  // Load administrative boundaries
-  useEffect(() => {
-    const loadAdminBoundaries = async () => {
-      try {
-        const url = getGeoJsonUrl();
-        const response = await fetch(url);
-        const data = await response.json();
+  // const [isPolygonDrawn, setIsPolygonDrawn] = React.useState<boolean>(false);
+  // const [
+  //   selectedPolygon,
+  //   setSelectedPolygon,
+  // ] = React.useState<google.maps.Polygon | null>(null);
 
-        const boundaries = data.features.map((feature: any, index: number) => ({
-          id: index,
-          name: feature.properties.name || feature.properties.DISTRICT,
-          paths: feature.geometry.coordinates[0]
-            .filter((coord: any) => Array.isArray(coord) && coord.length === 2)
-            .map((coord: [number, number]) => {
-              const [lng, lat] = coord;
-              return {
-                lat: parseFloat(lat as any),
-                lng: parseFloat(lng as any),
-              };
-            }),
-          wasteCategories: generateWasteCategories(),
-          options: {
-            strokeColor: "#0f6175",
-            strokeOpacity: 0.8,
-            strokeWeight: 2,
-            fillColor: "#ada5a5",
-            fillOpacity: 0.35,
-          },
-        }));
+  // const mapRef = useRef<google.maps.Map | null>(null);
+  // const drawingManagerRef = useRef<google.maps.drawing.DrawingManager | null>(
+  //   null
+  // );
+  // const searchBoxRef = useRef<google.maps.places.SearchBox | null>(null);
 
-        setAdminBoundaries(boundaries);
-      } catch (error) {
-        console.error("Error loading administrative boundaries:", error);
-      }
-    };
+  // // Load administrative boundaries
+  // useEffect(() => {
+  //   const loadAdminBoundaries = async () => {
+  //     try {
+  //       const url = getGeoJsonUrl();
+  //       const response = await fetch(url);
+  //       const data = await response.json();
 
-    loadAdminBoundaries();
-  }, [viewType]);
+  //       const boundaries = data.features.map((feature: any, index: number) => ({
+  //         id: index,
+  //         name: feature.properties.name || feature.properties.DISTRICT,
+  //         paths: feature.geometry.coordinates[0]
+  //           .filter((coord: any) => Array.isArray(coord) && coord.length === 2)
+  //           .map((coord: [number, number]) => {
+  //             const [lng, lat] = coord;
+  //             return {
+  //               lat: parseFloat(lat as any),
+  //               lng: parseFloat(lng as any),
+  //             };
+  //           }),
+  //         wasteCategories: generateWasteCategories(),
+  //         options: {
+  //           strokeColor: "#0f6175",
+  //           strokeOpacity: 0.8,
+  //           strokeWeight: 2,
+  //           fillColor: "#ada5a5",
+  //           fillOpacity: 0.35,
+  //         },
+  //       }));
 
-  const getGeoJsonUrl = () => {
-    switch (viewType) {
-      case "unionCouncil":
-        return "/Union_Council_VF.json";
-      case "province":
-        return "/Provinces_VF.json";
-      default:
-        return "/District_Boundary.json";
-    }
-  };
+  //       setAdminBoundaries(boundaries);
+  //     } catch (error) {
+  //       console.error("Error loading administrative boundaries:", error);
+  //     }
+  //   };
 
-  const generateWasteCategories = (): WasteCategories => ({
-    residential: generateRandomWaste(),
-    commercial: generateRandomWaste(),
-    industrial: generateRandomWaste(),
-    hazardous: generateRandomWaste(),
-  });
+  //   loadAdminBoundaries();
+  // }, [viewType]);
 
-  const generateRandomWaste = (): WasteCategory => ({
-    paper: Math.floor(Math.random() * 500) + 50,
-    cardboard: Math.floor(Math.random() * 300) + 30,
-    plastic: Math.floor(Math.random() * 200) + 20,
-    metal: Math.floor(Math.random() * 100) + 10,
-    organic: Math.floor(Math.random() * 600) + 60,
-  });
+  // const getGeoJsonUrl = () => {
+  //   switch (viewType) {
+  //     case "unionCouncil":
+  //       return "/Union_Council_VF.json";
+  //     case "province":
+  //       return "/Provinces_VF.json";
+  //     default:
+  //       return "/District_Boundary.json";
+  //   }
+  // };
 
-  const onLoad = useCallback((map: google.maps.Map) => {
-    mapRef.current = map;
-    initializeDrawingManager(map);
-  }, []);
+  // const generateWasteCategories = (): WasteCategories => ({
+  //   residential: generateRandomWaste(),
+  //   commercial: generateRandomWaste(),
+  //   industrial: generateRandomWaste(),
+  //   hazardous: generateRandomWaste(),
+  // });
 
-  const initializeDrawingManager = (map: google.maps.Map) => {
-    // Remove existing DrawingManager if already present
-    if (drawingManagerRef.current) {
-      drawingManagerRef.current.setMap(null);
-      google.maps.event.clearInstanceListeners(drawingManagerRef.current);
-    }
+  // const generateRandomWaste = (): WasteCategory => ({
+  //   paper: Math.floor(Math.random() * 500) + 50,
+  //   cardboard: Math.floor(Math.random() * 300) + 30,
+  //   plastic: Math.floor(Math.random() * 200) + 20,
+  //   metal: Math.floor(Math.random() * 100) + 10,
+  //   organic: Math.floor(Math.random() * 600) + 60,
+  // });
 
-    // Create new DrawingManager
-    const manager = new google.maps.drawing.DrawingManager({
-      drawingMode: null,
-      drawingControl: true,
-      drawingControlOptions: {
-        position: google.maps.ControlPosition.TOP_CENTER,
-        drawingModes: [google.maps.drawing.OverlayType.POLYGON],
-      },
-      polygonOptions: {
-        editable: false,
-        draggable: false,
-        fillColor: "#000",
-        fillOpacity: 0.2,
-        strokeColor: "#000",
-        strokeWeight: 1,
-      },
-    });
+  // const onLoad = useCallback((map: google.maps.Map) => {
+  //   mapRef.current = map;
+  //   initializeDrawingManager(map);
+  // }, []);
 
-    manager.setMap(map);
-    drawingManagerRef.current = manager;
+  // const initializeDrawingManager = (map: google.maps.Map) => {
+  //   // Remove existing DrawingManager if already present
+  //   if (drawingManagerRef.current) {
+  //     drawingManagerRef.current.setMap(null);
+  //     google.maps.event.clearInstanceListeners(drawingManagerRef.current);
+  //   }
 
-    // Handle drawing complete
+  //   // Create new DrawingManager
+  //   const manager = new google.maps.drawing.DrawingManager({
+  //     drawingMode: null,
+  //     drawingControl: true,
+  //     drawingControlOptions: {
+  //       position: google.maps.ControlPosition.TOP_CENTER,
+  //       drawingModes: [google.maps.drawing.OverlayType.POLYGON],
+  //     },
+  //     polygonOptions: {
+  //       editable: false,
+  //       draggable: false,
+  //       fillColor: "#000",
+  //       fillOpacity: 0.2,
+  //       strokeColor: "#000",
+  //       strokeWeight: 1,
+  //     },
+  //   });
 
-    window.google.maps.event.addListener(
-      manager,
-      "overlaycomplete",
-      (event: google.maps.drawing.OverlayCompleteEvent) => {
-        if (event.type === window.google.maps.drawing.OverlayType.POLYGON) {
-          const polygon = event.overlay as google.maps.Polygon;
-          calculateArea(polygon);
+  //   manager.setMap(map);
+  //   drawingManagerRef.current = manager;
 
-          manager.setOptions({
-            drawingMode: null,
-            drawingControl: false,
-          });
+  //   // Handle drawing complete
 
-          polygon.setOptions({
-            editable: false,
-            draggable: false,
-          });
+  //   window.google.maps.event.addListener(
+  //     manager,
+  //     "overlaycomplete",
+  //     (event: google.maps.drawing.OverlayCompleteEvent) => {
+  //       if (event.type === window.google.maps.drawing.OverlayType.POLYGON) {
+  //         const polygon = event.overlay as google.maps.Polygon;
+  //         calculateArea(polygon);
 
-          setIsPolygonDrawn(true);
+  //         manager.setOptions({
+  //           drawingMode: null,
+  //           drawingControl: false,
+  //         });
 
-          window.google.maps.event.addListener(polygon, "click", () => {
-            setSelectedPolygon(polygon);
-            // const modal = document.getElementById(
-            //   "my_modal_2"
-            // ) as HTMLDialogElement | null;
-            // if (modal) {
-            //   modal.showModal();
-            // }
-          });
+  //         polygon.setOptions({
+  //           editable: false,
+  //           draggable: false,
+  //         });
 
-          window.google.maps.event.addListener(
-            polygon.getPath(),
-            "set_at",
-            () => calculateArea(polygon)
-          );
-          window.google.maps.event.addListener(
-            polygon.getPath(),
-            "insert_at",
-            () => calculateArea(polygon)
-          );
-        }
-      }
-    );
-  };
+  //         setIsPolygonDrawn(true);
 
-  const calculateArea = (polygon: google.maps.Polygon) => {
-    const area = google.maps.geometry.spherical.computeArea(polygon.getPath());
-    setRoundedArea(Math.round(area * 100) / 100);
-  };
+  //         window.google.maps.event.addListener(polygon, "click", () => {
+  //           setSelectedPolygon(polygon);
+  //           // const modal = document.getElementById(
+  //           //   "my_modal_2"
+  //           // ) as HTMLDialogElement | null;
+  //           // if (modal) {
+  //           //   modal.showModal();
+  //           // }
+  //         });
 
-  const handlePlacesChanged = () => {
-    const places = searchBoxRef.current?.getPlaces();
-    if (places?.[0]?.geometry?.location) {
-      mapRef.current?.panTo(places[0].geometry.location);
-      mapRef.current?.setZoom(14);
-    }
-  };
+  //         window.google.maps.event.addListener(
+  //           polygon.getPath(),
+  //           "set_at",
+  //           () => calculateArea(polygon)
+  //         );
+  //         window.google.maps.event.addListener(
+  //           polygon.getPath(),
+  //           "insert_at",
+  //           () => calculateArea(polygon)
+  //         );
+  //       }
+  //     }
+  //   );
+  // };
 
-  const handleBoundaryClick = (
-    boundary: PolygonData,
-    event: google.maps.MapMouseEvent
-  ) => {
-    setSelectedBoundary({
-      ...boundary,
-      position: event.latLng?.toJSON() || { lat: 0, lng: 0 },
-    });
-  };
+  // const calculateArea = (polygon: google.maps.Polygon) => {
+  //   const area = google.maps.geometry.spherical.computeArea(polygon.getPath());
+  //   setRoundedArea(Math.round(area * 100) / 100);
+  // };
 
-  const handleDataOptionChange = () => {
-    const selectedOption = (document.querySelector(
-      'input[name="dataDef"]:checked'
-    ) as HTMLInputElement).value;
-    setDataOption(Number(selectedOption));
-  };
+  // const handlePlacesChanged = () => {
+  //   const places = searchBoxRef.current?.getPlaces();
+  //   if (places?.[0]?.geometry?.location) {
+  //     mapRef.current?.panTo(places[0].geometry.location);
+  //     mapRef.current?.setZoom(14);
+  //   }
+  // };
 
-  useEffect(() => {
-    if (dataOption === 0) {
-      //   DefaultDataValues();
-      alert("Proceeded to default data");
-    } else if (dataOption === 1) {
-      const modal = document.getElementById(
-        "my_modal_3"
-      ) as HTMLDialogElement | null;
-      if (modal) {
-        modal.showModal();
-      }
+  // const handleBoundaryClick = (
+  //   boundary: PolygonData,
+  //   event: google.maps.MapMouseEvent
+  // ) => {
+  //   setSelectedBoundary({
+  //     ...boundary,
+  //     position: event.latLng?.toJSON() || { lat: 0, lng: 0 },
+  //   });
+  // };
 
-      const modal1 = document.getElementById(
-        "my_modal_1"
-      ) as HTMLDialogElement | null;
-      if (modal1) {
-        modal1.close();
-      }
-    }
-  }, [dataOption]);
+  // const handleDataOptionChange = () => {
+  //   const selectedOption = (document.querySelector(
+  //     'input[name="dataDef"]:checked'
+  //   ) as HTMLInputElement).value;
+  //   setDataOption(Number(selectedOption));
+  // };
 
-  const [formData, setFormData] = useState<FormData>({
-    ucName: "",
-    households: "",
-    incomeGroup: "",
-    population: "",
-    growthRate: "",
-    forecast: "",
-    generationRate: "",
-    area: "",
-    mainCategories: [
-      { id: "biodegradables", name: "Biodegradables", isDone: false },
-      { id: "combustibles", name: "Combustibles", isDone: false },
-      { id: "recyclables", name: "Recyclables", isDone: false },
-      { id: "residues", name: "Residues", isDone: false },
-    ],
-    subCategories: [],
-    selectedSubcategories: [],
-    selectedOtherSubcategories: [],
-  });
+  // useEffect(() => {
+  //   if (dataOption === 0) {
+  //     //   DefaultDataValues();
+  //     alert("Proceeded to default data");
+  //   } else if (dataOption === 1) {
+  //     const modal = document.getElementById(
+  //       "my_modal_3"
+  //     ) as HTMLDialogElement | null;
+  //     if (modal) {
+  //       modal.showModal();
+  //     }
 
-  const getRemainingSubcategories = () => {
-    const allSelected = [
-      ...formData.selectedSubcategories,
-      ...formData.selectedOtherSubcategories.map((id) => ({
-        subCategoryId: id,
-      })),
-    ];
-    const selectedIds = new Set(allSelected.map((item) => item.subCategoryId));
-    return formData.subCategories.filter((sc) => !selectedIds.has(sc.id));
-  };
+  //     const modal1 = document.getElementById(
+  //       "my_modal_1"
+  //     ) as HTMLDialogElement | null;
+  //     if (modal1) {
+  //       modal1.close();
+  //     }
+  //   }
+  // }, [dataOption]);
 
-  const firstThreeDone = formData.mainCategories
-    .slice(0, 3)
-    .every((mc) => mc.isDone);
+  // const [formData, setFormData] = useState<FormData>({
+  //   ucName: "",
+  //   households: "",
+  //   incomeGroup: "",
+  //   population: "",
+  //   growthRate: "",
+  //   forecast: "",
+  //   generationRate: "",
+  //   area: "",
+  //   mainCategories: [
+  //     { id: "biodegradables", name: "Biodegradables", isDone: false },
+  //     { id: "combustibles", name: "Combustibles", isDone: false },
+  //     { id: "recyclables", name: "Recyclables", isDone: false },
+  //     { id: "residues", name: "Residues", isDone: false },
+  //   ],
+  //   subCategories: [],
+  //   selectedSubcategories: [],
+  //   selectedOtherSubcategories: [],
+  // });
 
-  const handleInputChange = (
-    e: ChangeEvent<HTMLInputElement | HTMLSelectElement>
-  ) => {
-    const { name, value } = e.target;
-    setFormData((prev) => ({
-      ...prev,
-      [name]: value,
-    }));
-  };
+  // const getRemainingSubcategories = () => {
+  //   const allSelected = [
+  //     ...formData.selectedSubcategories,
+  //     ...formData.selectedOtherSubcategories.map((id) => ({
+  //       subCategoryId: id,
+  //     })),
+  //   ];
+  //   const selectedIds = new Set(allSelected.map((item) => item.subCategoryId));
+  //   return formData.subCategories.filter((sc) => !selectedIds.has(sc.id));
+  // };
 
-  const handleSubmit = async (e: React.FormEvent) => {
-    e.preventDefault();
-    const auth = getAuth();
-    const user: User | null = auth.currentUser;
+  // const firstThreeDone = formData.mainCategories
+  //   .slice(0, 3)
+  //   .every((mc) => mc.isDone);
 
-    if (!user) {
-      alert("You must be logged in to submit data");
-      return;
-    }
+  // const handleInputChange = (
+  //   e: ChangeEvent<HTMLInputElement | HTMLSelectElement>
+  // ) => {
+  //   const { name, value } = e.target;
+  //   setFormData((prev) => ({
+  //     ...prev,
+  //     [name]: value,
+  //   }));
+  // };
 
-    if (!isPolygonDrawn) {
-      alert("Please draw a polygon on the map before submitting--");
-      return;
-    }
+  // const handleSubmit = async (e: React.FormEvent) => {
+  //   e.preventDefault();
+  //   const auth = getAuth();
+  //   const user: User | null = auth.currentUser;
 
-    try {
-      const polygonPath = selectedPolygon
-        ?.getPath()
-        .getArray()
-        .map((latLng) => ({
-          lat: latLng.lat(),
-          lng: latLng.lng(),
-        }));
+  //   if (!user) {
+  //     alert("You must be logged in to submit data");
+  //     return;
+  //   }
 
-      const dataToSave = {
-        ...formData,
-        area: roundedArea,
-        polygonPath,
-        createdAt: new Date(),
-        createdBy: user.uid,
-      };
-      console.log(dataToSave);
+  //   if (!isPolygonDrawn) {
+  //     alert("Please draw a polygon on the map before submitting--");
+  //     return;
+  //   }
 
-      setRoundedArea(0);
-      setFormData({
-        ucName: "",
-        population: "",
-        households: "",
-        incomeGroup: "",
-        growthRate: "",
-        forecast: "",
-        generationRate: "",
-        area: "",
-        mainCategories: [
-          { id: "biodegradables", name: "Biodegradables", isDone: false },
-          { id: "combustibles", name: "Combustibles", isDone: false },
-          { id: "recyclables", name: "Recyclables", isDone: false },
-          { id: "residues", name: "Residues", isDone: false },
-        ],
-        subCategories: [],
-        selectedSubcategories: [],
-        selectedOtherSubcategories: [],
-      });
+  //   try {
+  //     const polygonPath = selectedPolygon
+  //       ?.getPath()
+  //       .getArray()
+  //       .map((latLng) => ({
+  //         lat: latLng.lat(),
+  //         lng: latLng.lng(),
+  //       }));
 
-      if (selectedPolygon) {
-        selectedPolygon.setMap(null);
-      }
-      setRoundedArea(undefined);
-      setIsPolygonDrawn(false);
-      setSelectedPolygon(null);
+  //     const dataToSave = {
+  //       ...formData,
+  //       area: roundedArea,
+  //       polygonPath,
+  //       createdAt: new Date(),
+  //       createdBy: user.uid,
+  //     };
+  //     console.log(dataToSave);
 
-      navi();
+  //     setRoundedArea(0);
+  //     setFormData({
+  //       ucName: "",
+  //       population: "",
+  //       households: "",
+  //       incomeGroup: "",
+  //       growthRate: "",
+  //       forecast: "",
+  //       generationRate: "",
+  //       area: "",
+  //       mainCategories: [
+  //         { id: "biodegradables", name: "Biodegradables", isDone: false },
+  //         { id: "combustibles", name: "Combustibles", isDone: false },
+  //         { id: "recyclables", name: "Recyclables", isDone: false },
+  //         { id: "residues", name: "Residues", isDone: false },
+  //       ],
+  //       subCategories: [],
+  //       selectedSubcategories: [],
+  //       selectedOtherSubcategories: [],
+  //     });
+
+  //     if (selectedPolygon) {
+  //       selectedPolygon.setMap(null);
+  //     }
+  //     setRoundedArea(undefined);
+  //     setIsPolygonDrawn(false);
+  //     setSelectedPolygon(null);
+
+  //     navi();
       
-    } catch (error) {
-      console.error("Error saving data:", error);
-      alert("Failed to save data");
-    }
-  };
+  //   } catch (error) {
+  //     console.error("Error saving data:", error);
+  //     alert("Failed to save data");
+  //   }
+  // };
 
-  useEffect(() => {
-    if (firstThreeDone) {
-      const remaining = getRemainingSubcategories();
-      setFormData((prev) => {
-        const newIds = remaining
-          .map((sub) => sub.id)
-          .filter((id) => !prev.selectedOtherSubcategories.includes(id));
+  // useEffect(() => {
+  //   if (firstThreeDone) {
+  //     const remaining = getRemainingSubcategories();
+  //     setFormData((prev) => {
+  //       const newIds = remaining
+  //         .map((sub) => sub.id)
+  //         .filter((id) => !prev.selectedOtherSubcategories.includes(id));
 
-        return {
-          ...prev,
-          selectedOtherSubcategories: [
-            ...prev.selectedOtherSubcategories,
-            ...newIds,
-          ],
-        };
-      });
-    }
-  }, [firstThreeDone]);
+  //       return {
+  //         ...prev,
+  //         selectedOtherSubcategories: [
+  //           ...prev.selectedOtherSubcategories,
+  //           ...newIds,
+  //         ],
+  //       };
+  //     });
+  //   }
+  // }, [firstThreeDone]);
 
-  const [newSubCatName, setNewSubCatName] = useState("");
-  const [newSubCatValue, setNewSubCatValue] = useState("");
+  // const [newSubCatName, setNewSubCatName] = useState("");
+  // const [newSubCatValue, setNewSubCatValue] = useState("");
 
-  const handleAddSubCategory = () => {
-    if (newSubCatName.trim() === "" || newSubCatValue.trim() === "") return;
+  // const handleAddSubCategory = () => {
+  //   if (newSubCatName.trim() === "" || newSubCatValue.trim() === "") return;
 
-    const newSubCategory = {
-      id: `s${formData.subCategories.length + 1}`,
-      name: newSubCatName.trim(),
-      value: newSubCatValue.trim(),
-    };
+  //   const newSubCategory = {
+  //     id: `s${formData.subCategories.length + 1}`,
+  //     name: newSubCatName.trim(),
+  //     value: newSubCatValue.trim(),
+  //   };
 
-    setFormData((prev) => ({
-      ...prev,
-      subCategories: [...prev.subCategories, newSubCategory],
-    }));
+  //   setFormData((prev) => ({
+  //     ...prev,
+  //     subCategories: [...prev.subCategories, newSubCategory],
+  //   }));
 
-    setNewSubCatName("");
-    setNewSubCatValue("");
-  };
+  //   setNewSubCatName("");
+  //   setNewSubCatValue("");
+  // };
 
-  const navi = () => {
-    alert("Data submitted successfully!" + formData.population);
-    navigate("/waste-categories", { state: formData });
+  // const navi = () => {
+  //   alert("Data submitted successfully!" + formData.population);
+  //   navigate("/waste-categories", { state: formData });
 
-  };
-  console.log(formData.subCategories[0])
+  // };
+  // console.log(formData.subCategories[0])
   return (
     <dialog id="my_modal_1" className="modal">
-      <div className="modal-box rounded-none h-[100vh] max-w-[100vw] w-[100vw]">
+      <div className="modal-box rounded-none h-[100vh]  max-w-[100vw] w-[100vw] px-0 pb-0">
     <div className="relative">
+      <div>
+        <h1 className="pl-5 pb-2 text-base">Waste Generation Map</h1>
+      </div>
       <LoadScript
         googleMapsApiKey="AIzaSyClURLc6gcn9M_AOXj6gUsYYk147-T_FDA"
         libraries={libraries}
@@ -580,7 +596,7 @@ const GeneateMap1 = ({}) => {
           </div>
 
           {/* Administrative Boundaries */}
-          {adminBoundaries.map((boundary) => (
+          {adminBoundaries.map((boundary:any) => (
             <Polygon
               key={boundary.id}
               paths={boundary.paths}
@@ -601,7 +617,7 @@ const GeneateMap1 = ({}) => {
               textAlign: "center",
             }}
           >
-            {selectedPolygon && typeof roundedArea === "number" ? (
+            {/* {selectedPolygon && typeof roundedArea === "number" ? (
               <>
                 <p>
                   <strong>{roundedArea}</strong>
@@ -660,9 +676,10 @@ const GeneateMap1 = ({}) => {
                   </div>
                 </div>
               </>
-            ) : typeof roundedArea === "number" ? (
+            ) :  */}
+            {typeof roundedArea === "number" ? (
               <>
-                <p>
+                <p className="text-sm font-bold text-gray-900">
                   <strong>{roundedArea}</strong>
                 </p>
                 <p>square meters</p>
@@ -688,7 +705,7 @@ const GeneateMap1 = ({}) => {
                     ]
                   ).map(([key, value]) => (
                     <li key={key}>
-                      {key}: {value} kg
+                      {key}: {String(value)} kg
                     </li>
                   ))}
                 </ul>
@@ -697,37 +714,7 @@ const GeneateMap1 = ({}) => {
           )}
         </GoogleMap>
       </LoadScript>
-      <Userdef
-        // handleSubmit={handleSubmit}
-        // handleInputChange={handleInputChange}
-        roundedArea={roundedArea}
-
-        // fPopulation={fPopulation}
-        // fForecast={fForecast}
-        // fGrowthRate={fGrowthRate}
-        // fGenerationRate={fGenerationRate}
-        // fSubCategories={fSubCategories}
-
-        // newSubCatName={newSubCatName}
-        // setNewSubCatName={setNewSubCatName}
-        // newSubCatValue={newSubCatValue}
-        // setNewSubCatValue={setNewSubCatValue}
-        // handleAddSubCategory={handleAddSubCategory}
-
-        handleSubmit={handleSubmit}
-        handleInputChange={handleInputChange}
-        // isPolygonDrawn={isPolygonDrawn}
-        fPopulation={formData.population}
-        fForecast={formData.forecast}
-        fGrowthRate={formData.growthRate}
-        fGenerationRate={formData.generationRate}
-        fSubCategories={formData.subCategories}
-        newSubCatName={newSubCatName}
-        setNewSubCatName={setNewSubCatName}
-        newSubCatValue={newSubCatValue}
-        setNewSubCatValue={setNewSubCatValue}
-        handleAddSubCategory={handleAddSubCategory}
-      />
+      
     </div>
     </div>
     <div className="modal-action">
