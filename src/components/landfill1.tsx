@@ -3,54 +3,52 @@ import "../Styles/App.css";
 
 const Landfill1 = () => {
   const defaultWasteInputs = {
-    mswResidue: 48.65, 
-    diapers: 120.71, 
-    glassResidue: 11.96, 
-    combustibles: 160, 
+    mswResidue: 48.65,
+    diapers: 120.71,
+    glassResidue: 11.96,
+    combustibles: 160,
   };
 
   const defaultDesignParams = {
-    density: 0.9, 
+    density: 0.9,
     totalAlloctedArea: 1000000,
-    landfillDepth: 2.5, 
-    incrementalFactor: 0.2, 
-    trenchLifespan: 30, 
-    trenchWidth: 15, 
-    trenchDepth: 2.5, 
-    cellWidth: 6, 
-    cellDepth: 1.5, 
-    dailyCoverThickness: 0.15, 
-    finalCoverThickness: 0.65, 
-    excavationPerformance: 20, 
-    workHoursPerDay: 8, 
+    landfillDepth: 2.5,
+    incrementalFactor: 0.2,
+    trenchLifespan: 30,
+    trenchWidth: 15,
+    trenchDepth: 2.5,
+    cellWidth: 6,
+    cellDepth: 1.5,
+    dailyCoverThickness: 0.15,
+    finalCoverThickness: 0.65,
+    excavationPerformance: 20,
+    workHoursPerDay: 8,
   };
 
-    const [data1, setData1] = useState([]);
-    const [totalWasteInput, setTotalWasteInput] = useState(4053473.96110292); // in kg/day
-  
-    useEffect(() => {
-      const stored = localStorage.getItem("componentWasteDataOthers");
-      if (stored) {
-        const parsed = JSON.parse(stored);
-        setData1(parsed);
-      }
-  
-      
-    }, []);
-  
-    useEffect(() => {
-      if (data1.length > 0) {
-        getCategories();
-      }
-    }, [data1]);
-  
-    const getCategories = () => {
-      const totalSubCatValue = data1.reduce((sum, subCat: any) => {
-        const val = parseFloat(subCat.waste) || 0;
-        return sum + val;
-      }, 0);
-      setTotalWasteInput(totalSubCatValue);
-    };
+  const [data1, setData1] = useState([]);
+  const [totalWasteInput, setTotalWasteInput] = useState(4053473.96110292); // in kg/day
+
+  useEffect(() => {
+    const stored = localStorage.getItem("componentWasteDataOthers");
+    if (stored) {
+      const parsed = JSON.parse(stored);
+      setData1(parsed);
+    }
+  }, []);
+
+  useEffect(() => {
+    if (data1.length > 0) {
+      getCategories();
+    }
+  }, [data1]);
+
+  const getCategories = () => {
+    const totalSubCatValue = data1.reduce((sum, subCat: any) => {
+      const val = parseFloat(subCat.waste) || 0;
+      return sum + val;
+    }, 0);
+    setTotalWasteInput(totalSubCatValue);
+  };
 
   const [wasteInputs, setWasteInputs] = useState(defaultWasteInputs);
 
@@ -108,10 +106,18 @@ const Landfill1 = () => {
     const workHoursPerDay =
       designParams.workHoursPerDay || defaultDesignParams.workHoursPerDay;
 
-      const totalWastePerDay = data1.reduce((sum, subCat: any) => {
-        const val = parseFloat(subCat.waste) || 0;
-        return sum + val;
-      }, 0);    const totalWastePerYear = totalWastePerDay * 365;
+    
+      let totalWastePerDay = 0;
+      // Step 1: Calculate total waste per day and year
+      if (data1.length > 0) {
+        totalWastePerDay = data1.reduce((sum, subCat: any) => {
+          const val = parseFloat(subCat.waste) || 0;
+          return sum + val;
+        }, 0);
+      } else {
+        totalWastePerDay = mswResidue + diapers + glassResidue + combustibles;
+      }
+    const totalWastePerYear = totalWastePerDay * 365;
 
     const dailyVolumeInflow = totalWastePerDay / density;
 
@@ -128,17 +134,18 @@ const Landfill1 = () => {
     const totalCellDepth = cellDepth + dailyCoverThickness;
 
     const dailyCoverMaterial = cellWidth * cellLength * dailyCoverThickness;
-    const totalDailyCoverMaterial = dailyCoverMaterial * 365 * totalAlloctedArea;
+    const totalDailyCoverMaterial =
+      dailyCoverMaterial * 365 * totalAlloctedArea;
     const finalCoverMaterial = landfillArea * finalCoverThickness;
     const totalCoverMaterial = totalDailyCoverMaterial + finalCoverMaterial;
 
-
-
     ////////////////////////////////////////////
-    const actualLandfillArea = designParams.totalAlloctedArea - (designParams.incrementalFactor * designParams.totalAlloctedArea);
+    const actualLandfillArea =
+      designParams.totalAlloctedArea -
+      designParams.incrementalFactor * designParams.totalAlloctedArea;
 
-    const totalLandfillVolume = (actualLandfillArea * designParams.landfillDepth ) / dailyVolumeInflow;
-
+    const totalLandfillVolume =
+      (actualLandfillArea * designParams.landfillDepth) / dailyVolumeInflow;
 
     setOutputs({
       totalWastePerDay,
@@ -169,27 +176,119 @@ const Landfill1 = () => {
   };
 
   return (
-   <>
-   <div className="pt-8 bg-white">
+    <>
+      <div className="pt-8 bg-white">
         <div className="border p-8 rounded-md">
           <div className="border-b border-gray-900/10 pb-8 mb-8">
             <h2 className="text-lg font-semibold text-gray-900 pb-5">
               Waste Inputs
             </h2>
-            <div className={`grid grid-cols-1 ${data1.length > 2 ? "md:grid-cols-3" : "md:grid-cols-2"} gap-y-4 gap-x-6`}>
-            {data1.map((item: any, index: number) => (
-                      <div key={index} className=" ">
-                        <label className="block text-sm/6 font-medium text-gray-900 my-0">
-                          Residue from MSW Stream ({item.name}) (tonnes/day):
-                        </label>
-                        <div className="mt-2">
-                          <p className="block w-full rounded-md bg-white px-3 py-1.5 text-base text-gray-900 outline-1 -outline-offset-1 outline-gray-300 placeholder:text-gray-400 focus:outline-2 focus:-outline-offset-2 focus:outline-indigo-600 sm:text-sm/6">
-                            {item.waste}
-                          </p>
-                        </div>
-                      </div>
-                    ))}
-            </div>
+            <div
+            className={`grid grid-cols-1 ${
+              data1.length > 2 ? "md:grid-cols-3" : data1.length > 0 ?"md:grid-cols-2" : "md:grid-cols-3"
+            } gap-y-4 gap-x-6`}
+          >
+            {data1.length > 0 ? (
+              <>
+                {data1.map((item: any, index: number) => (
+                  <div key={index} className=" ">
+                    <label className="block text-sm/6 font-medium text-gray-900 my-0">
+                      Residue from MSW Stream ({item.name})
+                      (tonnes/day):
+                    </label>
+                    <div className="mt-2">
+                      <p className="block w-full rounded-md bg-white px-3 py-1.5 text-base text-gray-900 outline-1 -outline-offset-1 outline-gray-300 placeholder:text-gray-400 focus:outline-2 focus:-outline-offset-2 focus:outline-indigo-600 sm:text-sm/6">
+                        {item.waste}
+                      </p>
+                    </div>
+                  </div>
+                ))}
+              </>
+            ) : (
+              <>
+                <div className=" ">
+                  <label className="block text-sm/6 font-medium text-gray-900 my-0">
+                    Residue from MSW Stream (C & D Waste ) (tonnes/day):
+                  </label>
+                  <div className="mt-2">
+                    <input
+                      type="number"
+                      value={wasteInputs.mswResidue}
+                      onChange={(e) =>
+                        setWasteInputs({
+                          ...wasteInputs,
+                          mswResidue: parseFloat(e.target.value),
+                        })
+                      }
+                      placeholder="Enter value (default: 48.65)"
+                      className="block w-full rounded-md bg-white px-3 py-1.5 text-base text-gray-900 outline-1 -outline-offset-1 outline-gray-300 placeholder:text-gray-400 focus:outline-2 focus:-outline-offset-2 focus:outline-indigo-600 sm:text-sm/6"
+                    />
+                  </div>
+                </div>
+
+                <div className=" ">
+                  <label className="block text-sm/6 font-medium text-gray-900">
+                    Residue from MSW Stream (Diapers) (tonnes/day):
+                  </label>
+                  <div className="mt-2">
+                    <input
+                      type="number"
+                      value={wasteInputs.diapers}
+                      onChange={(e) =>
+                        setWasteInputs({
+                          ...wasteInputs,
+                          diapers: parseFloat(e.target.value),
+                        })
+                      }
+                      placeholder="Enter value (default: 120.71)"
+                      className="block w-full rounded-md bg-white px-3 py-1.5 text-base text-gray-900 outline-1 -outline-offset-1 outline-gray-300 placeholder:text-gray-400 focus:outline-2 focus:-outline-offset-2 focus:outline-indigo-600 sm:text-sm/6"
+                    />
+                  </div>
+                </div>
+
+                <div className=" ">
+                  <label className="block text-sm/6 font-medium text-gray-900">
+                    Residue from Recyclables (Glass) (tonnes/day):
+                  </label>
+                  <div className="mt-2">
+                    <input
+                      type="number"
+                      value={wasteInputs.glassResidue}
+                      onChange={(e) =>
+                        setWasteInputs({
+                          ...wasteInputs,
+                          glassResidue: parseFloat(e.target.value),
+                        })
+                      }
+                      placeholder="Enter value (default: 11.96)"
+                      className="block w-full rounded-md bg-white px-3 py-1.5 text-base text-gray-900 outline-1 -outline-offset-1 outline-gray-300 placeholder:text-gray-400 focus:outline-2 focus:-outline-offset-2 focus:outline-indigo-600 sm:text-sm/6"
+                    />
+                  </div>
+                </div>
+
+                <div className=" ">
+                  <label className="block text-sm/6 font-medium text-gray-900">
+                    Residue from Combustibles (Mixed Combustibles)
+                    (tonnes/day):
+                  </label>
+                  <div className="mt-2">
+                    <input
+                      type="number"
+                      value={wasteInputs.combustibles}
+                      onChange={(e) =>
+                        setWasteInputs({
+                          ...wasteInputs,
+                          combustibles: parseFloat(e.target.value),
+                        })
+                      }
+                      placeholder="Enter value (default: 160)"
+                      className="block w-full rounded-md bg-white px-3 py-1.5 text-base text-gray-900 outline-1 -outline-offset-1 outline-gray-300 placeholder:text-gray-400 focus:outline-2 focus:-outline-offset-2 focus:outline-indigo-600 sm:text-sm/6"
+                    />
+                  </div>
+                </div>
+              </>
+            )}
+          </div>
           </div>
 
           <div className="">
@@ -199,7 +298,7 @@ const Landfill1 = () => {
             <div className="grid grid-cols-1 sm:grid-cols-3 gap-y-4 gap-x-6">
               <div className=" ">
                 <label className="block text-sm/6 font-medium text-gray-900 my-0">
-                Density to be achieved in landfill ( tons/m³):
+                  Density to be achieved in landfill ( tons/m³):
                 </label>
                 <div className="mt-2">
                   <input
@@ -219,7 +318,7 @@ const Landfill1 = () => {
 
               <div className=" ">
                 <label className="block text-sm/6 font-medium text-gray-900 my-0">
-                Total Allocated Area, At (m²):
+                  Total Allocated Area, At (m²):
                 </label>
                 <div className="mt-2">
                   <input
@@ -458,13 +557,13 @@ const Landfill1 = () => {
               </div>
             </div>
             <div className=" flex justify-center">
-            <button
-              className=" bg-blue-500 cursor-pointer text-white px-8 py-2 mt-8 rounded-md shadow-md hover:bg-blue-600"
-              onClick={calculateLandfillDesign}
-            >
-              Calculate
-            </button>
-          </div>
+              <button
+                className=" bg-blue-500 cursor-pointer text-white px-8 py-2 mt-8 rounded-md shadow-md hover:bg-blue-600"
+                onClick={calculateLandfillDesign}
+              >
+                Calculate
+              </button>
+            </div>
           </div>
         </div>
       </div>
@@ -476,115 +575,207 @@ const Landfill1 = () => {
             <div className="grid grid-cols-1 sm:grid-cols-3 gap-y-4 gap-x-6">
               <div className=" border p-3 rounded-md">
                 <label className="block text-sm font-medium text-gray-900">
-                Total Quantity (tonnes/day):
+                  Total Quantity (tonnes/day):
                 </label>
-                <span className="text-gray-700">{outputs.totalWastePerDay.toFixed(2)} tonnes/day</span>
+                <span className="text-gray-700">
+                  {outputs.totalWastePerDay.toFixed(2)} tonnes/day
+                </span>
               </div>
               <div className=" border p-3 rounded-md">
                 <label className="block text-sm font-medium text-gray-900">
-                Total Quantity (tonnes/year):
+                  Total Quantity (tonnes/year):
                 </label>
-                <span className="text-gray-700">{outputs.totalWastePerYear.toFixed(2)} tonnes/year</span>
+                <span className="text-gray-700">
+                  {outputs.totalWastePerYear.toFixed(2)} tonnes/year
+                </span>
               </div>
 
               <div className=" border p-3 rounded-md">
                 <label className="block text-sm font-medium text-gray-900">
-                Actual Landfilling Area:
+                  Actual Landfilling Area:
                 </label>
-                <span className="text-gray-700">{outputs.actualLandfillArea.toFixed(2)} m²</span>
+                <span className="text-gray-700">
+                  {outputs.actualLandfillArea.toFixed(2)} m²
+                </span>
               </div>
               <div className=" border p-3 rounded-md">
                 <label className="block text-sm font-medium text-gray-900">
                   Daily Volume Inflow:
                 </label>
-                <span className="text-gray-700">{outputs.dailyVolumeInflow.toFixed(2)} m³/day</span>
+                <span className="text-gray-700">
+                  {outputs.dailyVolumeInflow.toFixed(2)} m³/day
+                </span>
               </div>
               <div className=" border p-3 rounded-md">
                 <label className="block text-sm font-medium text-gray-900">
-               Life Span of Landfill:
+                  Life Span of Landfill:
                 </label>
-                <span className="text-gray-700">{outputs.totalLandfillVolume.toFixed(2)} days</span>
+                <span className="text-gray-700">
+                  {outputs.totalLandfillVolume.toFixed(2)} days
+                </span>
               </div>
               <div className=" border p-3 rounded-md">
                 <label className="block text-sm font-medium text-gray-900">
-               Life Span of Landfill:
+                  Life Span of Landfill:
                 </label>
-                <span className="text-gray-700">{(outputs.totalLandfillVolume / 365).toFixed(2)} years</span>
+                <span className="text-gray-700">
+                  {(outputs.totalLandfillVolume / 365).toFixed(2)} years
+                </span>
               </div>
-        <div className=" border p-3 rounded-md">
+              <div className=" border p-3 rounded-md">
                 <label className="block text-sm font-medium text-gray-900">
-                Total LF Design Volume:
+                  Total LF Design Volume:
                 </label>
-                <span className="text-gray-700">{(outputs.actualLandfillArea * designParams.landfillDepth).toFixed(2)} m³</span>
+                <span className="text-gray-700">
+                  {(
+                    outputs.actualLandfillArea * designParams.landfillDepth
+                  ).toFixed(2)}{" "}
+                  m³
+                </span>
               </div>
               <div className=" border p-3 rounded-md">
                 <label className="block text-sm font-medium text-gray-900">
                   Trench Volume:
                 </label>
-                <span className="text-gray-700">{((outputs.totalWastePerDay * defaultDesignParams.trenchLifespan) / designParams.density).toFixed(2)} m³</span>
+                <span className="text-gray-700">
+                  {(
+                    (outputs.totalWastePerDay *
+                      defaultDesignParams.trenchLifespan) /
+                    designParams.density
+                  ).toFixed(2)}{" "}
+                  m³
+                </span>
               </div>
               <div className=" border p-3 rounded-md">
                 <label className="block text-sm font-medium text-gray-900">
-                Trench Length:
+                  Trench Length:
                 </label>
-                <span className="text-gray-700">{( ((outputs.totalWastePerDay * designParams.trenchLifespan) / designParams.density) / (designParams.trenchDepth * designParams.trenchWidth) ).toFixed(2)} m</span>
+                <span className="text-gray-700">
+                  {(
+                    (outputs.totalWastePerDay * designParams.trenchLifespan) /
+                    designParams.density /
+                    (designParams.trenchDepth * designParams.trenchWidth)
+                  ).toFixed(2)}{" "}
+                  m
+                </span>
               </div>
               <div className=" border p-3 rounded-md">
                 <label className="block text-sm font-medium text-gray-900">
-                Time Required to Excavate a Trench:
+                  Time Required to Excavate a Trench:
                 </label>
-                <span className="text-gray-700">{( ((outputs.totalWastePerDay * designParams.trenchLifespan) / designParams.density) / (designParams.excavationPerformance * designParams.workHoursPerDay) ).toFixed(2)} days</span>
+                <span className="text-gray-700">
+                  {(
+                    (outputs.totalWastePerDay * designParams.trenchLifespan) /
+                    designParams.density /
+                    (designParams.excavationPerformance *
+                      designParams.workHoursPerDay)
+                  ).toFixed(2)}{" "}
+                  days
+                </span>
               </div>
               <div className=" border p-3 rounded-md">
                 <label className="block text-sm font-medium text-gray-900">
-                Cell Length:
+                  Cell Length:
                 </label>
-                <span className="text-gray-700">{outputs.cellDimensions.length.toFixed(2)} m</span>
+                <span className="text-gray-700">
+                  {outputs.cellDimensions.length.toFixed(2)} m
+                </span>
               </div>
               <div className=" border p-3 rounded-md">
                 <label className="block text-sm font-medium text-gray-900">
-                Total Depth of Cell:
+                  Total Depth of Cell:
                 </label>
-                <span className="text-gray-700">{outputs.cellDimensions.depth.toFixed(2)} m</span>
+                <span className="text-gray-700">
+                  {outputs.cellDimensions.depth.toFixed(2)} m
+                </span>
               </div>
               <div className=" border p-3 rounded-md">
                 <label className="block text-sm font-medium text-gray-900">
-                Area of 1 Cell:
+                  Area of 1 Cell:
                 </label>
-                <span className="text-gray-700">{(outputs.cellDimensions.length * outputs.cellDimensions.depth).toFixed(2)} m²</span>
+                <span className="text-gray-700">
+                  {(
+                    outputs.cellDimensions.length * outputs.cellDimensions.depth
+                  ).toFixed(2)}{" "}
+                  m²
+                </span>
               </div>
               <div className=" border p-3 rounded-md">
                 <label className="block text-sm font-medium text-gray-900">
-                Daily Cover Material required for each cell:
+                  Daily Cover Material required for each cell:
                 </label>
-                <span className="text-gray-700">{((outputs.cellDimensions.length * outputs.cellDimensions.depth) * designParams.dailyCoverThickness).toFixed(2)} m³/day</span>
-              </div>
- <div className=" border p-3 rounded-md">
-                <label className="block text-sm font-medium text-gray-900">
-                Total Daily Cover Material required for n-years design period:
-                </label>
-                <span className="text-gray-700">{(((outputs.cellDimensions.length * outputs.cellDimensions.depth) * designParams.dailyCoverThickness) * 365 * (outputs.totalLandfillVolume / 365)).toFixed(2)} m³</span>
-              </div>
-              <div className=" border p-3 rounded-md">
-                <label className="block text-sm font-medium text-gray-900">
-                Material required for Final Cover:
-                </label>
-                <span className="text-gray-700">{((designParams.finalCoverThickness) * (outputs.actualLandfillArea)).toFixed(2)} m³</span>
+                <span className="text-gray-700">
+                  {(
+                    outputs.cellDimensions.length *
+                    outputs.cellDimensions.depth *
+                    designParams.dailyCoverThickness
+                  ).toFixed(2)}{" "}
+                  m³/day
+                </span>
               </div>
               <div className=" border p-3 rounded-md">
                 <label className="block text-sm font-medium text-gray-900">
-                Total Cover Material required in Landfill Life:
+                  Total Daily Cover Material required for n-years design period:
                 </label>
-                <span className="text-gray-700">{((((outputs.cellDimensions.length * outputs.cellDimensions.depth) * designParams.dailyCoverThickness) * 365 * (outputs.totalLandfillVolume / 365)) + ((designParams.finalCoverThickness) * (outputs.actualLandfillArea))).toFixed(2)} m³</span>
+                <span className="text-gray-700">
+                  {(
+                    outputs.cellDimensions.length *
+                    outputs.cellDimensions.depth *
+                    designParams.dailyCoverThickness *
+                    365 *
+                    (outputs.totalLandfillVolume / 365)
+                  ).toFixed(2)}{" "}
+                  m³
+                </span>
               </div>
               <div className=" border p-3 rounded-md">
                 <label className="block text-sm font-medium text-gray-900">
-                Total Cover Material required in Landfill Life:
+                  Material required for Final Cover:
                 </label>
-                <span className="text-gray-700">{(((((outputs.cellDimensions.length * outputs.cellDimensions.depth) * designParams.dailyCoverThickness) * 365 * (outputs.totalLandfillVolume / 365)) + ((designParams.finalCoverThickness) * (outputs.actualLandfillArea)))/1000).toFixed(2)} km³</span>
+                <span className="text-gray-700">
+                  {(
+                    designParams.finalCoverThickness *
+                    outputs.actualLandfillArea
+                  ).toFixed(2)}{" "}
+                  m³
+                </span>
+              </div>
+              <div className=" border p-3 rounded-md">
+                <label className="block text-sm font-medium text-gray-900">
+                  Total Cover Material required in Landfill Life:
+                </label>
+                <span className="text-gray-700">
+                  {(
+                    outputs.cellDimensions.length *
+                      outputs.cellDimensions.depth *
+                      designParams.dailyCoverThickness *
+                      365 *
+                      (outputs.totalLandfillVolume / 365) +
+                    designParams.finalCoverThickness *
+                      outputs.actualLandfillArea
+                  ).toFixed(2)}{" "}
+                  m³
+                </span>
+              </div>
+              <div className=" border p-3 rounded-md">
+                <label className="block text-sm font-medium text-gray-900">
+                  Total Cover Material required in Landfill Life:
+                </label>
+                <span className="text-gray-700">
+                  {(
+                    (outputs.cellDimensions.length *
+                      outputs.cellDimensions.depth *
+                      designParams.dailyCoverThickness *
+                      365 *
+                      (outputs.totalLandfillVolume / 365) +
+                      designParams.finalCoverThickness *
+                        outputs.actualLandfillArea) /
+                    1000
+                  ).toFixed(2)}{" "}
+                  km³
+                </span>
               </div>
 
-              
               {/*
              
               <div className=" border p-3 rounded-md">
@@ -661,7 +852,6 @@ const Landfill1 = () => {
               </div>
               */}
 
-
               {/* designParams.excavationPerformance * designParams.workHoursPerDay */}
 
               {/* <div className=" border p-3 rounded-md">
@@ -718,7 +908,7 @@ const Landfill1 = () => {
           </div>
         </div>
       )}
-   </>
+    </>
   );
 };
 

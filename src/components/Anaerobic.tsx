@@ -25,8 +25,6 @@ interface Results {
   recoveryData: { name: string; value: number; recovered: number }[];
 }
 const AnaerobicDigesterCalculator = () => {
-
-
   const [data1, setData1] = useState([]);
   const [totalWasteInput, setTotalWasteInput] = useState(4053473.96110292); // in kg/day
 
@@ -40,14 +38,14 @@ const AnaerobicDigesterCalculator = () => {
       setData1(filtered);
     }
   }, []);
-  
+
   // ✅ Run getCategories only after data1 is updated
   useEffect(() => {
     if (data1.length > 0) {
       getCategories();
     }
   }, [data1]);
-  
+
   const getCategories = () => {
     const totalSubCatValue = data1.reduce((sum, subCat: any) => {
       const val = parseFloat(subCat.waste) || 0;
@@ -56,9 +54,6 @@ const AnaerobicDigesterCalculator = () => {
     }, 0);
     setTotalWasteInput(totalSubCatValue);
   };
-  
-
-
 
   const reactorTemperature = ["Unheated/Ambient", "Mesophilic", "Thermophilic"];
   const systemTypes = ["Dry-Anaerobic Digester", "Wet-Anaerobic Digester"];
@@ -103,20 +98,20 @@ const AnaerobicDigesterCalculator = () => {
 
   const [results, setResults] = useState<Results | null>(null);
 
-  // const TableData = [
-  //   {
-  //     name: "Food Waste",
-  //     value: foodWaste,
-  //   },
-  //   {
-  //     name: "Yard Trimmings",
-  //     value: yardTrimmings,
-  //   },
-  //   {
-  //     name: "Animal Dung",
-  //     value: animalDung,
-  //   },
-  // ];
+  const TableData = [
+    {
+      name: "Food Waste",
+      value: foodWaste,
+    },
+    {
+      name: "Yard Trimmings",
+      value: yardTrimmings,
+    },
+    {
+      name: "Animal Dung",
+      value: animalDung,
+    },
+  ];
   const calculateOutputs = () => {
     // Constants
     const biogasEnergyContent = 6.5;
@@ -125,10 +120,18 @@ const AnaerobicDigesterCalculator = () => {
     const typicalBiogasYield = 0.67;
 
     // Calculations
-    const totalBiodegradableWaste1 = totalWasteInput
-    const totalBiodegradableWaste = Math.round(
-      totalWasteInput
-    );
+    let totalBiodegradableWaste: any;
+    let totalBiodegradableWaste1: any;
+    if (data1.length > 0) {
+      totalBiodegradableWaste1 = totalWasteInput;
+    } else {
+      totalBiodegradableWaste1 = foodWaste + yardTrimmings + animalDung;
+    }
+    if (data1.length > 0) {
+      totalBiodegradableWaste = totalWasteInput;
+    } else {
+      totalBiodegradableWaste = foodWaste + yardTrimmings + animalDung;
+    }
     const waterRequirement = totalBiodegradableWaste1 * 1000;
     const totalSlurryInflow = totalBiodegradableWaste1 * 2 * 1000;
     const totalSlurry = totalSlurryInflow / 1000;
@@ -159,14 +162,14 @@ const AnaerobicDigesterCalculator = () => {
 
     const biogasProduction =
       typicalBiogasYield * organicLoadingRate * volumeOfDigester;
-    console.log(
-      "typicalBiogasYield:  " + typicalBiogasYield,
-      "organicLoadingRate: " + organicLoadingRate,
-      "volumeOfDigester: " + volumeOfDigester,
-      "volatileSolids: " + totalBiodegradableWaste * (volatileSolids / 100),
-      "totalBiodegradableWaste: " + totalBiodegradableWaste,
-      "dilutedFeedstockInflow" + dilutedFeedstockInflow
-    );
+    // console.log(
+    //   "typicalBiogasYield:  " + typicalBiogasYield,
+    //   "organicLoadingRate: " + organicLoadingRate,
+    //   "volumeOfDigester: " + volumeOfDigester,
+    //   "volatileSolids: " + totalBiodegradableWaste * (volatileSolids / 100),
+    //   "totalBiodegradableWaste: " + totalBiodegradableWaste,
+    //   "dilutedFeedstockInflow" + dilutedFeedstockInflow
+    // );
 
     const methaneProduction = biogasProduction * (methane / 100);
     const carbondioxide = biogasProduction * (CO2 / 100);
@@ -185,9 +188,9 @@ const AnaerobicDigesterCalculator = () => {
         biogasProduction * biogasDensity) *
       365;
 
-      // const RemainingVolatileSolids =
-      // (((24/100)*(2912.0*1000))-((468241.6945 * biogasDensity))) * 365;
-      // =(((24/100)*(C31*1000))-((Sheet1!C15)*(AD!C20)))*365
+    // const RemainingVolatileSolids =
+    // (((24/100)*(2912.0*1000))-((468241.6945 * biogasDensity))) * 365;
+    // =(((24/100)*(C31*1000))-((Sheet1!C15)*(AD!C20)))*365
 
     const DigesterSolids =
       TotalNonBiodegradableSolids +
@@ -205,14 +208,26 @@ const AnaerobicDigesterCalculator = () => {
     const LiquidEffluentGgPerYear =
       DigesterSolidsGgPerYear - DrySludgeGgPerYear;
 
-    const recoveryData = data1.map((waste:any) => {
+    let recoveryData:any
+    if(data1.length > 0){ 
+      recoveryData = data1.map((waste: any) => {
       const recovered = (waste?.waste / totalBiodegradableWaste1) * 100;
       return {
         name: waste?.name,
         value: waste?.waste,
         recovered,
       };
-    });
+    });}
+    else{
+      recoveryData = TableData.map((waste) => {
+        const recovered = (waste.value / totalBiodegradableWaste1) * 100;
+        return {
+          name: waste.name,
+          value: waste.value,
+          recovered,
+        };
+      });
+    }
 
     setResults({
       totalBiodegradableWaste,
@@ -334,7 +349,6 @@ const AnaerobicDigesterCalculator = () => {
       value: results?.RemainingVolatileSolids,
     },
 
-
     {
       name: "Digester Solids (kg/year)",
       value: results?.DigesterSolids,
@@ -347,7 +361,6 @@ const AnaerobicDigesterCalculator = () => {
       name: "Liquid Effluent (kg/year)",
       value: results?.LiquidEffluent,
     },
-
 
     {
       name: "Digester Solids (Gg/year)",
@@ -556,49 +569,63 @@ const AnaerobicDigesterCalculator = () => {
             <h2 className="text-lg font-semibold text-gray-900 py-5">
               Solid Waste Inflow to Digestor
             </h2>
-            <div className={`grid grid-cols-1 ${data1.length > 2 ? "md:grid-cols-3" : "md:grid-cols-2"} gap-y-4 gap-x-6`}>
-                    {data1.map((item: any, index: number) => (
-                      <div key={index} className=" ">
-                        <label className="block text-sm/6 font-medium text-gray-900 my-0">
-                          {item.name} (tonnes/day):
-                        </label>
-                        <div className="mt-2">
-                          <p className="block w-full rounded-md bg-white px-3 py-1.5 text-base text-gray-900 outline-1 -outline-offset-1 outline-gray-300 placeholder:text-gray-400 focus:outline-2 focus:-outline-offset-2 focus:outline-indigo-600 sm:text-sm/6">
-                            {item.waste}
-                          </p>
-                        </div>
+            <div
+              className={`grid grid-cols-1 ${
+                data1.length > 2
+                  ? "md:grid-cols-3"
+                  : data1.length > 0
+                  ? "md:grid-cols-2"
+                  : "md:grid-cols-3"
+              } gap-y-4 gap-x-6`}
+            >
+              {data1.length > 0 ? (
+                <>
+                  {data1.map((item: any, index: number) => (
+                    <div key={index} className=" ">
+                      <label className="block text-sm/6 font-medium text-gray-900 my-0">
+                        {item.name} (tonnes/day):
+                      </label>
+                      <div className="mt-2">
+                        <p className="block w-full rounded-md bg-white px-3 py-1.5 text-base text-gray-900 outline-1 -outline-offset-1 outline-gray-300 placeholder:text-gray-400 focus:outline-2 focus:-outline-offset-2 focus:outline-indigo-600 sm:text-sm/6">
+                          {item.waste}
+                        </p>
                       </div>
-                    ))}
-            {/* <div className="grid grid-cols-1 sm:grid-cols-3 gap-y-4 gap-x-6 border-b pb-5">
-              {[
-                {
-                  label: "Food Waste (tonnes/day)",
-                  value: foodWaste,
-                  setter: setFoodWaste,
-                },
-                {
-                  label: "Yard Trimmings (tonnes/day)",
-                  value: yardTrimmings,
-                  setter: setYardTrimmings,
-                },
-                {
-                  label: "Animal Dung (tonnes/day)",
-                  value: animalDung,
-                  setter: setAnimalDung,
-                },
-              ].map(({ label, value, setter }, index) => (
-                <div key={index}>
-                  <label className="block text-sm font-medium text-gray-900 pb-1">
-                    {label}:
-                  </label>
-                  <input
-                    type="number"
-                    value={value.toFixed(2)}
-                    onChange={(e) => setter(parseFloat(e.target.value))}
-                    className="block w-full border rounded-md border-gray-300 px-3 py-1.5 text-gray-900 focus:border-indigo-500 focus:ring-indigo-500 sm:text-sm"
-                  />
-                </div>
-              ))} */}
+                    </div>
+                  ))}
+                </>
+              ) : (
+                <>
+                  {[
+                    {
+                      label: "Food Waste (tonnes/day)",
+                      value: foodWaste,
+                      setter: setFoodWaste,
+                    },
+                    {
+                      label: "Yard Trimmings (tonnes/day)",
+                      value: yardTrimmings,
+                      setter: setYardTrimmings,
+                    },
+                    {
+                      label: "Animal Dung (tonnes/day)",
+                      value: animalDung,
+                      setter: setAnimalDung,
+                    },
+                  ].map(({ label, value, setter }, index) => (
+                    <div key={index}>
+                      <label className="block text-sm font-medium text-gray-900 pb-1">
+                        {label}:
+                      </label>
+                      <input
+                        type="number"
+                        value={value.toFixed(2)}
+                        onChange={(e) => setter(parseFloat(e.target.value))}
+                        className="block w-full border rounded-md border-gray-300 px-3 py-1.5 text-gray-900 focus:border-indigo-500 focus:ring-indigo-500 sm:text-sm"
+                      />
+                    </div>
+                  ))}
+                </>
+              )}
             </div>
 
             <div className="grid grid-cols-1 sm:grid-cols-3 gap-y-4 gap-x-6 pt-5">

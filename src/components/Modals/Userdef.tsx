@@ -127,7 +127,6 @@ const Userdef: React.FC<GeneateMap1Props> = ({
                 <input
                   type="number"
                   name="forecast"
-                  placeholder="0-100"
                   min="0"
                   value={fForecast ?? ""}
                   onChange={handleInputChange}
@@ -142,7 +141,6 @@ const Userdef: React.FC<GeneateMap1Props> = ({
                 <input
                   type="number"
                   name="generationRate"
-                  placeholder="0-100"
                   min="0"
                   value={fGenerationRate ?? ""}
                   onChange={handleInputChange}

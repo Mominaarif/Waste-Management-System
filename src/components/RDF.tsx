@@ -215,14 +215,16 @@ function RDF() {
       setData1(filtered);
     }
   }, []);
-  
+
   // ✅ Run getCategories only after data1 is updated
   useEffect(() => {
     if (data1.length > 0) {
       getCategories();
+    } else {
+      setTotalWasteInput(4053473.96110292);
     }
   }, [data1]);
-  
+
   const getCategories = () => {
     const totalSubCatValue = data1.reduce((sum, subCat: any) => {
       const val = parseFloat(subCat.waste) || 0;
@@ -231,8 +233,6 @@ function RDF() {
     }, 0);
     setTotalWasteInput(totalSubCatValue);
   };
-  
-
 
   const [retentionTime, setRetentionTime] = useState(3); // in days
   const [shredderEfficiencyPrimary, setShredderEfficiencyPrimary] = useState(
@@ -605,30 +605,30 @@ function RDF() {
   const [moistureContent, setMoistureContent] = useState("");
   const [typicalCalorificValue, setTypicalCalorificValue] = useState("");
 
-  // const handleAddSubCategory = () => {
-  //   if (newSubCatName.trim() === "" || newSubCatValue.trim() === "") return;
+  const handleAddSubCategory = () => {
+    if (newSubCatName.trim() === "" || newSubCatValue.trim() === "") return;
 
-  //   const newSubCategory = {
-  //     id: `s${formData.subCategories.length + 1}`,
-  //     name: newSubCatName.trim(),
-  //     value: newSubCatValue.trim(),
-  //     typicalDensity: typicalDensity.trim(),
-  //     moistureContent: moistureContent,
-  //     typicalCalorificValue: typicalCalorificValue, // Add this property with a default value
-  //   };
+    const newSubCategory = {
+      id: `s${formData.subCategories.length + 1}`,
+      name: newSubCatName.trim(),
+      value: newSubCatValue.trim(),
+      typicalDensity: typicalDensity.trim(),
+      moistureContent: moistureContent,
+      typicalCalorificValue: typicalCalorificValue, // Add this property with a default value
+    };
 
-  //   setFormData((prev) => ({
-  //     ...prev,
-  //     subCategories: [...prev.subCategories, newSubCategory],
-  //   }));
+    setFormData((prev) => ({
+      ...prev,
+      subCategories: [...prev.subCategories, newSubCategory],
+    }));
 
-  //   // Clear inputs
-  //   setNewSubCatName("");
-  //   setNewSubCatValue("");
-  //   setTypicalDensity("");
-  //   setTypicalCalorificValue("");
-  //   setMoistureContent("");
-  // };
+    // Clear inputs
+    setNewSubCatName("");
+    setNewSubCatValue("");
+    setTypicalDensity("");
+    setTypicalCalorificValue("");
+    setMoistureContent("");
+  };
   const [editableSubcategories, setEditableSubcategories] = useState<any[]>([]);
 
   useEffect(() => {
@@ -684,7 +684,6 @@ function RDF() {
   //   }
   // }, []);
 
-
   return (
     <div className="w-full h-[calc(100vh-85px)] overflow-y-auto bg-white">
       {/* <h1 className="text-lg md:text-3xl pl-5 md:pl-14 border shadow-sm py-4 font-bold">
@@ -717,15 +716,18 @@ function RDF() {
                   <label className="block text-sm font-medium text-gray-900 pb-1">
                     {input.label}
                   </label>
-                  <p  className="block w-full border rounded-md border-gray-300 px-3 py-1.5 text-gray-900 focus:border-indigo-500 focus:ring-indigo-500 md:text-sm" >{input.value}</p>
-                  {/* <input
-                    type="number"
-                    value={input.value}
-                    onChange={(e) =>
-                      input.setter(parseFloat(e.target.value))
-                    }
-                    className="block w-full border rounded-md border-gray-300 px-3 py-1.5 text-gray-900 focus:border-indigo-500 focus:ring-indigo-500 md:text-sm"
-                  /> */}
+                  {data1.length > 0 ? (
+                    <p className="block w-full border rounded-md border-gray-300 px-3 py-1.5 text-gray-900 focus:border-indigo-500 focus:ring-indigo-500 md:text-sm">
+                      {input.value}
+                    </p>
+                  ) : (
+                    <input
+                      type="number"
+                      value={input.value}
+                      onChange={(e) => input.setter(parseFloat(e.target.value))}
+                      className="block w-full border rounded-md border-gray-300 px-3 py-1.5 text-gray-900 focus:border-indigo-500 focus:ring-indigo-500 md:text-sm"
+                    />
+                  )}
                 </div>
               ))}
             </div>
@@ -859,62 +861,144 @@ function RDF() {
                       Typical Calorific Values (MJ/Kg)
                     </p>
                   </div>
-                  {editableSubcategories.map((item: any, index) => (
-                    <div
-                      className="md:grid md:grid-cols-5 flex flex-col w-full"
-                      key={item.id}
-                    >
-                      <p className="block w-full border border-gray-300 px-3 py-1.5 text-gray-900 focus:border-blue-500 focus:ring-blue-500 md:text-sm">
-                        {item.name}
-                      </p>
-                      <p className="block w-full border border-gray-300 px-3 py-1.5 text-gray-900 focus:border-blue-500 focus:ring-blue-500 md:text-sm">
-                        {item.value}
-                      </p>
-                      <input
-                        type="text"
-                        placeholder="%"
-                        max={100}
-                        min={0}
-                        name="subCategoryValue"
-                        value={item.typicalDensity}
-                        onChange={(e) => {
-                          const updated = [...editableSubcategories];
-                          updated[index].typicalDensity = e.target.value;
-                          setEditableSubcategories(updated);
-                        }}
-                        className="block h-[38px] w-full border border-gray-300 px-3 py-1.5 text-gray-900 focus:border-blue-500 focus:ring-blue-500 md:text-sm"
-                      />
-                      <input
-                        type="text"
-                        placeholder="%"
-                        max={100}
-                        min={0}
-                        // value={moistureContent}
-                        name="subCategoryValue"
-                        value={item.moistureContent}
-                        onChange={(e) => {
-                          const updated = [...editableSubcategories];
-                          updated[index].moistureContent = e.target.value;
-                          setEditableSubcategories(updated);
-                        }}
-                        className="block h-[38px] w-full border border-gray-300 px-3 py-1.5 text-gray-900 focus:border-blue-500 focus:ring-blue-500 md:text-sm"
-                      />
-                      <input
-                        type="text"
-                        placeholder="%"
-                        max={100}
-                        min={0}
-                        name="subCategoryValue"
-                        value={item.typicalCalorificValue}
-                        onChange={(e) => {
-                          const updated = [...editableSubcategories];
-                          updated[index].typicalCalorificValue = e.target.value;
-                          setEditableSubcategories(updated);
-                        }}
-                        className="block h-[38px] w-full border border-gray-300 px-3 py-1.5 text-gray-900 focus:border-blue-500 focus:ring-blue-500 md:text-sm"
-                      />
-                    </div>
-                  ))}
+                  {data1.length > 0 ? (
+                    <>
+                      {editableSubcategories.map((item: any, index) => (
+                        <div
+                          className="md:grid md:grid-cols-5 flex flex-col w-full"
+                          key={item.id}
+                        >
+                          <p className="block w-full border border-gray-300 px-3 py-1.5 text-gray-900 focus:border-blue-500 focus:ring-blue-500 md:text-sm">
+                            {item.name}
+                          </p>
+                          <p className="block w-full border border-gray-300 px-3 py-1.5 text-gray-900 focus:border-blue-500 focus:ring-blue-500 md:text-sm">
+                            {item.value}
+                          </p>
+                          <input
+                            type="text"
+                            placeholder="%"
+                            max={100}
+                            min={0}
+                            name="subCategoryValue"
+                            value={item.typicalDensity}
+                            onChange={(e) => {
+                              const updated = [...editableSubcategories];
+                              updated[index].typicalDensity = e.target.value;
+                              setEditableSubcategories(updated);
+                            }}
+                            className="block h-[38px] w-full border border-gray-300 px-3 py-1.5 text-gray-900 focus:border-blue-500 focus:ring-blue-500 md:text-sm"
+                          />
+                          <input
+                            type="text"
+                            placeholder="%"
+                            max={100}
+                            min={0}
+                            // value={moistureContent}
+                            name="subCategoryValue"
+                            value={item.moistureContent}
+                            onChange={(e) => {
+                              const updated = [...editableSubcategories];
+                              updated[index].moistureContent = e.target.value;
+                              setEditableSubcategories(updated);
+                            }}
+                            className="block h-[38px] w-full border border-gray-300 px-3 py-1.5 text-gray-900 focus:border-blue-500 focus:ring-blue-500 md:text-sm"
+                          />
+                          <input
+                            type="text"
+                            placeholder="%"
+                            max={100}
+                            min={0}
+                            name="subCategoryValue"
+                            value={item.typicalCalorificValue}
+                            onChange={(e) => {
+                              const updated = [...editableSubcategories];
+                              updated[index].typicalCalorificValue =
+                                e.target.value;
+                              setEditableSubcategories(updated);
+                            }}
+                            className="block h-[38px] w-full border border-gray-300 px-3 py-1.5 text-gray-900 focus:border-blue-500 focus:ring-blue-500 md:text-sm"
+                          />
+                        </div>
+                      ))}
+                    </>
+                  ) : (
+                    <>
+                      {formData.subCategories.map((item: any, index) => (
+                        <div
+                          className="md:grid md:grid-cols-5 flex flex-col w-full"
+                          key={item.id}
+                        >
+                          <p className="block w-full border border-gray-300 px-3 py-1.5 text-gray-900 focus:border-blue-500 focus:ring-blue-500 md:text-sm">
+                            {item.name}
+                          </p>
+                          <p className="block w-full border border-gray-300 px-3 py-1.5 text-gray-900 focus:border-blue-500 focus:ring-blue-500 md:text-sm">
+                            {item.value}
+                          </p>
+                          <p className="block w-full border border-gray-300 px-3 py-1.5 text-gray-900 focus:border-blue-500 focus:ring-blue-500 md:text-sm">
+                            {item.typicalDensity}
+                          </p>
+                          <p className="block w-full border border-gray-300 px-3 py-1.5 text-gray-900 focus:border-blue-500 focus:ring-blue-500 md:text-sm">
+                            {item.moistureContent}
+                          </p>
+                          <p className="block w-full border border-gray-300 px-3 py-1.5 text-gray-900 focus:border-blue-500 focus:ring-blue-500 md:text-sm">
+                            {item.typicalCalorificValue}
+                          </p>
+                        </div>
+                      ))}{" "}
+                      <div className="md:grid md:grid-cols-5 flex flex-col w-full">
+                        <input
+                          type="text"
+                          placeholder="Component Name"
+                          value={newSubCatName ?? ""}
+                          name="subCategoryName"
+                          onChange={(e) => setNewSubCatName(e.target.value)}
+                          className="block w-full border border-gray-300 px-3 py-1.5 text-gray-900 focus:border-blue-500 focus:ring-blue-500 sm:text-sm"
+                        />
+                        <input
+                          type="text"
+                          placeholder="%"
+                          max={100}
+                          min={0}
+                          value={newSubCatValue ?? ""}
+                          name="subCategoryValue"
+                          onChange={(e) => setNewSubCatValue(e.target.value)}
+                          className="block w-full border border-gray-300 px-3 py-1.5 text-gray-900 focus:border-blue-500 focus:ring-blue-500 sm:text-sm"
+                        />
+                        <input
+                          type="text"
+                          placeholder="%"
+                          max={100}
+                          min={0}
+                          name="subCategoryTypicalDensity"
+                          value={typicalDensity}
+                          onChange={(e) => setTypicalDensity(e.target.value)}
+                          className="block h-[38px] w-full border border-gray-300 px-3 py-1.5 text-gray-900 focus:border-blue-500 focus:ring-blue-500 md:text-sm"
+                        />
+                        <input
+                          type="text"
+                          placeholder="%"
+                          max={100}
+                          min={0}
+                          value={moistureContent}
+                          name="subCategoryMoistureContent"
+                          onChange={(e) => setMoistureContent(e.target.value)}
+                          className="block h-[38px] w-full border border-gray-300 px-3 py-1.5 text-gray-900 focus:border-blue-500 focus:ring-blue-500 md:text-sm"
+                        />
+                        <input
+                          type="text"
+                          placeholder="%"
+                          max={100}
+                          min={0}
+                          name="subCategoryTypicalCalorificValue"
+                          value={typicalCalorificValue}
+                          onChange={(e) =>
+                            setTypicalCalorificValue(e.target.value)
+                          }
+                          className="block h-[38px] w-full border border-gray-300 px-3 py-1.5 text-gray-900 focus:border-blue-500 focus:ring-blue-500 md:text-sm"
+                        />
+                      </div>
+                    </>
+                  )}
                 </div>
                 {/* <div className="md:grid md:grid-cols-6 flex flex-col w-full">
                   <input
@@ -970,7 +1054,11 @@ function RDF() {
                 </div> */}
                 <div className="w-[17%] flex justify-center items-center">
                   <p
-                    onClick={handleAddAllComponents}
+                    onClick={
+                      data1.length > 0
+                        ? handleAddAllComponents
+                        : handleAddSubCategory
+                    }
                     className="bg-blue-500 ml-3 cursor-pointer w-full text-center text-white px-2 py-2 mt-8 md:mt-0 rounded-md shadow-md hover:bg-blue-600"
                   >
                     Add Component

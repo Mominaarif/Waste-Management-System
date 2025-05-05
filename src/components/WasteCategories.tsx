@@ -7,8 +7,10 @@ import {
   useCallback,
   FormEvent,
 } from "react";
-import { doc, setDoc } from "firebase/firestore";
+import { doc, setDoc, collection, getDocs } from "firebase/firestore";
 import { db } from "../firebase";
+
+
 import { getAuth, User } from "firebase/auth";
 import GeneateMap1 from "./Map1";
 import Userdef from "./Modals/Userdef";
@@ -146,7 +148,6 @@ export default function WasteCategories(open: any) {
     null
   );
 
-  const location = useLocation();
   // const formData = location.state;
   // const [dataOption, setDataOption] =  useState<number | undefined>();
 
@@ -200,7 +201,23 @@ const getRemainingSubcategories = () => {
     return formData.subCategories.filter((sc) => !selectedIds.has(sc.id));
   };
 
+  const [idValue, setIdValue] = useState("");
+  const [IDValue, setIDValue] = useState("");
 
+
+  const getId = () => {
+     const id = Math.random().toString(36).substring(2, 9);
+    return id;
+  };
+  
+  useEffect(() => {
+    setIdValue(getId());
+},[])
+useEffect(() => {
+  console.log(idValue+formData.ucName);
+  setIDValue(idValue+formData.ucName);
+},[formData.ucName])
+console.log(IDValue)
   useEffect(() => {
     if (firstThreeDone) {
       const residuesCategory = formData.mainCategories[3]; // 4th item
@@ -348,7 +365,10 @@ console.log(formData.selectedOtherSubcategories)
   ] = useState<google.maps.Polygon | null>(null);
 
   const navigate = useNavigate();
-
+  const [toast, setToast] = useState<{ message: string; type: string }>({
+    message: "",
+    type: "",
+  });
   // const [roundedArea, setRoundedArea] =  useState<number | undefined>();
   const [adminBoundaries, setAdminBoundaries] = useState<PolygonData[]>([]);
   const [selectedBoundary, setSelectedBoundary] = useState<PolygonData | null>(
@@ -616,10 +636,13 @@ console.log(formData.selectedOtherSubcategories)
 
       calculate();
       calculate1();
+      storeData();
 
       // Create a document with UC name as ID
-      await setDoc(doc(db, "wasteData", formData.ucName), dataToSave);
-      alert("Data saved successfully!");
+      await setDoc(doc(db, "wasteData", IDValue), dataToSave);
+      setToast({ message: "Data Saved Successfully", type: "success" });
+
+      // alert("Data saved successfully!");
 
       setRoundedArea(0);
       // setFormData({
@@ -690,14 +713,16 @@ console.log(formData.selectedOtherSubcategories)
   //     });
   //   }
   // }, [firstThreeDone]);
-
-  localStorage.setItem(
+const storeData = () => {
+    localStorage.setItem(
     "formData",
     JSON.stringify({
       selectedSubcategories: formData.selectedSubcategories,
       selectedOtherSubcategories: formData.selectedOtherSubcategories,
     })
-  );
+  );}
+
+
 
   // console.log(formData.selectedOtherSubcategories);
 
@@ -779,7 +804,31 @@ console.log(formData.selectedOtherSubcategories)
   };
   
   
+  const fetchWasteData = async () => {
+    try {
+      const querySnapshot = await getDocs(collection(db, "wasteData", IDValue));
+      const wasteItems = querySnapshot.docs.map((doc) => ({
+        id: doc.id,
+        ...doc.data(),
+      }));
+      console.log("Waste Data:", wasteItems);
+      return wasteItems;
+    } catch (error) {
+      console.error("Error fetching waste data:", error);
+    }
+  };
 
+  const [wasteData, setWasteData] = useState<{ id: string; [key: string]: any }[]>([]);
+
+useEffect(() => {
+  const getData = async () => {
+    const data = await fetchWasteData();
+    if (data) setWasteData(data);
+  };
+  getData();
+}, []);
+
+  console.log("Data From DB: ",wasteData)
   return (
     <form onSubmit={handleSubmit} className="w-full h-[calc(100vh-85px)] overflow-y-auto bg-white pt-10 px-5 md:px-8">
       <div className="border p-8 rounded-md">
@@ -949,38 +998,6 @@ console.log(formData.selectedOtherSubcategories)
                           ))}
                       </select>
 
-                      {/* <div className="mt-2 flex flex-wrap gap-2">
-                        {formData.selectedSubcategories
-                          .filter((ss) => ss.mainCategoryId === category.id)
-                          .map((ss) => {
-                            const sub = formData.subCategories.find(
-                              (sc) => sc.id === ss.subCategoryId
-                            );
-                            return sub ? (
-                              <div
-                                key={sub.id}
-                                className="badge badge-outline gap-1 flex items-center"
-                              >
-                                 {sub.name}
-                                <button
-                                  className="ml-1 text-xs text-red-500"
-                                  onClick={() =>
-                                    setTimeout(() => {
-                                      setFormData((prev) => ({
-                                        ...prev,
-                                        selectedSubcategories: prev.selectedSubcategories.filter(
-                                          (s) => s.subCategoryId !== sub.id
-                                        ),
-                                      }));
-                                    }, 500)
-                                  }
-                                >
-                                  ✕
-                                </button> 
-                              </div>
-                            ) : null;
-                          })}
-                      </div> */}
                     </div>
                   ) : (
                     <div className="flex flex-col">
@@ -1025,238 +1042,6 @@ console.log(formData.selectedOtherSubcategories)
                 </div>
               )}
             </div>
-            {/* 
-              <div className="">
-            {formData.mainCategories.slice(0, 3).map((category) => (
-              <div className="">
-                <div className="flex justify-between items-center mb-1">
-                  <h2 className="text-sm font-normal text-gray-900  pb-1 text-left w-full">
-                    {category.name}
-                  </h2>
-                  {!category.isDone && (
-                    <button
-                      onClick={() => handleCompleteCategory(category.id)}
-                      className="bg-blue-500 text-sm not-last:cursor-pointer w-fit text-white px-4 py-2 mt-1 rounded-md shadow-xs hover:bg-blue-600"
-                    >
-                      Done
-                    </button>
-                  )}
-                </div>
-
-                {!category.isDone ? (
-                  <div className="space-y-2">
-                    <div className="flex flex-wrap gap-x-9">
-                      {formData.subCategories
-                        .filter(
-                          (sc) =>
-                            !formData.selectedSubcategories.some(
-                              (ss) => ss.subCategoryId === sc.id
-                            )
-                        )
-                        .map((sub) => (
-                          <div className="flex gap-2">
-                            <div className="flex h-6 shrink-0 items-center">
-                              <div className="group grid size-4 gap-4 grid-cols-1">
-                                <input
-                                  key={sub.id}
-                                  id={sub.name}
-                                  type="checkbox"
-                                  value={sub.id}
-                                  onChange={() =>
-                                    setTimeout(() => {
-                                      setFormData((prev) => ({
-                                        ...prev,
-                                        selectedSubcategories: [
-                                          ...prev.selectedSubcategories,
-                                          {
-                                            mainCategoryId: category.id,
-                                            subCategoryId: sub.id,
-                                            subCategory: sub,
-                                          },
-                                        ],
-                                      }));
-                                    }, 1000)
-                                  }
-                                  className="checkbox checkbox-xs border text-blue-600"
-                                />
-                              </div>
-                            </div>
-                            <div className="text-sm/6">
-                              <label
-                                htmlFor={sub.name}
-                                className="font-medium text-gray-900"
-                              >
-                                {sub.name}
-                              </label>
-                            </div>
-                          </div>
-                        ))}
-                    </div>
-
-                    <div className="mt-4 space-y-2">
-                      <div className="flex flex-wrap gap-x-9">
-                        {formData.selectedSubcategories
-                          .filter((ss) => ss.mainCategoryId === category.id)
-                          .map((ss) => {
-                            const sub = formData.subCategories.find(
-                              (sc) => sc.id === ss.subCategoryId
-                            );
-                            return sub ? (
-                              <>
-                                <div className="flex gap-2" key={sub.id}>
-                                  <div className="flex h-6 shrink-0 items-center">
-                                    <div className="group grid size-4 gap-4 grid-cols-1">
-                                      <input
-                                        key={sub.id}
-                                        id={sub.name}
-                                        type="checkbox"
-                                        checked={true}
-                                        value={sub.id}
-                                        onChange={() =>
-                                          setTimeout(() => {
-                                            setFormData((prev) => ({
-                                              ...prev,
-                                              selectedSubcategories: prev.selectedSubcategories.filter(
-                                                (s) =>
-                                                  s.subCategoryId !== sub.id
-                                              ),
-                                            }));
-                                          }, 1000)
-                                        }
-                                        className="checkbox checkbox-xs border text-blue-600"
-                                      />
-                                    </div>
-                                  </div>
-                                  <div className="text-sm/6">
-                                    <label
-                                      htmlFor={sub.name}
-                                      className="font-medium text-gray-900"
-                                    >
-                                      {sub.name}
-                                    </label>
-                                  </div>
-                                </div>
-                              </>
-                            ) : null;
-                          })}
-                      </div>
-                    </div>
-                  </div>
-                ) : (
-                  <div className="flex flex-wrap gap-x-9 space-y-2">
-                    {formData.selectedSubcategories
-                      .filter((ss) => ss.mainCategoryId === category.id)
-                      .map((ss) => {
-                        const sub = formData.subCategories.find(
-                          (sc) => sc.id === ss.subCategoryId
-                        );
-                        return (
-                          <>
-                            <div className="flex gap-2" key={sub?.id}>
-                              <div className="flex h-6 shrink-0 items-center">
-                                <div className="group grid size-4 gap-4 grid-cols-1">
-                                  <input
-                                    key={sub?.id}
-                                    id={sub?.name}
-                                    type="checkbox"
-                                    checked={true}
-                                    value={sub?.id}
-                                    
-                                    className="checkbox checkbox-xs border text-blue-600"
-                                  />
-                                </div>
-                              </div>
-                              <div className="text-sm/6">
-                                <label
-                                  htmlFor={sub?.name}
-                                  className="font-medium text-gray-900"
-                                >
-                                  {sub?.name}
-                                </label>
-                              </div>
-                            </div>
-                          </>
-                        );
-                      })}
-                  </div>
-                )}
-              </div>
-            ))}
-
-            {firstThreeDone && (
-              <div className="card bg-base-100 shadow-md">
-                <div className="card-body">
-                  <h2 className="text-sm font-normal text-gray-900  pb-1 text-left w-full">
-                    Residues
-                  </h2>
-
-                  <div className="flex gap-2 mb-4">
-                    <select
-                      className="select select-bordered flex-1"
-                      // onChange={(e) => handleOtherSelection(e.target.value)}
-                      value=""
-                    >
-                      <option value="">Select remaining subcategories</option>
-                      {getRemainingSubcategories().map((sub) => (
-                        <option key={sub.id} value={sub.id}>
-                          {sub.name}
-                        </option>
-                      ))}
-                    </select>
-                    <button
-                      className="btn btn-primary"
-                      onClick={() => {
-                        const select = document.querySelector(
-                          ".select"
-                        ) as HTMLSelectElement;
-                        if (select && select.value) {
-                          // handleOtherSelection(select.value);
-                          select.value = "";
-                        }
-                      }}
-                    >
-                      Add
-                    </button>
-                  </div>
-
-                  <div className="space-y-2">
-                    {formData.selectedOtherSubcategories.map((subId) => {
-                      const sub = formData.subCategories.find(
-                        (sc) => sc.id === subId
-                      );
-                      return sub ? (
-                        <div key={sub.id} className="flex items-center gap-2">
-                          <span className="flex-1">{sub.name}</span>
-                          <input
-                            type="number"
-                            placeholder="kg"
-                            value={sub.value}
-                            onChange={(e) =>
-                              setFormData((prev) => ({
-                                ...prev,
-                                subCategories: prev.subCategories.map((sc) =>
-                                  sc.id === sub.id
-                                    ? { ...sc, value: e.target.value }
-                                    : sc
-                                ),
-                              }))
-                            }
-                            className="input input-bordered input-sm w-20"
-                          />
-                          <button
-                            // onClick={() => handleRemoveFromOther(sub.id)}
-                            className="btn btn-circle btn-xs btn-ghost"
-                          >
-                            ✕
-                          </button>
-                        </div>
-                      ) : null;
-                    })}
-                  </div>
-                </div>
-              </div>
-            )}
-          </div>   */}
           </div>
         )}
       </div>
