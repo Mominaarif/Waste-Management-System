@@ -587,6 +587,7 @@ const AnaerobicDigesterCalculator = () => {
                 </div>
               </>
             )}
+            
             <div className="grid grid-cols-1 sm:grid-cols-3 gap-y-4 gap-x-6 pt-4">
               <div className="">
                 <label className="block text-sm font-medium text-gray-900 pb-1">
