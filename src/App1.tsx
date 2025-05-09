@@ -21,6 +21,7 @@ import MyChatbot from "./ChatBot";
 import AddDataPage from "./pages/AddDataPage";
 import GenerateMapPage from "./pages/GenerateMapPage";
 import WasteCategoriesPage from "./pages/WasteCategoriesPage";
+import SurveyCommPage from "./pages/SurveyCommunityPage";
 
 const steps = [
   {
@@ -70,12 +71,13 @@ export function MainLayout() {
         <Route path="/add-data" element={<AddDataPage setOpen={setOpen} open={open} />} />
         <Route path="/map" element={<GenerateMapPage setOpen={setOpen} open={open} />} />
         <Route path="/waste-categories" element={<WasteCategoriesPage setOpen={setOpen} open={open} />} />
+        <Route path="/survey-comm" element={<SurveyCommPage setOpen={setOpen} open={open} />} />
         <Route
           path="/anaerobic-design"
           element={<AnaerobticPage setOpen={setOpen} open={open} />}
         />
       </Routes>
-      <MyChatbot />
+      {!hideSidebar && <MyChatbot />}
     </div>
   );
 }

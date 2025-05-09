@@ -24,6 +24,19 @@ interface Results {
 
   recoveryData: { name: string; value: number; recovered: number }[];
 }
+
+interface SubCategory {
+  id: string;
+  name: string;
+  value: string;
+  // typicalDensity: string;
+  // moistureContent: string;
+  // typicalCalorificValue: string;
+}
+
+interface FormData {
+  subCategories: SubCategory[];
+}
 const AnaerobicDigesterCalculator = () => {
   const [data1, setData1] = useState([]);
   const [totalWasteInput, setTotalWasteInput] = useState(4053473.96110292); // in kg/day
@@ -97,21 +110,104 @@ const AnaerobicDigesterCalculator = () => {
   ] = useState(85);
 
   const [results, setResults] = useState<Results | null>(null);
-
-  const TableData = [
-    {
-      name: "Food Waste",
-      value: foodWaste,
-    },
-    {
-      name: "Yard Trimmings",
-      value: yardTrimmings,
-    },
-    {
-      name: "Animal Dung",
-      value: animalDung,
-    },
+  const componentOptions = [
+    "Paper",
+    "Cardboard",
+    "Food Waste",
+    "Yard Waste",
+    "Animal Dunk",
+   
   ];
+
+  const [formData, setFormData] = useState<FormData>({
+    subCategories: [],
+  });
+
+  const [totalSubCatValue, setTotalSubCatValue] = useState(0);
+
+  // Select component and add to subCategories if not already added
+  const handleComponentSelect = (e: any) => {
+    const selectedName = e.target.value;
+    if (!selectedName) return;
+
+    const alreadyExists = formData.subCategories.some(
+      (subCat) => subCat.name === selectedName
+    );
+    if (alreadyExists) return;
+
+    const newComponent = {
+      id: `s${formData.subCategories.length + 1}`,
+      name: selectedName,
+      value: "0",
+    };
+
+    const updated = [...formData.subCategories, newComponent];
+    setFormData((prev) => ({
+      ...prev,
+      subCategories: updated,
+    }));
+
+    // Reset dropdown
+    e.target.value = "";
+  };
+
+  // Handle value input change
+  const handleSubCategoryValueChange = ({ name, value }: any) => {
+    const parsedValue = parseFloat(value);
+    if (isNaN(parsedValue)) return;
+
+    const updated = formData.subCategories.map((subCat) =>
+      subCat.name === name ? { ...subCat, value } : subCat
+    );
+
+    const total = updated.reduce(
+      (sum, subCat) => sum + (parseFloat(subCat.value) || 0),
+      0
+    );
+
+    setFormData((prev) => ({
+      ...prev,
+      subCategories: updated,
+    }));
+    setTotalSubCatValue(total);
+  };
+  console.log(formData.subCategories);
+
+  const handleRemoveSubCategory = (name: any) => {
+    const updated = formData.subCategories.filter(
+      (subCat) => subCat.name !== name
+    );
+
+    const total = updated.reduce(
+      (sum, subCat) => sum + (parseFloat(subCat.value) || 0),
+      0
+    );
+
+    setFormData((prev) => ({
+      ...prev,
+      subCategories: updated,
+    }));
+
+    setTotalSubCatValue(total);
+  };
+  const TableData = formData.subCategories.map((waste) => ({
+    name: waste.name,
+        value: waste.value,
+  }))
+  //  [
+  //   {
+  //     name: "Food Waste",
+  //     value: foodWaste,
+  //   },
+  //   {
+  //     name: "Yard Trimmings",
+  //     value: yardTrimmings,
+  //   },
+  //   {
+  //     name: "Animal Dung",
+  //     value: animalDung,
+  //   },
+  // ];
   const calculateOutputs = () => {
     // Constants
     const biogasEnergyContent = 6.5;
@@ -125,12 +221,12 @@ const AnaerobicDigesterCalculator = () => {
     if (data1.length > 0) {
       totalBiodegradableWaste1 = totalWasteInput;
     } else {
-      totalBiodegradableWaste1 = foodWaste + yardTrimmings + animalDung;
+      totalBiodegradableWaste1 = totalSubCatValue;
     }
     if (data1.length > 0) {
       totalBiodegradableWaste = totalWasteInput;
     } else {
-      totalBiodegradableWaste = foodWaste + yardTrimmings + animalDung;
+      totalBiodegradableWaste = totalSubCatValue;
     }
     const waterRequirement = totalBiodegradableWaste1 * 1000;
     const totalSlurryInflow = totalBiodegradableWaste1 * 2 * 1000;
@@ -208,18 +304,18 @@ const AnaerobicDigesterCalculator = () => {
     const LiquidEffluentGgPerYear =
       DigesterSolidsGgPerYear - DrySludgeGgPerYear;
 
-    let recoveryData:any
-    if(data1.length > 0){ 
+    let recoveryData: any;
+    if (data1.length > 0) {
       recoveryData = data1.map((waste: any) => {
-      const recovered = (waste?.waste / totalBiodegradableWaste1) * 100;
-      return {
-        name: waste?.name,
-        value: waste?.waste,
-        recovered,
-      };
-    });}
-    else{
-      recoveryData = TableData.map((waste) => {
+        const recovered = (waste?.waste / totalBiodegradableWaste1) * 100;
+        return {
+          name: waste?.name,
+          value: waste?.waste,
+          recovered,
+        };
+      });
+    } else {
+      recoveryData = TableData.map((waste:any) => {
         const recovered = (waste.value / totalBiodegradableWaste1) * 100;
         return {
           name: waste.name,
@@ -375,6 +471,8 @@ const AnaerobicDigesterCalculator = () => {
       value: results?.LiquidEffluentGgPerYear,
     },
   ];
+
+ 
   return (
     <div className="w-full h-[calc(100vh-85px)] overflow-y-auto bg-white">
       {/* <h1 className="text-lg md:text-3xl pl-5 md:pl-14  border shadow-sm py-4 font-bold">
@@ -386,7 +484,110 @@ const AnaerobicDigesterCalculator = () => {
             <h2 className="text-lg font-semibold text-gray-900 pb-5">
               Design Considerations
             </h2>
-            <div className="grid grid-cols-1 sm:grid-cols-3 gap-y-4 gap-x-6">
+            {data1.length > 0 ? (
+              <div
+                className={`grid grid-cols-1 ${
+                  data1.length > 2
+                    ? "md:grid-cols-3"
+                    : data1.length > 0
+                    ? "md:grid-cols-2"
+                    : "md:grid-cols-3"
+                } gap-y-4 gap-x-6 border-b pb-4`}
+              >
+                <>
+                  {data1.map((item: any, index: number) => (
+                    <div key={index} className=" ">
+                      <label className="block text-sm/6 font-medium text-gray-900 my-0">
+                        {item.name} (tonnes/day):
+                      </label>
+                      <div className="mt-2">
+                        <p className="block w-full rounded-md bg-white px-3 py-1.5 text-base text-gray-900 outline-1 -outline-offset-1 outline-gray-300 placeholder:text-gray-400 focus:outline-2 focus:-outline-offset-2 focus:outline-indigo-600 sm:text-sm/6">
+                          {item.waste}
+                        </p>
+                      </div>
+                    </div>
+                  ))}
+                </>
+              </div>
+            ) : (
+              <>
+                <div className="w-full space-y-4">
+                  {/* Dropdown always visible */}
+                  <select
+                    onChange={handleComponentSelect}
+                    className="block h-[38px] w-full border rounded-md px-3 py-1.5 text-gray-900 focus:border-blue-500 focus:ring-blue-500 md:text-sm"
+                  >
+                    <option value="">Select Component</option>
+                    {componentOptions
+                      .filter(
+                        (option) =>
+                          !formData.subCategories.some(
+                            (subCat) => subCat.name === option
+                          )
+                      )
+                      .map((option) => (
+                        <option key={option} value={option}>
+                          {option}
+                        </option>
+                      ))}
+                  </select>
+
+                  {/* Table of selected components */}
+                  {formData.subCategories.length > 0 && (
+                   <table className="w-full border border-collapse border-gray-300 text-sm">
+                   <thead>
+                     <tr className="bg-gray-100">
+                       <th className="border p-2">Component</th>
+                       <th className="border p-2">tonnes/day</th>
+                       <th className="border p-2"></th>
+
+                     </tr>
+                   </thead>
+                   <tbody>
+                     {formData.subCategories.map((subCat, idx) => (
+                       <tr key={idx}>
+                         <td className="p-[0_!important] pl-[8px_!important]">
+                           {subCat.name}
+                         </td>
+                         <td className="p-[0_!important]">
+                           <input
+                             type="number"
+                            
+                             value={subCat.value}
+                             onChange={(e) =>
+                               handleSubCategoryValueChange({
+                                 name: subCat.name,
+                                 value: e.target.value,
+                               })
+                             }
+                             className="block h-[38px] w-full px-3 py-1.5 text-gray-900 focus:border-blue-500 focus:ring-blue-500 md:text-sm"
+                           />
+                         </td>
+                         <td><button
+ onClick={() => handleRemoveSubCategory(subCat.name)}
+ className="text-red-500 hover:text-red-700 text-xs cursor-pointer"
+>
+  ✕
+</button></td>
+                       </tr>
+                     ))}
+
+                     {/* Total row */}
+                     <tr className="bg-gray-100 font-semibold">
+                       <td className="border p-2">Total</td>
+                       <td className="border p-2">
+                         {totalSubCatValue.toFixed(4)}
+                       </td>
+                       <th></th>
+                     </tr>
+                   </tbody>
+                 </table>
+
+                  )}
+                </div>
+              </>
+            )}
+            <div className="grid grid-cols-1 sm:grid-cols-3 gap-y-4 gap-x-6 pt-4">
               <div className="">
                 <label className="block text-sm font-medium text-gray-900 pb-1">
                   System Type:
@@ -569,7 +770,7 @@ const AnaerobicDigesterCalculator = () => {
             <h2 className="text-lg font-semibold text-gray-900 py-5">
               Solid Waste Inflow to Digestor
             </h2>
-            <div
+            {/* <div
               className={`grid grid-cols-1 ${
                 data1.length > 2
                   ? "md:grid-cols-3"
@@ -626,7 +827,7 @@ const AnaerobicDigesterCalculator = () => {
                   ))}
                 </>
               )}
-            </div>
+            </div> */}
 
             <div className="grid grid-cols-1 sm:grid-cols-3 gap-y-4 gap-x-6 pt-5">
               <div className="">
