@@ -4,7 +4,7 @@ import CommunitySurveyForm from '@/components/SurveyCommunity'
 import WasteSurvey from '@/components/SurveyGover'
 
 function  SurveyGoverPage({open, setOpen}:any) {
-  const title = "Survey Community Residents"
+  const title = "Survey on Social Sustainability in Waste Management Technologies"
   return (
     <div className="w-full h-full">
         <Header setOpen={setOpen} open={open} title={title}/>

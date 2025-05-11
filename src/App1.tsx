@@ -23,6 +23,7 @@ import GenerateMapPage from "./pages/GenerateMapPage";
 import WasteCategoriesPage from "./pages/WasteCategoriesPage";
 import SurveyCommPage from "./pages/SurveyCommunityPage";
 import SurveyGoverPage from "./pages/SurveyGoverPage";
+import EconomyFormPage from "./pages/EconomyFormPage";
 
 const steps = [
   {
@@ -74,6 +75,7 @@ export function MainLayout() {
         <Route path="/waste-categories" element={<WasteCategoriesPage setOpen={setOpen} open={open} />} />
         <Route path="/survey-comm" element={<SurveyCommPage setOpen={setOpen} open={open} />} />
         <Route path="/survey-gover" element={<SurveyGoverPage setOpen={setOpen} open={open} />} />
+        <Route path="/economy-analysis" element={<EconomyFormPage setOpen={setOpen} open={open} />} /> 
         <Route
           path="/anaerobic-design"
           element={<AnaerobticPage setOpen={setOpen} open={open} />}
