@@ -671,7 +671,7 @@ export default function EconomyForm({ open }: any) {
               <label className="block text-sm font-medium text-gray-900">
                 Net Present Value (NPV) Breakdown
               </label>
-              <table className="w-full border-collapse border mt-4">
+              <table className="w-full border-collapse border mt-4 text-sm">
                 <thead>
                   <tr className="bg-gray-100">
                     <th className="border p-2">Component</th>
@@ -722,7 +722,7 @@ export default function EconomyForm({ open }: any) {
                   ))}
                 </tr> */}
                   {/* Net Cash Flow Row */}
-                  <tr className="font-medium">
+                  <tr className="font-medium ">
                     <td className="border p-2">Net Cash Flow</td>
                     <td className="border p-2 text-right">
                       {-totalSubCatValue}
@@ -759,7 +759,7 @@ export default function EconomyForm({ open }: any) {
                 <label className="block text-sm font-medium text-gray-900">
                   Net Present Value (NPV):
                 </label>
-                <span className="text-gray-700 font-semibold">
+                <span className="text-gray-700">
                   {npv.toFixed(8)}{" "}
                 </span>
               </div>
@@ -769,7 +769,7 @@ export default function EconomyForm({ open }: any) {
                 Benefit-Cost Ratio (BCR) Breakdown
               </label>
 
-              <table className="w-full border-collapse border mt-4">
+              <table className="w-full border-collapse border mt-4 text-sm">
                 <thead>
                   <tr className="bg-gray-100">
                     <th className="border p-2">Component</th>
@@ -841,7 +841,7 @@ export default function EconomyForm({ open }: any) {
                 <label className="block text-sm font-medium text-gray-900">
                   Benefit-Cost Ratio (BCR):
                 </label>
-                <span className="text-gray-700 font-semibold">{bcr.toFixed(8)} </span>{" "}
+                <span className="text-gray-700">{bcr.toFixed(8)} </span>{" "}
               </div>
 
               {/* Payback Periods */}
@@ -849,7 +849,7 @@ export default function EconomyForm({ open }: any) {
                 <label className="block text-sm font-medium text-gray-900">
                   Payback Period (PBP):
                 </label>
-                <span className="text-gray-700 font-semibold">
+                <span className="text-gray-700 ">
                   {typeof cumulativePaybackPeriod === "number"
                     ? `${cumulativePaybackPeriod.toFixed(2)} years`
                     : "Not recovered within period"}

@@ -276,6 +276,7 @@ import {
   TabPanels,
 } from "@headlessui/react";
 import {
+  ChartNoAxesCombined,
   ChevronDown,
   Codepen,
   Crop,
@@ -384,6 +385,17 @@ export default function Example({ open, setOpen }: any) {
                 <li>
                   {isServicesOpen && (
                     <ul className="ml-6 mt-2 text-sm">
+                      <a href="/economy-analysis" className="text-sm">
+                        <li
+                          className={`flex items-center mb-3 cursor-pointer hover:bg-gray-400/15 py-1 px-2 rounded w-full my-0.5`}
+                        >
+                          <ChartNoAxesCombined className="w-[18px]" />
+
+                          <span className="ml-3">Economic Analysis</span>
+
+                        </li>i
+                      </a>
+                      {/* Economic Analysis */}
                       <a href="/landfill-design" className="text-sm">
                         <li
                           className={`flex items-center mb-3 cursor-pointer hover:bg-gray-400/15 py-1 px-2 rounded w-full my-0.5`}

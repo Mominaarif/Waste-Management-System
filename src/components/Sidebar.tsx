@@ -61,6 +61,7 @@ import {
   Plus,
   MapIcon,
   List,
+  ChartNoAxesCombined,
 } from "lucide-react";
 
 type UserData = {
@@ -220,6 +221,16 @@ const Sidebar = () => {
                 </div>
                 {isOpen && isServicesOpen && (
                   <ul className="ml-6 mt-2 text-sm">
+                    <a href="/economy-analysis" className="text-sm">
+                      <li
+                        className={`flex items-center mb-3 cursor-pointer hover:bg-gray-400/15 py-1 px-2 rounded w-full my-0.5`}
+                      >
+                        <ChartNoAxesCombined className="w-[18px]" />
+                        {isOpen && (
+                          <span className="ml-3">Economic Analysis </span>
+                        )}
+                      </li>
+                    </a>
                     <a href="/landfill-design" className="text-sm">
                       <li
                         className={`flex items-center mb-3 cursor-pointer hover:bg-gray-400/15 py-1 px-2 rounded w-full my-0.5`}
