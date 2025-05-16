@@ -295,7 +295,7 @@ const Landfill = () => {
     setTotalSubCatValue(total);
   };
   
-
+localStorage.clear();
   return (
     <div className="w-full h-[calc(100vh-85px)] overflow-y-auto bg-white">
       {/* <h1 className="text-lg md:text-3xl pl-5 md:pl-14  border shadow-sm py-4 font-bold">

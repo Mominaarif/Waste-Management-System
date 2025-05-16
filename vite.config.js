@@ -5,6 +5,9 @@ import { defineConfig } from "vite"
 
 export default defineConfig({
   plugins: [react(), tailwindcss()],
+  optimizeDeps: {
+    include: ['jquery', 'datatables.net', 'datatables.net-dt']
+  },
   resolve: {
     alias: {
       "@": path.resolve(__dirname, "./src"),

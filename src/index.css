@@ -9,6 +9,16 @@
 .radio-info {
   --input-color: #7007e8;
 }
+
+.slick-track {
+  width: 100% !important;
+}
+
+.slider-container > .slick-slider.slick-initialized > button {
+  display: none !important;
+}
+
+
 /* 
 :root {
   font-family: system-ui, Avenir, Helvetica, Arial, sans-serif;
