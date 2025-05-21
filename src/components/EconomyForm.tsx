@@ -1150,6 +1150,7 @@ export default function EconomyForm({ open }: any) {
     }));
   };
 
+  const [isShow, setIsShow] = useState(false);
   const [npv, setNpv] = useState(0);
   const [bcr, setBcr] = useState(0);
   const [cumulativeCashFlows, setCumulativeCashFlows] = useState<number[]>([]);
@@ -1168,6 +1169,7 @@ export default function EconomyForm({ open }: any) {
   >(null);
 
   const calculateNPV = () => {
+setIsShow(true);
     const initialInvestment = totalSubCatValue;
     const cashFlows = [];
     const cumulativeCashFlows = [];
@@ -1341,8 +1343,8 @@ export default function EconomyForm({ open }: any) {
                       ))}
                   </select>
 
-                  <table
-                    ref={tableRef}
+                  {formData.capex.length > 0 && <table
+                    // ref={tableRef}
                     className="display nowrap"
                     style={{ width: '100%' }}
                   >
@@ -1354,11 +1356,11 @@ export default function EconomyForm({ open }: any) {
                       </tr>
                     </thead>
                     <tbody>
-                      {formData.capex.length === 0 ? (
+                      {/* {formData.capex.length === 0 ? (
                         <tr>
                           <td colSpan={1} className="text-center">No CAPEX data available.</td>
                         </tr>
-                      ) : (
+                      ) : ( */}
                         <>
                           {formData.capex.map((subCat, idx) => (
                             <tr key={idx}>
@@ -1392,9 +1394,9 @@ export default function EconomyForm({ open }: any) {
                             <td></td>
                           </tr>
                         </>
-                      )}
+                      {/* )} */}
                     </tbody>
-                  </table>
+                  </table>}
 
                 </div>
               </div>
@@ -1667,6 +1669,7 @@ export default function EconomyForm({ open }: any) {
             </div>
           </div>
         </div>
+       {isShow && ( <>
         {/* JSX to display the results */}
         {(npv !== null ||
           cumulativeCashFlows !== null ||
@@ -1729,7 +1732,7 @@ export default function EconomyForm({ open }: any) {
                   </tr>
                 </tbody>
               </table>
-              <div className="border p-3 rounded-md">
+              <div className="border p-3 rounded-md mt-4">
                 <label className="block text-sm font-medium text-gray-900">
                   Net Present Value (NPV):
                 </label>
@@ -1789,7 +1792,7 @@ export default function EconomyForm({ open }: any) {
                   </tr>
                 </tbody>
               </table>
-              <div className="grid grid-cols-1 sm:grid-cols-2 gap-5">
+              <div className="grid grid-cols-1 sm:grid-cols-2 gap-5 mt-4">
                 <div className="border p-3 rounded-md">
                   <label className="block text-sm font-medium text-gray-900">
                     Benefit-Cost Ratio (BCR):
@@ -1809,6 +1812,7 @@ export default function EconomyForm({ open }: any) {
                 </div></div>
             </div>
           )}
+          </>)}
         <div className="bg-white w-full pt-2">
           <p className=" text-center py-2 mt-0">Waste Management Tracking</p>
         </div>

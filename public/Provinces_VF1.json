@@ -1,0 +1,15 @@
+{
+    "created": "2022-09-02T12:57:52.322674",
+    "description": "Pakistan administrative level 0-3 gazetteer",
+    "format": "XLSX",
+    "download_url": "https://data.humdata.org/dataset/a64d1ff2-7158-48c7-887d-6af69ce21906/resource/bfa0a53f-8136-4675-a471-cf4c8dd39567/download/pak_adminboundaries_tabulardata.xlsx",
+    "id": "bfa0a53f-8136-4675-a471-cf4c8dd39567",
+    "last_modified": "2023-04-04T20:31:34.271532",
+    "metadata_modified": "2025-02-25T21:22:24.110672",
+    "microdata": false,
+    "dataset_id": "a64d1ff2-7158-48c7-887d-6af69ce21906",
+    "resource_type": "file.upload",
+    "name": "PAK_AdminBoundaries_TabularData.xlsx",
+    "mimetype": "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet",
+    "size": "48.9K"
+}

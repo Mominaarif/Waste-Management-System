@@ -94,19 +94,15 @@ interface FormData {
 // }
 
 const initialFields = [
-  {
-    key: "totalVolumeInflow",
-    label: "Total Volume Inflow (m³/day)",
-    value: 3626,
-  },
+
   { key: "numberOfDays", label: "No. of Days", value: 3 },
   { key: "depthOfStorageArea", label: "Depth of Storage Area (m)", value: 8 },
 
-  {
-    key: "totalWasteThroughputPrimaryShredder",
-    label: "Total Waste Thoroughput to Shredder (tonnes/day)",
-    value: 1388,
-  },
+  // {
+  //   key: "totalWasteThroughputPrimaryShredder",
+  //   label: "Total Waste Thoroughput to Shredder (tonnes/day)",
+  //   value: 1388,
+  // },
   {
     key: "operatingHoursPrimary",
     label: "Operating hours (hrs/day)",
@@ -124,11 +120,11 @@ const initialFields = [
     value: 200,
   },
 
-  {
-    key: "totalWasteThroughputSecondaryShredder",
-    label: "Total Waste Thoroughput to Shredder (tonnes/day) ",
-    value: 1318,
-  },
+  // {
+  //   key: "totalWasteThroughputSecondaryShredder",
+  //   label: "Total Waste Thoroughput to Shredder (tonnes/day) ",
+  //   value: 1318,
+  // },
   {
     key: "operatingHoursSecondary",
     label: "Operating hours (hrs/day)",
@@ -148,11 +144,11 @@ const initialFields = [
     value: 10,
   },
 
-  {
-    key: "totalWasteThroughputPelletizer",
-    label: "Total Waste Thoroughput to Pelletizer (tonnes/day) ",
-    value: 1253,
-  },
+  // {
+  //   key: "totalWasteThroughputPelletizer",
+  //   label: "Total Waste Thoroughput to Pelletizer (tonnes/day) ",
+  //   value: 1253,
+  // },
   // { key: 'adoptedDesignCapacityPelletizer', label: 'Adopted Design Capacity (Pelletizer)', value: 104 },
   {
     key: "operatingHoursPelletizer",
@@ -194,11 +190,11 @@ const initialFields = [
     label: "Calorific Value of RDF (MJ/Kg)",
     value: 25.97,
   },
-  {
-    key: "totalAmountRDFProduce",
-    label: "Total Amount of RDF Produced (tonnes/day)",
-    value: 1227.5,
-  },
+  // {
+  //   key: "totalAmountRDFProduce",
+  //   label: "Total Amount of RDF Produced (tonnes/day)",
+  //   value: 1227.5,
+  // },
   { key: "coalUnitPrice", label: "Coal Unit Price (Rs./tonne)", value: 44240 },
   { key: "RDFUnitPrice", label: "RDF Unit Price (Rs./tonne)", value: 13530 },
 ];
@@ -470,8 +466,8 @@ function RDF() {
           };
         });
       }
-    } 
-    else{
+    }
+    else {
 
       totalWasteGenerated = formData.subCategories.reduce((sum, subCat) => {
         const percentage = parseFloat(subCat.value); // Ensure it's a number
@@ -680,8 +676,8 @@ function RDF() {
 
     const rdfOutput =
       totalWasteInput *
-      (shredderEfficiencyPrimary / 100) *
-      (pelletizerEfficiency / 100);
+      (primaryShredder / 100) *
+      (pelletizer / 100);
     const equivalentCoal = (rdfOutput * calorificValue) / 28; // Assuming coal CV = 28 MJ/kg
 
     const ResidueGeneratedPrimary = TotalWastePrimary - ShreddedOutflowPrimary;
@@ -972,7 +968,35 @@ function RDF() {
             <h2 className="text-lg font-semibold text-gray-900 pb-5">
               Input Parameters
             </h2>
-            <div className="w-full h-full flex flex-col items-center justify-center pb-5">
+            <div className="grid grid-cols-1 md:grid-cols-2 gap-y-4 gap-x-6">
+              {[
+                // Mapping input fields
+                {
+                  label: "Total Combustible Waste (kg/day)",
+                  value: totalWasteInput,
+                  setter: setTotalWasteInput,
+                },
+              ].map((input, index) => (
+                <div className="" key={index}>
+                  <label className="block text-sm font-medium text-gray-900 pb-1">
+                    {input.label}
+                  </label>
+                  {data1.length > 0 ? (
+                    <p className="block w-full border rounded-md border-gray-300 px-3 py-1.5 text-gray-900 focus:border-indigo-500 focus:ring-indigo-500 md:text-sm">
+                      {input.value}
+                    </p>
+                  ) : (
+                    <input
+                      type="number"
+                      value={input.value}
+                      onChange={(e) => input.setter(parseFloat(e.target.value))}
+                      className="block w-full border rounded-md border-gray-300 px-3 py-1.5 text-gray-900 focus:border-indigo-500 focus:ring-indigo-500 md:text-sm"
+                    />
+                  )}
+                </div>
+              ))}
+            </div>
+            <div className="w-full h-full flex flex-col items-center justify-center pt-5">
               <label className="block text-sm font-medium text-gray-900 pb-1 w-full text-left">
                 Evaluation of Energy Potential and Physical Properties of Waste
               </label>
@@ -1023,14 +1047,17 @@ function RDF() {
                             </p>
                           </td>
 
-
                           <td className="p-[0_!important]">
                             <input
                               type="number"
                               value={subCat.typicalDensity}
                               className="block w-full  border-gray-300 px-3 py-1.5 text-gray-900 focus:border-blue-500 focus:ring-blue-500 md:text-sm"
                               onChange={(e) =>
-                                handleChange(idx, "typicalDensity", e.target.value)
+                                handleChange(
+                                  idx,
+                                  "typicalDensity",
+                                  e.target.value
+                                )
                               }
                             />
                           </td>
@@ -1040,7 +1067,11 @@ function RDF() {
                               className="block w-full  border-gray-300 px-3 py-1.5 text-gray-900 focus:border-blue-500 focus:ring-blue-500 md:text-sm"
                               value={subCat.moistureContent}
                               onChange={(e) =>
-                                handleChange(idx, "moistureContent", e.target.value)
+                                handleChange(
+                                  idx,
+                                  "moistureContent",
+                                  e.target.value
+                                )
                               }
                             />
                           </td>
@@ -1050,20 +1081,20 @@ function RDF() {
                               className="block w-full  border-gray-300 px-3 py-1.5 text-gray-900 focus:border-blue-500 focus:ring-blue-500 md:text-sm"
                               value={subCat.typicalCalorificValue}
                               onChange={(e) =>
-                                handleChange(idx, "typicalCalorificValue", e.target.value)
+                                handleChange(
+                                  idx,
+                                  "typicalCalorificValue",
+                                  e.target.value
+                                )
                               }
                             />
                           </td>
-
-
                         </tr>
                       ))}
 
                       <tr className="bg-gray-100 font-semibold">
                         <td className="border p-2">Total</td>
-                        <td className="border p-2">
-                          {totalSubCatValue}
-                        </td>
+                        <td className="border p-2">{totalSubCatValue}</td>
                         <td className="border p-2">
                           {totalSubCatTypicalDensity.toFixed(2)}
                         </td>
@@ -1178,11 +1209,11 @@ function RDF() {
                         <tbody>
                           {formData.subCategories.map((subCat, idx) => (
                             <tr key={idx}>
-                              <td className="p-[0_!important] pl-[8px_!important]">
+                              <td className="p-[0_!important] pl-[8px_!important] border">
                                 {subCat.name}
                               </td>
 
-                              <td className="p-[0_!important]">
+                              <td className="p-[0_!important] border">
                                 <input
                                   type="number"
                                   value={subCat.value}
@@ -1197,7 +1228,7 @@ function RDF() {
                                 />
                               </td>
 
-                              <td className="p-[0_!important]">
+                              <td className="p-[0_!important] border">
                                 <input
                                   type="number"
                                   value={subCat.typicalDensity}
@@ -1212,7 +1243,7 @@ function RDF() {
                                 />
                               </td>
 
-                              <td className="p-[0_!important]">
+                              <td className="p-[0_!important] border">
                                 <input
                                   type="number"
                                   value={subCat.moistureContent}
@@ -1227,7 +1258,7 @@ function RDF() {
                                 />
                               </td>
 
-                              <td className="p-[0_!important]">
+                              <td className="p-[0_!important] border">
                                 <input
                                   type="number"
                                   value={subCat.typicalCalorificValue}
@@ -1337,17 +1368,15 @@ function RDF() {
 
                           <tr className="bg-gray-100 font-semibold">
                             <td className="border p-2">Total</td>
+                            <td className="border p-2">{totalSubCatValue}</td>
                             <td className="border p-2">
-                              {totalSubCatValue}
+                              {/* {totalSubCatTypicalDensity.toFixed(2)} */}
                             </td>
                             <td className="border p-2">
-                              {totalSubCatTypicalDensity.toFixed(2)}
+                              {/* {totalSubCatMoistureContent} */}
                             </td>
                             <td className="border p-2">
-                              {totalSubCatMoistureContent}
-                            </td>
-                            <td className="border p-2">
-                              {totalSubCatTypicalCalorificValue.toFixed(2)}
+                              {/* {totalSubCatTypicalCalorificValue.toFixed(2)} */}
                             </td>
                             <th></th>
                           </tr>
@@ -1359,37 +1388,11 @@ function RDF() {
               )}
             </div>
 
-            <div className="grid grid-cols-1 gap-y-4 gap-x-6">
-              {[
-                // Mapping input fields
-                {
-                  label: "Total Combustible Waste (kg/day)",
-                  value: totalWasteInput,
-                  setter: setTotalWasteInput,
-                },
-              ].map((input, index) => (
-                <div className="" key={index}>
-                  <label className="block text-sm font-medium text-gray-900 pb-1">
-                    {input.label}
-                  </label>
-                  {data1.length > 0 ? (
-                    <p className="block w-full border rounded-md border-gray-300 px-3 py-1.5 text-gray-900 focus:border-indigo-500 focus:ring-indigo-500 md:text-sm">{input.value}</p>
-                  ) : (
-                    <input
-                      type="number"
-                      value={input.value}
-                      onChange={(e) => input.setter(parseFloat(e.target.value))}
-                      className="block w-full border rounded-md border-gray-300 px-3 py-1.5 text-gray-900 focus:border-indigo-500 focus:ring-indigo-500 md:text-sm"
-                    />
-                  )}
-                </div>
-              ))}
-            </div>
             <h2 className="text-lg font-semibold text-gray-900 py-5">
               Storage Design
             </h2>
             <div className="grid grid-cols-1 md:grid-cols-3 gap-y-4 gap-x-6">
-              {formFields.slice(0, 3).map(({ key, label, value }) => (
+              {formFields.slice(0, 2).map(({ key, label, value }) => (
                 <div key={key} className="">
                   <label className="block text-sm font-medium text-gray-900 pb-1">
                     {label}:
@@ -1413,7 +1416,7 @@ function RDF() {
               1. Primary Shredder
             </h2>
             <div className="grid grid-cols-1 md:grid-cols-3 gap-y-4 gap-x-6">
-              {formFields.slice(3, 8).map(({ key, label, value }) => (
+              {formFields.slice(2, 6).map(({ key, label, value }) => (
                 <div key={key} className="">
                   <label className="block text-sm font-medium text-gray-900 pb-1">
                     {label}:
@@ -1434,7 +1437,7 @@ function RDF() {
               2. Secondary Shredder
             </h2>
             <div className="grid grid-cols-1 md:grid-cols-3 gap-y-4 gap-x-6">
-              {formFields.slice(8, 13).map(({ key, label, value }) => (
+              {formFields.slice(6, 10).map(({ key, label, value }) => (
                 <div key={key} className="">
                   <label className="block text-sm font-medium text-gray-900 pb-1">
                     {label}:
@@ -1455,7 +1458,7 @@ function RDF() {
               3. Pelletizer{" "}
             </h2>
             <div className="grid grid-cols-1 md:grid-cols-3 gap-y-4 gap-x-6">
-              {formFields.slice(13, 21).map(({ key, label, value }) => (
+              {formFields.slice(10, 21).map(({ key, label, value }) => (
                 <div key={key} className="">
                   <label className="block text-sm font-medium text-gray-900 pb-1">
                     {label}:
@@ -1492,24 +1495,22 @@ function RDF() {
               ))}
             </div>
 
-           
-
             <div className="overflow-x-auto w-full flex flex-col items-start">
               <div className="mt-4 space-y-2 w-full">
                 <label className="block text-sm font-medium text-gray-900 pb-1 w-full text-left">
                   Waste Flows{" "}
                 </label>{" "}
-                <table className="table text-left w-full md:w-[70%_!important] ">
+                <table className="w-full border border-collapse border-gray-300 text-sm md:w-[70%_!important] ">
                   <thead>
-                    <tr className="text-left text-black">
+                    <tr className="text-left text-black bg-gray-100">
                       <th
-                        className="w-[35%_!important] text-left"
+                        className="w-[35%_!important] text-left border p-2"
                         style={{ textAlign: "left" }}
                       >
                         Processes
                       </th>
                       <th
-                        className="w-[35%_!important] text-left"
+                        className="w-[35%_!important] text-left border p-2"
                         style={{ textAlign: "left" }}
                       >
                         Efficiencies (%)
@@ -1518,8 +1519,13 @@ function RDF() {
                   </thead>
                   <tbody>
                     <tr className="">
-                      <th style={{ textAlign: "left" }}>Primary Shredding</th>
-                      <td style={{ textAlign: "left", padding: 0 }}>
+                      <th style={{ textAlign: "left" }} className="border p-2">
+                        Primary Shredding
+                      </th>
+                      <td
+                        style={{ textAlign: "left", padding: 0 }}
+                        className="border p-2"
+                      >
                         <input
                           type="number"
                           placeholder="%"
@@ -1535,8 +1541,13 @@ function RDF() {
                       </td>
                     </tr>
                     <tr className="">
-                      <th style={{ textAlign: "left" }}>Secondary Shredding</th>
-                      <td style={{ textAlign: "left", padding: 0 }}>
+                      <th style={{ textAlign: "left" }} className="border p-2">
+                        Secondary Shredding
+                      </th>
+                      <td
+                        style={{ textAlign: "left", padding: 0 }}
+                        className="border p-2"
+                      >
                         <input
                           type="number"
                           placeholder="%"
@@ -1554,8 +1565,13 @@ function RDF() {
                       </td>
                     </tr>
                     <tr className="">
-                      <th style={{ textAlign: "left" }}>Pelletizing</th>
-                      <td style={{ textAlign: "left", padding: 0 }}>
+                      <th style={{ textAlign: "left" }} className="border p-2">
+                        Pelletizing
+                      </th>
+                      <td
+                        style={{ textAlign: "left", padding: 0 }}
+                        className="border p-2"
+                      >
                         <input
                           type="number"
                           placeholder="%"
@@ -1591,49 +1607,54 @@ function RDF() {
         {calculatedValues && (
           <div className="pt-10 px-5 md:px-8 bg-white">
             <div className="border p-8 rounded-md">
-              <h2 className="text-lg font-semibold text-gray-900 ">Outputs</h2>
+              <h2 className="text-lg font-semibold text-gray-900 ">
+                Waste Composition, Density, Moisture Content and, Calorific
+                Value Calculation
+              </h2>
+              {/* <h2 className="text-lg font-semibold text-gray-900 ">Waste Flows</h2> */}
+              {/* <h2 className="text-lg font-semibold text-gray-900 ">Waste Flows</h2> */}
               <div className="overflow-x-auto w-full flex flex-col items-start">
                 <div className="mt-4 space-y-2 w-full">
                   <table className="table text-left w-full">
                     <thead className="text-[10px]">
-                      <tr className="text-left">
+                      <tr className="text-left bg-gray-100">
                         <th
-                          className="w-[10%_!important]"
+                          className="w-[10%_!important] border p-2"
                           style={{ textAlign: "left" }}
                         ></th>
                         <th
-                          className="w-[35%_!important] text-left"
+                          className="w-[35%_!important] border p-2 text-left"
                           style={{ textAlign: "left" }}
                         >
                           Component
                         </th>
                         <th
-                          className="w-[35%_!important] text-left"
+                          className="w-[35%_!important] border p-2 text-left"
                           style={{ textAlign: "left" }}
                         >
                           Generation Rate (Kg/day){" "}
                         </th>
                         <th
-                          className="w-[35%_!important] text-left"
+                          className="w-[35%_!important] border p-2 text-left"
                           style={{ textAlign: "left" }}
                         >
                           composition(%)
                         </th>
                         <th
-                          className="w-[35%_!important] text-left"
+                          className="w-[35%_!important] border p-2 text-left"
                           style={{ textAlign: "left" }}
                         >
                           Density Contribution per Component (tonnes/m³)
                         </th>
                         <th
-                          className="w-[35%_!important] text-left"
+                          className="w-[35%_!important] border p-2 text-left"
                           style={{ textAlign: "left" }}
                         >
                           Moisture Contribution per Component (%)
                         </th>
 
                         <th
-                          className="w-[35%_!important] text-left"
+                          className="w-[35%_!important] border p-2 text-left"
                           style={{ textAlign: "left" }}
                         >
                           CV in Input Waste Stream (MJ/Kg)
@@ -1643,21 +1664,46 @@ function RDF() {
                     <tbody>
                       {calculatedValues.wasteGenerationResults.map((ss, id) => (
                         <tr className="" key={ss.id}>
-                          <th style={{ textAlign: "left" }}>{id + 1}</th>
-                          <td style={{ textAlign: "left" }}>{ss.name}</td>
-                          <td style={{ textAlign: "left" }}>
+                          <th
+                            style={{ textAlign: "left" }}
+                            className="border p-2"
+                          >
+                            {id + 1}
+                          </th>
+                          <td
+                            style={{ textAlign: "left" }}
+                            className="border p-2"
+                          >
+                            {ss.name}
+                          </td>
+                          <td
+                            style={{ textAlign: "left" }}
+                            className="border p-2"
+                          >
                             {ss.wasteGenerated.toFixed(2)}
                           </td>
-                          <td style={{ textAlign: "left" }}>
+                          <td
+                            style={{ textAlign: "left" }}
+                            className="border p-2"
+                          >
                             {ss.wasteGenerated1.toFixed(2)}
                           </td>
-                          <td style={{ textAlign: "left" }}>
+                          <td
+                            style={{ textAlign: "left" }}
+                            className="border p-2"
+                          >
                             {ss.DensityContributionPerComponent.toFixed(2)}
                           </td>
-                          <td style={{ textAlign: "left" }}>
+                          <td
+                            style={{ textAlign: "left" }}
+                            className="border p-2"
+                          >
                             {ss.moistureContentPerComponent.toFixed(2)}
                           </td>
-                          <td style={{ textAlign: "left" }}>
+                          <td
+                            style={{ textAlign: "left" }}
+                            className="border p-2"
+                          >
                             {ss.CVContentPerComponent.toFixed(2)}
                           </td>
                           {/* <td
@@ -1683,32 +1729,35 @@ function RDF() {
                   </table>
                 </div>
               </div>
+              <h2 className="text-lg font-semibold pt-4 text-gray-900 ">
+                Waste Flows
+              </h2>
 
               <div className="overflow-x-auto w-full flex flex-col items-start">
                 <div className="mt-4 space-y-2 w-full">
                   <table className="table text-left w-full">
                     <thead className="text-[10px]">
-                      <tr className="text-left">
+                      <tr className="text-left bg-gray-100">
                         <th
-                          className="w-[35%_!important] text-left"
+                          className="w-[35%_!important] text-left border p-2"
                           style={{ textAlign: "left" }}
                         >
                           Processes
                         </th>
                         <th
-                          className="w-[35%_!important] text-left"
+                          className="w-[35%_!important] text-left border p-2"
                           style={{ textAlign: "left" }}
                         >
                           Efficiencies (%){" "}
                         </th>
                         <th
-                          className="w-[35%_!important] text-left"
+                          className="w-[35%_!important] text-left border p-2"
                           style={{ textAlign: "left" }}
                         >
                           Outflow for Production, tonnes/day{" "}
                         </th>
                         <th
-                          className="w-[35%_!important] text-left"
+                          className="w-[35%_!important] text-left border p-2"
                           style={{ textAlign: "left" }}
                         >
                           Residue Generated, tonnes/day{" "}
@@ -1717,45 +1766,85 @@ function RDF() {
                     </thead>
                     <tbody>
                       <tr className="">
-                        <th style={{ textAlign: "left" }}>Primary Shredding</th>
-                        <td style={{ textAlign: "left" }}>
+                        <th
+                          style={{ textAlign: "left" }}
+                          className="border p-2"
+                        >
+                          Primary Shredding
+                        </th>
+                        <td
+                          style={{ textAlign: "left" }}
+                          className="border p-2"
+                        >
                           {primaryShredder.toFixed(2)}
                         </td>
 
-                        <td style={{ textAlign: "left" }}>
+                        <td
+                          style={{ textAlign: "left" }}
+                          className="border p-2"
+                        >
                           {calculatedValues.ShreddedOutflowPrimary.toFixed(2)}
                         </td>
-                        <td style={{ textAlign: "left" }}>
+                        <td
+                          style={{ textAlign: "left" }}
+                          className="border p-2"
+                        >
                           {calculatedValues.ResidueGeneratedPrimary.toFixed(2)}
                         </td>
                       </tr>
                       <tr className="">
-                        <th style={{ textAlign: "left" }}>
+                        <th
+                          style={{ textAlign: "left" }}
+                          className="border p-2"
+                        >
                           Secondary Shredding
                         </th>
-                        <td style={{ textAlign: "left" }}>
+                        <td
+                          style={{ textAlign: "left" }}
+                          className="border p-2"
+                        >
                           {secondaryShredder.toFixed(2)}
                         </td>
 
-                        <td style={{ textAlign: "left" }}>
+                        <td
+                          style={{ textAlign: "left" }}
+                          className="border p-2"
+                        >
                           {calculatedValues.ShreddedOutflowSec.toFixed(2)}
                         </td>
-                        <td style={{ textAlign: "left" }}>
+                        <td
+                          style={{ textAlign: "left" }}
+                          className="border p-2"
+                        >
                           {calculatedValues.ResidueGeneratedSecondary.toFixed(
                             2
                           )}
                         </td>
                       </tr>
                       <tr className="">
-                        <th style={{ textAlign: "left" }}>Pelletizing</th>
-                        <td style={{ textAlign: "left" }}>
+                        <th
+                          style={{ textAlign: "left" }}
+                          className="border p-2"
+                        >
+                          Pelletizing
+                        </th>
+                        <td
+                          style={{ textAlign: "left" }}
+                          className="border p-2"
+                        >
                           {pelletizer.toFixed(2)}
                         </td>
 
-                        <td style={{ textAlign: "left" }}>
+                        <td
+                          style={{ textAlign: "left" }}
+                          className="border p-2"
+                        >
                           {calculatedValues.RDFOutflowPell.toFixed(2)}
                         </td>
-                        <td style={{ textAlign: "left" }}>
+                        <td
+                          style={{ textAlign: "left" }}
+                          className="border p-2"
+                        >
                           {calculatedValues.ResidueGeneratedPelletizing.toFixed(
                             2
                           )}
@@ -1765,14 +1854,10 @@ function RDF() {
                   </table>
                 </div>
               </div>
-              <div className="grid grid-cols-1 md:grid-cols-3 gap-y-4 gap-x-6">
-                {/* TotalComposition: {calculatedValues.TotalComposition} <br />
-                TotalDensityContribution:{" "}
-                {calculatedValues.TotalDensityContribution} <br />
-                TotalMoistureContribution:{" "}
-                {calculatedValues.TotalMoistureContribution} <br />
-                totalCV: {calculatedValues.TotalCVContribution} <br />
-                TotalGenerationRate: {calculatedValues.totalWasteGenerated1} */}
+              <h2 className="text-lg font-semibold text-gray-900 pt-4">
+                Solid Waste Input
+              </h2>
+              <div className="grid grid-cols-1 md:grid-cols-2 gap-y-4 gap-x-6 mt-4">
                 {[
                   {
                     label: "Total Input to RDF Plant (Kg/day)",
@@ -1782,6 +1867,23 @@ function RDF() {
                     label: "Total Input to RDF Plant (Tons/day)",
                     value: calculatedValues.totalWasteGenerated / 1000,
                   },
+                ].map((output, index) => (
+                  <div className="border p-3 rounded-md" key={index}>
+                    <label className="block text-sm font-medium text-gray-900">
+                      {output.label}:
+                    </label>
+                    <span className="text-gray-700">
+                      {output.value.toFixed(2)}
+                    </span>
+                  </div>
+                ))}
+              </div>
+              <h2 className="text-lg font-semibold text-gray-900  pt-4">
+                Density Calculation
+              </h2>
+
+              <div className="grid grid-cols-1 md:grid-cols-2 gap-y-4 gap-x-6 mt-4">
+                {[
                   {
                     label: "Density of Combustibles (tonnes/m3)",
                     value: calculatedValues.TotalDensityContribution,
@@ -1790,12 +1892,44 @@ function RDF() {
                     label: "Density of Combustibles (Kg/m3)",
                     value: calculatedValues.TotalDensityContribution * 1000,
                   },
+                ].map((output, index) => (
+                  <div className="border p-3 rounded-md" key={index}>
+                    <label className="block text-sm font-medium text-gray-900">
+                      {output.label}:
+                    </label>
+                    <span className="text-gray-700">
+                      {output.value.toFixed(2)}
+                    </span>
+                  </div>
+                ))}
+              </div>
+
+              {/* <h2 className="text-lg font-semibold text-gray-900 ">Solid Waste Input</h2> */}
+              <div className=" border-t grid grid-cols-1 md:grid-cols-1 gap-y-4 gap-x-6 pt-4 mt-4">
+                {[
                   {
                     label: "Volume (m3/day)",
                     value:
                       (calculatedValues.TotalDensityContribution * 1000) /
                       calculatedValues.TotalDensityContribution,
                   },
+                ].map((output, index) => (
+                  <div className="border p-3 rounded-md" key={index}>
+                    <label className="block text-sm font-medium text-gray-900">
+                      {output.label}:
+                    </label>
+                    <span className="text-gray-700">
+                      {output.value.toFixed(2)}
+                    </span>
+                  </div>
+                ))}
+              </div>
+              <h2 className="text-lg font-semibold text-gray-900 pt-4">
+                Calorific Value Calculation
+              </h2>
+
+              <div className="grid grid-cols-1 md:grid-cols-3 gap-y-4 gap-x-6 mt-4">
+                {[
                   {
                     label: "Calorific Value (CV) of RDF (MJ/Kg)",
                     value: calculatedValues.totalCV,
@@ -1808,6 +1942,24 @@ function RDF() {
                     label: "Calorific Value (CV) of RDF (kcal/Kg)",
                     value: (calculatedValues.totalCV * 1000) / 4.184,
                   },
+                ].map((output, index) => (
+                  <div className="border p-3 rounded-md" key={index}>
+                    <label className="block text-sm font-medium text-gray-900">
+                      {output.label}:
+                    </label>
+                    <span className="text-gray-700">
+                      {output.value.toFixed(2)}
+                    </span>
+                  </div>
+                ))}
+              </div>
+
+              <h2 className="text-lg font-semibold text-gray-900 pt-4">
+                Storage Design
+              </h2>
+              {/* <h2 className="text-lg font-semibold text-gray-900 pt-4">Process Design </h2> */}
+              <div className="grid grid-cols-1 md:grid-cols-2 gap-y-4 gap-x-6 mt-4">
+                {[
                   {
                     label: "Storage Required (m³)",
                     value: calculatedValues.storageVolume,
@@ -1816,7 +1968,26 @@ function RDF() {
                     label: "Storage Area Required (m²)",
                     value: calculatedValues.storageArea,
                   },
+                ].map((output, index) => (
+                  <div className="border p-3 rounded-md" key={index}>
+                    <label className="block text-sm font-medium text-gray-900">
+                      {output.label}:
+                    </label>
+                    <span className="text-gray-700">
+                      {output.value.toFixed(2)}
+                    </span>
+                  </div>
+                ))}
+              </div>
 
+              <h2 className="text-lg font-semibold text-center w-full text-gray-900 pt-4">
+                Process Design{" "}
+              </h2>
+              <h2 className="text-base font-semibold text-gray-900 pt-4">
+                1. Primary Shredder{" "}
+              </h2>
+              <div className="grid grid-cols-1 md:grid-cols-3 gap-y-4 gap-x-6 mt-4">
+                {[
                   {
                     label: "Adopted Design Capacity (Primary) (tonnes/hr)",
                     value: calculatedValues.adoptDesign,
@@ -1829,7 +2000,23 @@ function RDF() {
                     label: "Shredded Outflow (Primary) (tonnes/day)",
                     value: calculatedValues.ShreddedOutflowPrimary,
                   },
+                ].map((output, index) => (
+                  <div className="border p-3 rounded-md" key={index}>
+                    <label className="block text-sm font-medium text-gray-900">
+                      {output.label}:
+                    </label>
+                    <span className="text-gray-700">
+                      {output.value.toFixed(2)}
+                    </span>
+                  </div>
+                ))}
+              </div>
 
+              <h2 className="text-base font-semibold text-gray-900 pt-4">
+                2. Secondary Shredder{" "}
+              </h2>
+              <div className="grid grid-cols-1 md:grid-cols-3 gap-y-4 gap-x-6 mt-4">
+                {[
                   {
                     label: "Adopted Design Capacity (Secondary) (tonnes/hr)",
                     value: calculatedValues.adoptDesignSec,
@@ -1842,6 +2029,23 @@ function RDF() {
                     label: "Shredded Outflow (Secondary) (tonnes/day)",
                     value: calculatedValues.ShreddedOutflowSec,
                   },
+                ].map((output, index) => (
+                  <div className="border p-3 rounded-md" key={index}>
+                    <label className="block text-sm font-medium text-gray-900">
+                      {output.label}:
+                    </label>
+                    <span className="text-gray-700">
+                      {output.value.toFixed(2)}
+                    </span>
+                  </div>
+                ))}
+              </div>
+
+              <h2 className="text-base font-semibold text-gray-900 pt-4">
+                3. Pelletizer{" "}
+              </h2>
+              <div className="grid grid-cols-1 md:grid-cols-3 gap-y-4 gap-x-6 mt-4">
+                {[
                   {
                     label: "Adopted Design Capacity (Pelletizer) (tonnes/hr)",
                     value: calculatedValues.adoptDesignPell,
@@ -1897,12 +2101,39 @@ function RDF() {
                       calculatedValues.ResidueGeneratedSecondary +
                       calculatedValues.ResidueGeneratedPelletizing,
                   },
+                ].map((output, index) => (
+                  <div className="border p-3 rounded-md" key={index}>
+                    <label className="block text-sm font-medium text-gray-900">
+                      {output.label}:
+                    </label>
+                    <span className="text-gray-700">
+                      {output.value.toFixed(2)}
+                    </span>
+                  </div>
+                ))}
+              </div>
 
+              {/* <h2 className="text-lg font-semibold text-gray-900 pt-4">Coal Vs RDF</h2> */}
+              <div className="grid grid-cols-1 md:grid-cols-1 gap-y-4 gap-x-6 mt-4">
+                {[
                   {
                     label: "CV of RDF : CV of Coal",
                     value: calculatedValues.ratioRDFCoal,
                   },
+                ].map((output, index) => (
+                  <div className="border p-3 rounded-md" key={index}>
+                    <label className="block text-sm font-medium text-gray-900">
+                      {output.label}:
+                    </label>
+                    <span className="text-gray-700">
+                      {output.value.toFixed(2)}
+                    </span>
+                  </div>
+                ))}
+              </div>
 
+              <div className="border-t grid grid-cols-1 md:grid-cols-3 gap-y-4 gap-x-6 pt-4 mt-4">
+                {[
                   {
                     label: "Total Amount of Equivalent Coal (tonnes/day)",
                     value: calculatedValues.totalAmountCoalEqualTonnePerDay,
@@ -1917,7 +2148,22 @@ function RDF() {
                     label: "Total Amount of Equivalent Coal (Gg/year)",
                     value: calculatedValues.totalAmountCoalEqualGgPerYear,
                   },
-
+                ].map((output, index) => (
+                  <div className="border p-3 rounded-md" key={index}>
+                    <label className="block text-sm font-medium text-gray-900">
+                      {output.label}:
+                    </label>
+                    <span className="text-gray-700">
+                      {output.value.toFixed(2)}
+                    </span>
+                  </div>
+                ))}
+              </div>
+              <h2 className="text-lg font-semibold text-gray-900 pt-4">
+                Cost Benefit Analysis{" "}
+              </h2>
+              <div className="grid grid-cols-1 md:grid-cols-3 gap-y-4 gap-x-6 mt-4">
+                {[
                   {
                     label: "Total Price of RDF Produced (Rs./year)",
                     value: calculatedValues.totaPriceRDFProduce,
@@ -1937,35 +2183,6 @@ function RDF() {
                     label: "Coal (Equivalent to RDF)",
                     value: calculatedValues.RDF,
                   },
-
-                  // ratioRDFCoal,
-                  // totalAmountCoalEqualTonnePerDay,
-                  // totalAmountRDFProduced,
-                  // totalAmountCoalEqualGgPerYear,
-                  // totaPriceRDFProduce,
-                  // totalAmountCoalEqual,
-                  // RDF,
-                  // RDF,
-                  // {
-                  //   label: "Overall Density (tonnes/m³)",
-                  //   value: calculatedValues.density,
-                  // },
-                  // {
-                  //   label: "Overall Moisture Content (%)",
-                  //   value: calculatedValues.moistureContent,
-                  // },
-                  // {
-                  //   label: "Overall Calorific Value (MJ/kg)",
-                  //   value: calculatedValues.calorificValue,
-                  // },
-                  // {
-                  //   label: "RDF Output (kg/day)",
-                  //   value: calculatedValues.rdfOutput,
-                  // },
-                  // {
-                  //   label: "Equivalent Coal (kg/day)",
-                  //   value: calculatedValues.equivalentCoal,
-                  // },
                 ].map((output, index) => (
                   <div className="border p-3 rounded-md" key={index}>
                     <label className="block text-sm font-medium text-gray-900">

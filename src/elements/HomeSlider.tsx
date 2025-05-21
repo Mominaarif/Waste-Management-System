@@ -113,7 +113,7 @@ export default function HomeService() {
                         <div className="flex justify-center items-center  h-full w-full">
                             <div className="h-[200px_!important] w-[100%_!important] md:w-[400px_!important] bg-[#A7C957] p-8 gap-5 flex flex-col justify-center items-center">
                                 {/* <h1 className='text-2xl text-white  font-[600] text-left w-full'>{item.heading}</h1> */}
-                                <h1 className='text-[17px] text-left text-white'>{item}</h1>
+                                <h1 className='text-[17px] text-left text-[#004b23]'>{item}</h1>
                                 {/* <div className=' absolute top-[-20px] right-[-20px] w-14 h-14 bg-[#1a7431] rounded-full flex justify-center items-center'>{item.btn}</div> */}
                             </div>
                         </div>

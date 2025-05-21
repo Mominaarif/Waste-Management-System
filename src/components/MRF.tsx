@@ -285,15 +285,15 @@ const MRFDesign = () => {
   };
 
   const calculateMRF = () => {
-    let totalInflow:any
-    let totalRecovered:any
-    let mrfEfficiency:any
-    let overallDensity:any
-    let compositionSum:any
-    let totalVolume:any
-    let areaRequired:any
-    let dimensions:any
-    let recoveryData:any
+    let totalInflow: any
+    let totalRecovered: any
+    let mrfEfficiency: any
+    let overallDensity: any
+    let compositionSum: any
+    let totalVolume: any
+    let areaRequired: any
+    let dimensions: any
+    let recoveryData: any
 
 
 
@@ -301,98 +301,98 @@ const MRFDesign = () => {
 
 
     if (data1.length > 0) {
-      
+
       totalInflow = editableSubcategories.reduce((sum, subCat) => {
         const percentage = parseFloat(subCat.waste); // Ensure it's a number
         return sum + percentage;
       }, 0);
 
-    console.log(totalInflow);
-    totalRecovered = editableSubcategories.reduce(
-      (sum, waste) => sum + (waste.waste * waste.recoveryEfficiency) / 100,
-      0
-    );
-    mrfEfficiency = ((totalRecovered / totalInflow) * 100).toFixed(2);
-    overallDensity = editableSubcategories.reduce(
-      (sum, waste) => sum + (waste.percentage * waste.typicalDensity) / 100,
-      0
-    );
+      console.log(totalInflow);
+      totalRecovered = editableSubcategories.reduce(
+        (sum, waste) => sum + (waste.waste * waste.recoveryEfficiency) / 100,
+        0
+      );
+      mrfEfficiency = ((totalRecovered / totalInflow) * 100).toFixed(2);
+      overallDensity = editableSubcategories.reduce(
+        (sum, waste) => sum + (waste.percentage * waste.typicalDensity) / 100,
+        0
+      );
 
-     compositionSum = editableSubcategories.reduce((sum, row) => {
-      const compositionPercent = (row.waste / totalInflow) * 100;
+      compositionSum = editableSubcategories.reduce((sum, row) => {
+        const compositionPercent = (row.waste / totalInflow) * 100;
 
-      const DensityContribution = (row.typicalDensity * (compositionPercent / 100));
-      return sum + DensityContribution;
-    }, 0);
-     totalVolume = (totalInflow / compositionSum) * designPeriod;
-     areaRequired = totalVolume / depth;
-     dimensions = Math.sqrt(areaRequired).toFixed(1);
+        const DensityContribution = (row.typicalDensity * (compositionPercent / 100));
+        return sum + DensityContribution;
+      }, 0);
+      totalVolume = (totalInflow / compositionSum) * designPeriod;
+      areaRequired = totalVolume / depth;
+      dimensions = Math.sqrt(areaRequired).toFixed(1);
 
-    // Calculate per waste recovery & revenue
-     recoveryData = editableSubcategories.map((waste) => {
-      const recovered = (waste.waste / 100) * waste.recoveryEfficiency;
-      const compositionPercent = (waste.waste / totalInflow) * 100;
-      const DensityContribution = (waste.typicalDensity * (compositionPercent / 100));
-      // const sum = sum + DensityContribution;
+      // Calculate per waste recovery & revenue
+      recoveryData = editableSubcategories.map((waste) => {
+        const recovered = (waste.waste / 100) * waste.recoveryEfficiency;
+        const compositionPercent = (waste.waste / totalInflow) * 100;
+        const DensityContribution = (waste.typicalDensity * (compositionPercent / 100));
+        // const sum = sum + DensityContribution;
 
-      return {
-        type: waste.name,
-        inflow: waste.inflow,
-        recoveryEfficiency: waste.recoveryEfficiency,
-        typicalDensities: waste.typicalDensities,
-        recovered,
-        compositionPercent,
-        DensityContribution
-        // revenue: recovered * waste.typicalDensities * 365,
-      };
-    });
-  }
-  else {
-    totalInflow = formData.subCategories.reduce((sum, subCat) => {
-      const percentage = parseFloat(subCat.value); // Ensure it's a number
-      return sum + percentage;
-    }, 0);
+        return {
+          type: waste.name,
+          inflow: waste.inflow,
+          recoveryEfficiency: waste.recoveryEfficiency,
+          typicalDensities: waste.typicalDensities,
+          recovered,
+          compositionPercent,
+          DensityContribution
+          // revenue: recovered * waste.typicalDensities * 365,
+        };
+      });
+    }
+    else {
+      totalInflow = formData.subCategories.reduce((sum, subCat) => {
+        const percentage = parseFloat(subCat.value); // Ensure it's a number
+        return sum + percentage;
+      }, 0);
 
-  console.log(totalInflow);
-  totalRecovered = formData.subCategories.reduce(
-    (sum, waste) => sum + (parseFloat(waste.value) * parseFloat(waste.recoveryEfficiency)) / 100,
-    0
-  );
-  mrfEfficiency = ((totalRecovered / totalInflow) * 100).toFixed(2);
-  overallDensity = formData.subCategories.reduce(
-    (sum, waste) => sum + (totalSubCatValue * parseFloat(waste.typicalDensity)) / 100,
-    0
-  );
+      console.log(totalInflow);
+      totalRecovered = formData.subCategories.reduce(
+        (sum, waste) => sum + (parseFloat(waste.value) * parseFloat(waste.recoveryEfficiency)) / 100,
+        0
+      );
+      mrfEfficiency = ((totalRecovered / totalInflow) * 100).toFixed(2);
+      overallDensity = formData.subCategories.reduce(
+        (sum, waste) => sum + (totalSubCatValue * parseFloat(waste.typicalDensity)) / 100,
+        0
+      );
 
-   compositionSum = formData.subCategories.reduce((sum, row) => {
-    const compositionPercent = (parseFloat(row.value) / totalInflow) * 100;
+      compositionSum = formData.subCategories.reduce((sum, row) => {
+        const compositionPercent = (parseFloat(row.value) / totalInflow) * 100;
 
-    const DensityContribution = (parseFloat(row.typicalDensity) * (compositionPercent / 100));
-    return sum + DensityContribution;
-  }, 0);
-   totalVolume = (totalInflow / compositionSum) * designPeriod;
-   areaRequired = totalVolume / depth;
-   dimensions = Math.sqrt(areaRequired).toFixed(1);
+        const DensityContribution = (parseFloat(row.typicalDensity) * (compositionPercent / 100));
+        return sum + DensityContribution;
+      }, 0);
+      totalVolume = (totalInflow / compositionSum) * designPeriod;
+      areaRequired = totalVolume / depth;
+      dimensions = Math.sqrt(areaRequired).toFixed(1);
 
-  // Calculate per waste recovery & revenue
-   recoveryData = formData.subCategories.map((waste) => {
-    const recovered = (parseFloat(waste.value) / 100) * parseFloat(waste.recoveryEfficiency);
-    const compositionPercent = (parseFloat(waste.value) / totalInflow) * 100;
-    const DensityContribution = (parseFloat(waste.typicalDensity) * (compositionPercent / 100));
-    // const sum = sum + DensityContribution;
+      // Calculate per waste recovery & revenue
+      recoveryData = formData.subCategories.map((waste) => {
+        const recovered = (parseFloat(waste.value) / 100) * parseFloat(waste.recoveryEfficiency);
+        const compositionPercent = (parseFloat(waste.value) / totalInflow) * 100;
+        const DensityContribution = (parseFloat(waste.typicalDensity) * (compositionPercent / 100));
+        // const sum = sum + DensityContribution;
 
-    return {
-      type: waste.name,
-      inflow: waste.value,
-      recoveryEfficiency: waste.recoveryEfficiency,
-      typicalDensities: waste.typicalDensity,
-      recovered,
-      compositionPercent,
-      DensityContribution
-      // revenue: recovered * waste.typicalDensities * 365,
-    };
-  });
-  }
+        return {
+          type: waste.name,
+          inflow: waste.value,
+          recoveryEfficiency: waste.recoveryEfficiency,
+          typicalDensities: waste.typicalDensity,
+          recovered,
+          compositionPercent,
+          DensityContribution
+          // revenue: recovered * waste.typicalDensities * 365,
+        };
+      });
+    }
     // const revenueData = wasteData.map((waste) => ({
     //   type: waste.type,
     //   recovered: (waste.inflow * waste.recoveryEfficiency) / 100,
@@ -432,24 +432,24 @@ const MRFDesign = () => {
   const tableRef2 = useRef<HTMLTableElement>(null);
   const tableRef1 = useRef<HTMLTableElement>(null);
 
-useEffect(() => {
-  if (editableSubcategories.length > 0 || formData.subCategories.length > 0) {
-    const table2 = $(tableRef2.current!).DataTable({
-      responsive: true,
-      destroy: true // Destroy previous instance
-    });
-    
-    const table1 = $(tableRef1.current!).DataTable({
-      responsive: true,
-      destroy: true
-    });
+  useEffect(() => {
+    if (editableSubcategories.length > 0 || formData.subCategories.length > 0) {
+      const table2 = $(tableRef2.current!).DataTable({
+        responsive: true,
+        destroy: true // Destroy previous instance
+      });
 
-    return () => {
-      table2.destroy();
-      table1.destroy();
-    };
-  }
-}, [editableSubcategories, formData.subCategories, calculatedData]); // Add dependencies
+      const table1 = $(tableRef1.current!).DataTable({
+        responsive: true,
+        destroy: true
+      });
+
+      return () => {
+        table2.destroy();
+        table1.destroy();
+      };
+    }
+  }, [editableSubcategories, formData.subCategories, calculatedData]); // Add dependencies
 
 
   console.log(formData.subCategories)
@@ -461,7 +461,7 @@ useEffect(() => {
       <div className="">
         <div className="pt-10 px-5 md:px-8 bg-white">
           <div className="border  p-8 rounded-md">
-          <h2 className="text-lg font-semibold text-gray-900 pb-5">
+            <h2 className="text-lg font-semibold text-gray-900 pb-5">
               Input Parameters
             </h2>
             {data1.length > 0 ? (
@@ -473,7 +473,7 @@ useEffect(() => {
                       <th className="border p-2">Inflow (Kg/day)</th>
                       {/* <th className="border p-2">tonnes/day</th> */}
                       <th className="border p-2">
-                        Typical Densities (day/m³)
+                        Typical Densities (Kg/m³)
                       </th>
                       <th className="border p-2">Recovery Efficiency (%)</th>
                     </tr>
@@ -524,10 +524,10 @@ useEffect(() => {
                         {totalSubCatValue.toFixed(2)}
                       </td>
                       <td className="border p-2">
-                        {totalSubCatTypicalDensity.toFixed(2)}
+                        {/* {totalSubCatTypicalDensity.toFixed(2)} */}
                       </td>
                       <td className="border p-2">
-                        {totalRecoveryEfficiency}
+                        {/* {totalRecoveryEfficiency} */}
                       </td>
 
                     </tr>
@@ -559,16 +559,18 @@ useEffect(() => {
 
                   {/* Table of selected components */}
                   {formData.subCategories.length > 0 && (
-                    <table ref={tableRef1}
-                    className=" display nowrap"
-                    style={{ width: '100%' }}>
+                    <table
+                      // ref={tableRef1}
+                      className="w-full border border-collapse border-gray-300 text-sm"
+                    // style={{ width: '100%' }}
+                    >
                       <thead>
                         <tr className="bg-gray-100">
                           <th className="border p-2">Component</th>
                           <th className="border p-2">Inflow (Kg/day)</th>
                           {/* <th className="border p-2">tonnes/day</th> */}
                           <th className="border p-2">
-                            Typical Densities (day/m³)
+                            Typical Densities (Kg/m³)
                           </th>
                           <th className="border p-2">Recovery Efficiency (%)</th>
 
@@ -648,10 +650,10 @@ useEffect(() => {
                             {totalSubCatValue.toFixed(2)}
                           </td>
                           <td className="border p-2">
-                            {totalSubCatTypicalDensity.toFixed(2)}
+                            {/* {totalSubCatTypicalDensity.toFixed(2)} */}
                           </td>
                           <td className="border p-2">
-                            {totalRecoveryEfficiency}
+                            {/* {totalRecoveryEfficiency} */}
                           </td>
 
                           <th></th>
@@ -788,7 +790,7 @@ useEffect(() => {
               {calculatedData?.recoveryData && (
                 <div>
                   {/* <h2 className="text-xl font-bold mt-6">Recovery Table</h2> */}
-                  <table  ref={tableRef2}
+                  <table ref={tableRef2}
                     className=" display nowrap"
                     style={{ width: '100%' }}>
                     <thead>
@@ -839,16 +841,7 @@ useEffect(() => {
               )}
 
 
-              <div className="grid grid-cols-1 md:grid-cols-3 gap-y-4 gap-x-6">
-                <div className="border p-3 rounded-md">
-                  <label className="block text-sm font-medium text-gray-900">
-                    Density of Recyclables:
-                  </label>
-                  <span className="text-gray-700">
-                    {calculatedData.compositionSum.toFixed(2)} Kg/m³
-                  </span>
-                </div>
-
+              <div className="grid grid-cols-1 md:grid-cols-2 gap-y-4 gap-x-6 pb-4">
                 <div className="border p-3 rounded-md">
                   <label className="block text-sm font-medium text-gray-900">
                     Total Waste Inflow:
@@ -866,25 +859,23 @@ useEffect(() => {
                     {calculatedData.totalRecovered.toFixed(2)} Kg/day
                   </span>
                 </div>
+              </div>
 
-                <div className="border p-3 rounded-md">
+              <div className="border-t grid grid-cols-1 md:grid-cols-1 gap-y-4 gap-x-6 pt-4 pb-4">
+               <div className="border p-3 rounded-md">
                   <label className="block text-sm font-medium text-gray-900">
-                    Total Recovered Waste (Kg/year):
+                    Density of Recyclables:
                   </label>
                   <span className="text-gray-700">
-                    {calculatedData.totalRecoveredPerYear.toFixed(2)} Kg/year
+                    {calculatedData.compositionSum.toFixed(2)} Kg/m³
                   </span>
                 </div>
+              </div>
 
-                <div className="border p-3 rounded-md">
-                  <label className="block text-sm font-medium text-gray-900">
-                    Efficiency of MRF:
-                  </label>
-                  <span className="text-gray-700">
-                    {calculatedData.mrfEfficiency}%
-                  </span>
-                </div>
-
+              <h2 className="text-lg font-semibold text-gray-900 pb-3">
+                Size of MRF
+              </h2>
+              <div className="grid grid-cols-1 md:grid-cols-3 gap-y-4 gap-x-6">
                 <div className="border p-3 rounded-md">
                   <label className="block text-sm font-medium text-gray-900">
                     Total Inflow Volume of Waste:
@@ -903,15 +894,58 @@ useEffect(() => {
                   </span>
                 </div>
 
+                
+
+
+                {/* <div className="border p-3 rounded-md">
+                  <label className="block text-sm font-medium text-gray-900">
+                    Total Recovered Waste (Kg/year):
+                  </label>
+                  <span className="text-gray-700">
+                    {calculatedData.totalRecoveredPerYear.toFixed(2)} Kg/year
+                  </span>
+                </div>
+
                 <div className="border p-3 rounded-md">
+                  <label className="block text-sm font-medium text-gray-900">
+                    Efficiency of MRF:
+                  </label>
+                  <span className="text-gray-700">
+                    {calculatedData.mrfEfficiency}%
+                  </span>
+                </div> */}
+
+
+
+
+
+                {/* <div className="border p-3 rounded-md">
                   <label className="block text-sm font-medium text-gray-900">
                     Length:
                   </label>
                   <span className="text-gray-700">
                     {calculatedData.MRFLength} m
                   </span>
+                </div> */}
+              
+              </div>
+              <div className="">
+               
+                <div className="grid grid-cols-1 md:grid-cols-3 gap-y-4 gap-x-6">
+              
                 </div>
-                <div className="border p-3 rounded-md">
+              </div>
+
+              <div className=" mt-5">
+                {/* <h2 className="block text-sm font-medium text-gray-900 py-6">
+                {" "}
+                Density and Volume Calculations
+              </h2> */}
+
+
+                <div className="border-t pt-4 grid grid-cols-1 md:grid-cols-2 gap-y-4 gap-x-6">
+
+  <div className="border p-3 rounded-md">
                   <label className="block text-sm font-medium text-gray-900">
                     Area Required:
                   </label>
@@ -919,53 +953,6 @@ useEffect(() => {
                     {calculatedData.areaRequired.toFixed(2)} m²
                   </span>
                 </div>
-              </div>
-              <div className=" mt-5">
-                {/* <h2 className="block text-sm font-medium text-gray-900 py-6">
-                {" "}
-                Density and Volume Calculations
-              </h2> */}
-
-                <div className="grid grid-cols-1 md:grid-cols-3 gap-y-4 gap-x-6">
-                  {/* <div className="border p-3 rounded-md">
-                  <label className="block text-sm font-medium text-gray-900">
-                    Overall Density of Recyclables:
-                  </label>
-                  <span className="text-gray-700">
-                    {calculatedData.overallDensity.toFixed(2)} Kg/m³
-                  </span>
-                </div>
-
-                <div className="border p-3 rounded-md">
-                  <label className="block text-sm font-medium text-gray-900">
-                    Total Inflow Volume of Waste:
-                  </label>
-                  <span className="text-gray-700">
-                    {calculatedData.totalInflowVolume.toFixed(2)} m³
-                  </span>
-                </div>
-
-                <div className="border p-3 rounded-md">
-                  <label className="block text-sm font-medium text-gray-900">
-                    Volume of MRF:
-                  </label>
-                  <span className="text-gray-700">
-                    {calculatedData.totalVolume.toFixed(2)} m³
-                  </span>
-                </div> */}
-                </div>
-              </div>
-
-              <div className=" mt-5">
-                {/* <h2 className="block text-sm font-medium text-gray-900 py-6">
-                {" "}
-                Density and Volume Calculations
-              </h2> */}
-
-
-                <div className="grid grid-cols-1 md:grid-cols-1 gap-y-4 gap-x-6">
-
-
                   <div className="border p-3 rounded-md">
                     <label className="block text-sm font-medium text-gray-900">
                       Dimensions of MRF:

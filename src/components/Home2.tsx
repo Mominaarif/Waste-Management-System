@@ -75,7 +75,7 @@ export default function Home2(open: any) {
       title: "Sustainability Analysis",
       description: `📊 Conduct a comprehensive sustainability evaluation for your waste management system.
 `,
-      image: "/images/plants.png",
+      image: "/images/plants.jpg",
     },
     {
       title: "Get Proposed Scenario",
@@ -214,9 +214,9 @@ export default function Home2(open: any) {
 
                 <div className='absolute top-[-20px] left-[-20px]  w-20 h-20 bg-[#386641] text-white font-bold rounded-full flex justify-center items-center'>Step {index + 1}</div>
                 <li className=" bg-[#A7C957] md:h-[350px] h-fit md:p-8 p-5 gap-5 flex flex-col items-center">
-                  <img src={item.image} alt="" className="w-36 object-cover object-center rounded-md" />
-                  <h1 className='md:text- text-xl text-white  font-[600] text-center w-full'>{item.title}</h1>
-                  <h1 className='md:text-[17px] text-sm font-light text-center text-[#ffffffa6]'>{item.description}</h1>
+                  <img src={item.image} alt="" className="w-36 h-[100px] object-cover object-center rounded-md" />
+                  <h1 className='md:text- text-xl text-[#004b23]  font-[600] text-center w-full'>{item.title}</h1>
+                  <h1 className='md:text-[17px] text-sm font-light text-center text-[#004b23]'>{item.description}</h1>
                   {/* <div className=' absolute top-[-20px] right-[-20px] w-14 h-14 bg-[#1a7431] rounded-full flex justify-center items-center'>{item.btn}</div> */}
                 </li>
 

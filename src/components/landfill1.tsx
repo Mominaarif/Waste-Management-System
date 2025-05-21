@@ -286,8 +286,8 @@ const Landfill1 = () => {
       <div className="pt-8 bg-white">
         <div className="border p-8 rounded-md">
           <div className="border-b border-gray-900/10 pb-8 mb-8">
-            <h2 className="text-lg font-semibold text-gray-900 pb-5">
-              Waste Inputs
+            <h2 className="text-base/7 font-semibold  py-4 text-gray-900">
+              Quantity to be Landfilled
             </h2>
 
             {data1.length > 0 ? (
@@ -395,10 +395,10 @@ const Landfill1 = () => {
           </div>
 
           <div className="">
-            <h2 className="text-base/7 font-semibold text-gray-900">
-              Design Parameters
+            <h2 className="text-base/7 font-semibold  pb-2 text-gray-900">
+              Design Considerations
             </h2>
-            <div className="grid grid-cols-1 sm:grid-cols-3 gap-y-4 gap-x-6">
+            <div className="grid grid-cols-1 sm:grid-cols-2 gap-y-4 gap-x-6">
               <div className=" ">
                 <label className="block text-sm/6 font-medium text-gray-900 my-0">
                   Density to be achieved in landfill ( tons/m³):
@@ -438,27 +438,11 @@ const Landfill1 = () => {
                   />
                 </div>
               </div>
-
-              <div className=" ">
-                <label className="block text-sm/6 font-medium text-gray-900 my-0">
-                  Landfill Depth (m):
-                </label>
-                <div className="mt-2">
-                  <input
-                    type="number"
-                    value={designParams.landfillDepth}
-                    onChange={(e) =>
-                      setDesignParams({
-                        ...designParams,
-                        landfillDepth: parseFloat(e.target.value),
-                      })
-                    }
-                    placeholder="Enter value (default: 2.5)"
-                    className="block w-full rounded-md bg-white px-3 py-1.5 text-base text-gray-900 outline-1 -outline-offset-1 outline-gray-300 placeholder:text-gray-400 focus:outline-2 focus:-outline-offset-2 focus:outline-indigo-600 sm:text-sm/6"
-                  />
-                </div>
-              </div>
-
+            </div>
+            <h2 className="text-base/7 font-semibold py-4 text-gray-900">
+              Landfill Area Requirement
+            </h2>
+            <div className="grid grid-cols-1 gap-y-4 gap-x-6">
               <div className=" ">
                 <label className="block text-sm/6 font-medium text-gray-900 my-0">
                   Incremental Factor:
@@ -478,6 +462,32 @@ const Landfill1 = () => {
                   />
                 </div>
               </div>
+            </div>
+            <h2 className="text-base/7 font-semibold  py-4 text-gray-900">
+              Trench Design
+            </h2>
+            <div className="grid grid-cols-1 sm:grid-cols-3 gap-y-4 gap-x-6">
+              {/* <div className=" ">
+              <label className="block text-sm/6 font-medium text-gray-900 my-0">
+                Landfill Depth (m):
+              </label>
+              <div className="mt-2">
+                <input
+                  type="number"
+                  value={designParams.landfillDepth}
+                  onChange={(e) =>
+                    setDesignParams({
+                      ...designParams,
+                      landfillDepth: parseFloat(e.target.value),
+                    })
+                  }
+                  placeholder="Enter value (default: 2.5)"
+                  className="block w-full rounded-md bg-white px-3 py-1.5 text-base text-gray-900 outline-1 -outline-offset-1 outline-gray-300 placeholder:text-gray-400 focus:outline-2 focus:-outline-offset-2 focus:outline-indigo-600 sm:text-sm/6"
+                />
+              </div>
+            </div> */}
+
+
 
               <div className=" ">
                 <label className="block text-sm/6 font-medium text-gray-900 my-0">
@@ -538,7 +548,11 @@ const Landfill1 = () => {
                   />
                 </div>
               </div>
-
+            </div>
+            <h2 className="text-base/7 font-semibold  py-4 text-gray-900">
+              Cell Design
+            </h2>
+            <div className="grid grid-cols-1 sm:grid-cols-2 gap-y-4 gap-x-6">
               <div className=" ">
                 <label className="block text-sm/6 font-medium text-gray-900 my-0">
                   Cell Width (m):
@@ -578,7 +592,11 @@ const Landfill1 = () => {
                   />
                 </div>
               </div>
-
+            </div>
+            <h2 className="text-base/7 font-semibold  py-4 text-gray-900">
+              Time Required to Excavate a Trench
+            </h2>
+            <div className="grid grid-cols-1 sm:grid-cols-2 gap-y-4 gap-x-6 pb-5">
               <div className=" ">
                 <label className="block text-sm/6 font-medium text-gray-900 my-0">
                   Daily Cover Thickness (m):
@@ -618,7 +636,11 @@ const Landfill1 = () => {
                   />
                 </div>
               </div>
-
+            </div>
+            {/* <h2 className="text-base/7 font-semibold  py-4 text-gray-900">
+                    Cell Design
+                  </h2> */}
+            <div className="border-t pt-4 grid grid-cols-1 sm:grid-cols-2 gap-y-4 gap-x-6">
               <div className=" ">
                 <label className="block text-sm/6 font-medium text-gray-900 my-0">
                   Excavation Performance (m³/hr):
@@ -669,7 +691,7 @@ const Landfill1 = () => {
             </div>
           </div>
         </div>
-      </div>
+      </div >
 
       {(outputs.totalWastePerDay > 0 || outputs.totalWastePerYear > 0) && (
         <div className="pt-10 bg-white">
@@ -1034,7 +1056,8 @@ const Landfill1 = () => {
             </div>
           </div>
         </div>
-      )}
+      )
+      }
     </>
   );
 };
