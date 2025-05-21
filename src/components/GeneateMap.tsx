@@ -81,10 +81,10 @@ const JSON_FILE_URL = '/District_Boundary.json';
 // Styling objects
 const infoWindowStyle: React.CSSProperties = {
     fontFamily: 'Arial, sans-serif',
-    backgroundColor: '#f9f9f9',
+    // backgroundColor: '#f9f9f9',
     padding: '15px',
     borderRadius: '12px',
-    boxShadow: '0 4px 20px rgba(0, 0, 0, 0.2)',
+    // boxShadow: '0 4px 20px rgba(0, 0, 0, 0.2)',
     maxWidth: '500px',
     minWidth: '300px',
     lineHeight: '1.5',
@@ -425,9 +425,9 @@ const GeneateMap = ({ setCurrentValues, open }: any) => {
     };
 
     const WasteTable: React.FC<{ wasteData: WasteCategory }> = ({ wasteData }) => (
-        <table className="waste-table">
+        <table className=" w-full">
             <thead>
-                <tr>
+                <tr className='text-left'>
                     <th>Subcategory</th>
                     <th>Amount (kg)</th>
                 </tr>
@@ -443,37 +443,50 @@ const GeneateMap = ({ setCurrentValues, open }: any) => {
         </table>
     );
 
-    const handleForecastClick = () => {
-        if (!selectedPolygon) return;
+const handleForecastClick = () => {
+    if (!selectedPolygon) return;
 
-        const presentPopulation = population;
-        const designPeriod = forecastYear;
-        const futurePopulation = Math.round(presentPopulation * Math.pow(1 + GROWTH_RATE, designPeriod));
-        const totalWasteGenerated = Math.round(futurePopulation * WASTE_GENERATION_RATE * 365);
+    const presentPopulation = population;
+    const name = selectedPolygon.city;
+    const designPeriod = forecastYear;
 
-        const newForecastedValues: { [key: string]: WasteCategory } = {};
-        Object.keys(selectedPolygon.wasteCategories).forEach((category) => {
-            const wasteData = selectedPolygon.wasteCategories[category as keyof WasteCategories];
-            const totalWasteInCategory = Object.values(wasteData).reduce((sum, value) => sum + value, 0);
+    const futurePopulation = Math.round(presentPopulation * Math.pow(1 + GROWTH_RATE, designPeriod));
+    const totalWasteGenerated = Math.round(futurePopulation * WASTE_GENERATION_RATE * 365);
 
-            newForecastedValues[category] = {};
+    const newForecastedValues: { [key: string]: WasteCategory } = {};
+    Object.keys(selectedPolygon.wasteCategories).forEach((category) => {
+        const wasteData = selectedPolygon.wasteCategories[category as keyof WasteCategories];
+        const totalWasteInCategory = Object.values(wasteData).reduce((sum, value) => sum + value, 0);
 
-            Object.keys(wasteData).forEach((key) => {
-                const subtypeWaste = Math.round((wasteData[key] / totalWasteInCategory) * totalWasteGenerated);
-                newForecastedValues[category][key] = subtypeWaste;
-            });
+        newForecastedValues[category] = {};
+
+        Object.keys(wasteData).forEach((key) => {
+            const subtypeWaste = Math.round((wasteData[key] / totalWasteInCategory) * totalWasteGenerated);
+            newForecastedValues[category][key] = subtypeWaste;
         });
+    });
 
-        setForecastedValues(newForecastedValues);
+    setForecastedValues(newForecastedValues);
 
-        navigate('/forecast', { state: { forecastedValues: newForecastedValues, presentPopulation, forecastYear } });
-    };
+    navigate('/forecast', {
+        state: {
+            forecastedValues: newForecastedValues,
+            presentPopulation,
+            forecastYear,
+            name,
+        },
+    });
+};
+
 
     const handleContourMap = () => {
         if (!selectedPolygon) {
             console.error("Selected polygon not found");
             return;
         }
+        const presentPopulation = population;
+        const name = selectedPolygon.city;
+        // const designPeriod = forecastYear;
 
         const currentData = {
             wasteCategories: {
@@ -484,7 +497,7 @@ const GeneateMap = ({ setCurrentValues, open }: any) => {
             },
         };
 
-        navigate('/heatmap', { state: currentData });
+        navigate('/heatmap', { state: {wasteData:currentData, name, presentPopulation, forecastYear} });
     };
 
     const handleComparison = () => {
@@ -532,6 +545,8 @@ const GeneateMap = ({ setCurrentValues, open }: any) => {
             },
         ],
     };
+
+    console.log(forecastedValues)
 
     return (
         <div className="relative">
@@ -625,8 +640,10 @@ const GeneateMap = ({ setCurrentValues, open }: any) => {
                     {selectedPolygon && (
                         <>
                             <InfoWindow position={selectedPolygon.position!} onCloseClick={handleCloseClick}>
-                                <div style={infoWindowStyle}>
+                                <div style={infoWindowStyle} >
                                     <div style={titleStyle}>{`UC ${selectedPolygon.id + 1}`}</div>
+                                <div  className=' grid grid-cols-2 gap-2'>
+                                    
                                     <div style={labelStyle}>
                                         <span style={iconStyle}>🏷️</span>City ID:
                                     </div>
@@ -650,12 +667,15 @@ const GeneateMap = ({ setCurrentValues, open }: any) => {
                                     <div style={labelStyle}>
                                         <span style={iconStyle}>♻️</span>Total Waste Generated:
                                     </div>
+                                   
                                     <div style={valueStyle} onClick={handleWasteClick}>
                                         {totalWaste} Tons
                                     </div>
-                                    <div style={{ marginBottom: '30px', width: '400px', height: '300px' }}>
-                                        <h3>Main Waste Categories</h3>
-                                        <Pie data={mainPieChartData} />
+                                     </div>
+                                    <div className='mb-[30px] w-full h-[300px]'>
+                                        <h3 style={labelStyle} className='text-base'>Main Waste Categories</h3>
+                                        <div className="flex w-full justify-center items-center"><Pie data={mainPieChartData} className='w-full h-[300px_!important] flex justify-center items-center'/></div>
+                                        
                                     </div>
                                     <div>
                                         <button className="styled-button" onClick={() => handleCategoryChange('residential')}>
@@ -671,13 +691,13 @@ const GeneateMap = ({ setCurrentValues, open }: any) => {
                                             Hazardous
                                         </button>
                                     </div>
-                                    <div>
-                                        <h3>Subcategories</h3>
+                                    <div className='pt-5'>
+                                        <h3 style={labelStyle} className='text-base'>Subcategories</h3>
                                         <WasteTable wasteData={selectedPolygon.wasteCategories[selectedCategory as keyof WasteCategories]} />
                                     </div>
-                                    <div className="forecast-section">
+                                    <div className="forecast-section pt-8">
                                         <select
-                                            className="year-dropdown"
+                                            className="w-full h-10 border border-gray-300 rounded-sm mb-2"
                                             value={forecastYear}
                                             onChange={(e) => setForecastYear(Number(e.target.value))}
                                         >
@@ -686,7 +706,8 @@ const GeneateMap = ({ setCurrentValues, open }: any) => {
                                                     {index + 1} Year
                                                 </option>
                                             ))}
-                                        </select>
+                                        </select></div>
+                                         <div className="forecast-section grid grid-cols-2 gap-2">
                                         <button className="forecast-button" onClick={handleForecastClick}>
                                             Forecast
                                         </button>

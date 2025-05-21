@@ -429,7 +429,7 @@ const Landfills = ({ open }: { open?: boolean }) => {
         </GoogleMap>
       </LoadScript>
 
-      <div className="absolute top-2 right-4 bg-white p-1.5 rounded shadow-md z-10">
+      {/* <div className="absolute top-2 right-4 bg-white p-1.5 rounded shadow-md z-10">
         <input
           type="file"
           accept=".geojson,.json"
@@ -447,7 +447,7 @@ const Landfills = ({ open }: { open?: boolean }) => {
             Uploaded: <span className="font-medium">{uploadedFileName}</span>
           </p>
         )}
-      </div>
+      </div> */}
     </div>
   );
 };

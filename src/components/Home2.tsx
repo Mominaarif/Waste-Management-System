@@ -51,33 +51,35 @@
 
 import { ChartLine, Layers, Mountain, Network, Truck, Target, AlertTriangle } from 'lucide-react';
 import HomeService from "@/elements/HomeSlider";
-import DataTable from "@/elements/Table1";
+import 'animate.css';
+import FadeIn from '@/elements/FadeIn';
 
 export default function Home2(open: any) {
   const steps = [
     {
       title: "Select Your Area",
-      description: "Choose the city or region you want to analyze for waste generation and management",
+      description: "📍 Choose your city, region, or locality using an interactive map interface.",
       image: "/images/map.png",
     },
     {
       title: "Add Your Data",
-      description: "Use the default data or upload your own custom data",
+      description: "📂 Upload your own datasets or choose from preloaded defaults.",
       image: "/images/laptop.png",
     },
     {
       title: "Categorize Waste",
-      description: "Choose the city or region you want to analyze for waste generation and management",
+      description: "♻️ Classify waste into types: Biodegradables, Combustibles, Recyclables.",
       image: "/images/waste-bins.png",
     },
     {
-      title: "Calculate Carbon Footprint",
-      description: "Use the default data or upload your own custom data",
+      title: "Sustainability Analysis",
+      description: `📊 Conduct a comprehensive sustainability evaluation for your waste management system.
+`,
       image: "/images/plants.png",
     },
     {
       title: "Get Proposed Scenario",
-      description: "Get the proposed scenario based on the carbon footprint",
+      description: "🌿 Generate optimized waste management pathways tailored to your inputs.",
       image: "/images/leaves.png",
     },
 
@@ -86,54 +88,106 @@ export default function Home2(open: any) {
   ];
 
   const aim = [
-    { title: "Waste not collected properly in many areas", btn: <Truck className='text-white' /> },
-    { title: "No segregation at source (everything dumped together)", btn: <Layers className='text-white' /> },
-    { title: "Open dumping, overfilled landfills", btn: <Mountain className='text-white' /> },
-    { title: "No use of simulation tools or analytics", btn: <ChartLine className='text-white' /> },
-    { title: "Fragmented national and city-level strategies", btn: <Network className='text-white' /> }
+    { title: "Waste not collected properly, very low door to door collection", btn:"🗑️"  },
+    { title: "No segregation at source", btn: "♻️" },
+    { title: "Fragmented strategies", btn: "🏛️" },
+    { title: "Open dumping & overflowing landfills", btn: "🏞️" },
+    { title: "No simulation tools/analytics", btn: "📊" }
   ];
+  console.log(open)
   return (
     <div className="h-[calc(100vh-85px)] overflow-y-auto bg-white">
-      <div className="flex flex-row-reverse  bg-white w-full h-[550px] ">
-        <div className="h-full w-1/2">
-          <img src="/images/hero.avif" alt="" className="h-full w-full object-cover object-center" />
-        </div>
-        <div className=" h-full justify-around w-1/2 flex items-center flex-col font-['Poppins']">
-          <div className=" gap-5 flex flex-col  h-full justify-center pl-16 w-full">
-            <h1 className="text-3xl font-bold  md:text-6xl w-full ">A <u>Smarter</u> Way </h1>
-            <h1 className="text-3xl font-bold  md:text-6xl pl-16 flex ">
-              <span className="">to </span>
-              <span className="text-[#526c55] w-full flex pl-2">Manage Waste</span></h1>
-            <p className="text-xl md:text-2xl w-full text-left font-light">An integrated tool to simulate and analyze waste management strategies in Pakistan</p>
+      <FadeIn animation="animate__backInLeft" delayClass="animate__delay-0s">
+        <div className="md:flex md:flex-row-reverse hidden bg-white w-full h-[550px] ">
+          <div className="h-full w-1/2">
+            <img src="/images/hero.png" alt="" className="h-full w-full object-cover object-center" />
+          </div>
+          <div className="w-1/2 h-full justify-around flex items-center flex-col font-['Poppins']">
+            <FadeIn animation="animate__fadeInUp" delayClass="animate__delay-0s">
+              <div className=" h-full justify-around w-full flex items-center flex-col font-['Poppins']">
+                <div className=" gap-5 flex flex-col  h-full justify-center pl-16 w-full">
+                  <FadeIn animation="animate__fadeInUp" delayClass="animate__delay-1s">
 
-            <div className="flex w-full justify-center items-center text-base">
-
-              <p className="bg-white text-[#526c55] w-fit p-2 px-6 border-3 border-[#526c55] rounded-md text-center cursor-pointer font-semibold">Get Started</p>
-            </div>
+                    <h1 className="text-2xl font-bold md:text-[52px] w-5/6 "><u className='text-[#526c55]'>Sustainable</u> Waste Solutions for Clean Cities</h1>
+                  </FadeIn>
+                  {/* <FadeIn animation="animate__fadeInUp" delayClass="animate__delay-2s">
+                    <h1 className="text-2xl font-bold  md:text-4xl pl-16 flex ">
+                      <span className="">to </span>
+                      <span className="text-[#526c55] w-full flex pl-2">Manage Waste</span>
+                    </h1>
+                  </FadeIn> */}
+                  <FadeIn animation="animate__fadeInUp" delayClass="animate__delay-2s">
+                    <p className=" text-xl md:text-2xl w-full text-left font-light">An integrated tool to simulate and analyze waste management strategies in Pakistan</p>
+                  </FadeIn>
+                  <FadeIn animation="animate__fadeInUp" delayClass="animate__delay-2s">
+                    <div className=" flex w-full justify-start items-center text-base">
+                      <p className="bg-white text-[#526c55] w-fit p-2 px-6 border-3 border-[#526c55] rounded-md text-center cursor-pointer font-semibold">Get Started</p>
+                    </div>
+                  </FadeIn>
+                </div>
+              </div>
+            </FadeIn>
           </div>
         </div>
-      </div>
-      <div className="bg-[#1c4b41] ">
-        <h1 className="pl-8 pt-12 text-3xl text-white font-light">Our Aim</h1>
-        <div className={`pl-20 h-[350px]  ${open ? "w-[90vw_!important]" : "w-[90vw_!important]"}`}>
+
+        <div className="md:hidden flex bg-[url('/images/hero.png')] bg-white w-full h-[450px] bg-cover bg-no-repeat bg-center relative">
+          <div className="absolute h-full bg-white/60 w-full h-full flex items-center justify-center w-full flex items-center flex-col font-['Poppins']">
+            <FadeIn animation="animate__fadeInUp" delayClass="animate__delay-0s">
+              <div className=" h-full justify-around w-full flex items-center flex-col font-['Poppins']">
+                <div className=" gap-5 flex flex-col  h-full justify-center  px-5 w-full">
+                  <FadeIn animation="animate__fadeInUp" delayClass="animate__delay-1s">
+{/* Sustainable Waste Management Solutions for Cleaner Cities */}
+                    <h1 className="text-3xl font-bold md:text-6xl w-full md:text-left text-center"><u className='text-[#526c55]'>Sustainable</u> Waste Solutions for Clean Cities</h1>
+                  </FadeIn>
+                  {/* <FadeIn animation="animate__fadeInUp" delayClass="animate__delay-2s">
+                    <h1 className="text-3xl font-bold md:text-left text-center md:text-6x md:w-fit w-full justify-center items-center flex ">
+                      <span className="">to </span>
+                      <span className="text-[#526c55] md:text-left text-center flex pl-2">Manage Waste</span>
+                    </h1>
+                  </FadeIn> */}
+                  <FadeIn animation="animate__fadeInUp" delayClass="animate__delay-2s">
+                    <p className=" text-xl md:text-2xl w-full md:text-left text-center font-light">An integrated tool to simulate and analyze waste management strategies in Pakistan</p>
+                  </FadeIn>
+                  <FadeIn animation="animate__fadeInUp" delayClass="animate__delay-2s">
+                    <div className=" flex w-full justify-center items-center text-base">
+                      <p className="bg-transparent text-[#526c55] w-fit p-2 px-6 border-3 border-[#526c55] rounded-md text-center cursor-pointer font-semibold">Get Started</p>
+                    </div>
+                  </FadeIn>
+                </div>
+              </div>
+            </FadeIn></div>
+        </div>
+      </FadeIn>
+
+      {/* <FadeIn animation="animate__fadeInUp" delayClass="animate__delay-2s"> */}
+      <div className="bg-[#386641] ">
+        <h1 className="pl-8 pt-12 text-3xl text-[white_!important] font-light">Our Aim</h1>
+        <div className={`px-5 md:h-[350px] h-[300px] ${open ? "md:w-[90vw_!important] w-full" : "md:w-[90vw_!important] w-full"}`}>
           <HomeService />
         </div>
       </div>
-      <div className=" h-[550px] bg-[#b5e48c]/50 w-full pt-8 pb-8">
-        <div className="flex rounded-md shadow-lg m-12 mt-0 h-full">
-          <img src="https://arsen.info.pl/wp-content/webp-express/webp-images/uploads/2022/01/Arsen-sprzatanie-specjalistyczne-uslugi-11-wide.jpg.webp" alt="" className="h-full w-1/2 object-cover object-center rounded-tl-md rounded-bl-md" />
+      {/* </FadeIn> */}
 
-          <div className="w-1/2  h-full">
-            <div className="flex flex-col justify-center h-full bg-white rounded-r-md ">
-              <h1 className="pl-10 py-5 pt-8 text-4xl font-light">Waste Management Problems</h1>
-              <ul className="pl-12 text-lg leading-6 pt-5 w-[80%]">
+      {/* <FadeIn animation="animate__fadeInUp" delayClass="animate__delay-0s"> */}
+      <div className=" md:h-[550px] h-[430px] bg-[#A7C957]/50 w-full md:py-8 py-4">
+        <div className="flex rounded-md shadow-lg md:m-12 m-5 mt-0 md:mt-0 h-full">
+          <img src="https://img.freepik.com/premium-photo/isometric-3d-views-recycling-facilities-overview-sustainable-waste-management-solutions-ai_721440-16861.jpg?w=1380" alt="" className="md:flex hidden h-full w-1/2 object-cover object-center rounded-tl-md rounded-bl-md" />
+
+          <div className="md:w-1/2 w-full h-full">
+            <div className="flex flex-col justify-center h-full bg-white md:rounded-r-md rounded-md ">
+              <FadeIn animation="animate__fadeInUp" delayClass="animate__delay-0s">
+                <h1 className="pl-5 py-5 md:pt-8 pt-4 md:text-4xl text-2xl font-light">Waste Management Problems</h1>
+              </FadeIn>
+              <ul className="px-5 text-base leading-6 md:pt-5 pt-1">
                 {aim.map((i, id) => (
-                  <div className=" flex gap-5">
-                    <div className="w-fit h-fit flex justify-center items-center">
-                      <AlertTriangle className="text-[#1a7431] text-xs" />
+                  <FadeIn animation="animate__fadeInUp" delayClass={`animate__delay-${id}s`}>
+                    <div className=" flex gap-5">
+                      <div className="w-fit h-fit flex justify-center items-center">
+                        {i.btn}
+                      </div>
+                      <li key={id} className="h-[58px] md:text-lg text-base">{i.title}</li>
                     </div>
-                    <li key={id} className="h-[58px]">{i.title}</li>
-                  </div>
+                  </FadeIn>
                 ))}
               </ul>
             </div>
@@ -141,40 +195,47 @@ export default function Home2(open: any) {
 
         </div>
       </div>
+      {/* </FadeIn> */}
 
+      {/* <FadeIn animation="animate__fadeInUp" delayClass="animate__delay-1s"> */}
       <div className="bg-white">
-        <h2 className="text-4xl md:text-5xl w-full text-center font-light mb-6 pt-16">How to get started</h2>
-        <div className="pb-12 flex justify-center text-xl text-center">
-          <h1 className="mt-4 w-1/2">Empowering cities with actionable insights to minimize landfill waste and
-            transition to circular waste systems.</h1>
-        </div>
+        <FadeIn animation="animate__fadeInUp" delayClass="animate__delay-0s">
+          <h2 className=" text-3xl md:text-5xl w-full text-center font-light mb-6 pt-16">Sustainable Waste Management Workflow</h2>
+          <div className="pb-12 flex justify-center md:text-xl text-base text-center">
+            <h1 className="mt-4 md:w-1/2 w-4/5 md:px-0 px-5">Empowering cities with actionable insights to minimize landfill waste and
+              transition to circular waste systems.</h1>
+          </div>
+        </FadeIn>
         <ul className="grid grid-cols-1 md:grid-cols-3 gap-14 justify-center items-center px-[48px] h-full w-full pb-12">
           {steps.map((item, index) => (
-            <div className='relative' key={index}>
-              
+            <FadeIn animation="animate__fadeInUp" delayClass={`animate__delay-${index > 2 ? index - 2 : index}s`}>
+              <div className='relative' key={index}>
 
-                <div className='absolute top-[-20px] left-[-20px]  w-20 h-20 bg-[#1a7431] text-white font-bold rounded-full flex justify-center items-center'>Step {index + 1}</div>
-              <li className=" bg-[#69b31d] h-[350px] p-8 gap-5 flex flex-col items-center">
-                <img src={item.image} alt="" className="w-36 object-cover object-center rounded-md" />
-                <h1 className='text-2xl text-white  font-[600] text-center w-full'>{item.title}</h1>
-                <h1 className='text-[17px] font-light text-center text-[#ffffffa6]'>{item.description}</h1>
-                {/* <div className=' absolute top-[-20px] right-[-20px] w-14 h-14 bg-[#1a7431] rounded-full flex justify-center items-center'>{item.btn}</div> */}
-              </li>
 
-            </div>
+                <div className='absolute top-[-20px] left-[-20px]  w-20 h-20 bg-[#386641] text-white font-bold rounded-full flex justify-center items-center'>Step {index + 1}</div>
+                <li className=" bg-[#A7C957] md:h-[350px] h-fit md:p-8 p-5 gap-5 flex flex-col items-center">
+                  <img src={item.image} alt="" className="w-36 object-cover object-center rounded-md" />
+                  <h1 className='md:text- text-xl text-white  font-[600] text-center w-full'>{item.title}</h1>
+                  <h1 className='md:text-[17px] text-sm font-light text-center text-[#ffffffa6]'>{item.description}</h1>
+                  {/* <div className=' absolute top-[-20px] right-[-20px] w-14 h-14 bg-[#1a7431] rounded-full flex justify-center items-center'>{item.btn}</div> */}
+                </li>
+
+              </div>
+            </FadeIn>
           ))}
-          <div className="relative flex justify-center items-center w-full">
-                 
 
-                  <button className="border-green-600 border-2 text-green-600 font-semibold px-6 py-3 bg-white rounded-md flex items-center gap-2">
-                    Make Your Model
-                  </button>
-                </div>
+          <FadeIn animation="animate__fadeInUp" delayClass="animate__delay-3s">
+            <div className="relative flex justify-center items-center w-full">
+              <button className="border-[#386641] border-2 text-[#386641] font-semibold px-6 py-3 bg-white rounded-md flex items-center gap-2">
+                Generate My Sustainable Waste Plan
+              </button>
+            </div>
+          </FadeIn>
         </ul>
-        
-      </div>
 
-      <div className='hidden'>
+      </div>
+      {/* </FadeIn> */}
+      {/* <div className='hidden'>
         <div className=" bg-[url('/homeic.png')] bg-white w-full h-[450px] bg-cover bg-no-repeat bg-center relative">
           <div className="absolute top-[180px]  w-full flex items-center flex-col font-['Poppins']">
             <h1 className=" text-3xl font-bold text-white md:text-4xl w-full text-center">A Smarter Way to Manage Waste</h1>
@@ -278,7 +339,7 @@ export default function Home2(open: any) {
 
           </div>
         </div>
-      </div>
+      </div> */}
     </div>
   )
 }

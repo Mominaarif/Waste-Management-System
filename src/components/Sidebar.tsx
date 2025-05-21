@@ -72,6 +72,7 @@ type UserData = {
 const Sidebar = () => {
   const [isOpen, setIsOpen] = useState(false);
   const [isServicesOpen, setIsServicesOpen] = useState(false);
+  const [isServicesOpen1, setIsServicesOpen1] = useState(false);
   const [user, setUser] = useState<UserData>({});
 
   useEffect(() => {
@@ -103,7 +104,7 @@ const Sidebar = () => {
                 <h1 className="flex items-center gap-2 pl-4">
                   <img src="./H2.png" alt="" className="w-8" />
 
-                  <span className="text-3xl tracking-[.25em] font-light">
+                  <span className="text-3xl text-white tracking-[.25em] font-light">
                     HIWMA
                   </span>
                 </h1>
@@ -141,8 +142,50 @@ const Sidebar = () => {
                   {isOpen && <span className="ml-3">Dashboard</span>}
                 </li>
               </a>
-
-              <a href="/landfills" className="text-sm">
+ <li>
+                <div
+                   className={`${
+                    isOpen
+                      ? "flex items-center mb-3 cursor-pointer hover:bg-gray-400/15 py-1.5 px-2 rounded w-full my-1"
+                      : "flex items-center mb-3 cursor-pointer hover:text-gray-400"
+                  }`}
+                  onClick={() => setIsServicesOpen1(!isServicesOpen1)}
+                >
+                  <LandPlot className="w-[18px]" />
+                  {isOpen && (
+                    <div className="flex justify-between w-full">
+                      <span className="ml-3 text-sm">Landfills</span>
+                      <ChevronDown className={`"w-[18px]" ${isServicesOpen ? "rotate-180 transition duration-300" : "transition duration-300"}`} />
+                    </div>
+                  )}
+                </div>
+                {isOpen && isServicesOpen1 && (
+                  <ul className="ml-6 mt-2 text-sm">
+                    <a href="/landfills" className="text-sm">
+                      <li
+                        className={`flex items-center mb-3 cursor-pointer hover:bg-gray-400/15 py-1 px-2 rounded w-full my-0.5`}
+                      >
+                        <ChartNoAxesCombined className="w-[18px]" />
+                        {isOpen && (
+                          <span className="ml-3">Display Landfills</span>
+                        )}
+                      </li>
+                    </a>
+                    <a href="add-landfills" className="text-sm">
+                      <li
+                        className={`flex items-center mb-3 cursor-pointer hover:bg-gray-400/15 py-1 px-2 rounded w-full my-0.5`}
+                      >
+                        <DraftingCompass className="w-[18px]" />
+                        {isOpen && (
+                          <span className="ml-3">Add Landfills</span>
+                        )}
+                      </li>
+                    </a>
+                    
+                  </ul>
+                )}
+              </li>
+              {/* <a href="/landfills" className="text-sm">
                 <li
                   className={`${isOpen
                       ? "flex items-center mb-3 cursor-pointer hover:bg-gray-400/15 py-1.5 px-2 rounded w-full my-1"
@@ -152,9 +195,9 @@ const Sidebar = () => {
                   <LandPlot className="w-[18px]" />
                   {isOpen && <span className="ml-3">Landfills</span>}
                 </li>
-              </a>
+              </a> */}
 
-              <a href="/add-data" className="text-sm">
+              {/* <a href="/add-data" className="text-sm">
                 <li
                   className={`${isOpen
                       ? "flex items-center mb-3 cursor-pointer hover:bg-gray-400/15 py-1.5 px-2 rounded w-full my-1"
@@ -164,7 +207,7 @@ const Sidebar = () => {
                   <Plus className="w-[18px]" />
                   {isOpen && <span className="ml-3">Add Data</span>}
                 </li>
-              </a>
+              </a> */}
               <a href="/map" className="text-sm">
                 <li
                   className={`${
@@ -268,8 +311,9 @@ const Sidebar = () => {
                   </ul>
                 )}
               </li>
+              
             </ul>
-            <div className="">
+            {/* <div className="">
               {isOpen && (
                 <h2 className="text-xs text-white pl-5 pt-3">About Us</h2>
               )}
@@ -300,7 +344,7 @@ const Sidebar = () => {
                   </li>
                 </a>
               </ul>
-            </div>
+            </div> */}
           </div>
         </div>
       </div>

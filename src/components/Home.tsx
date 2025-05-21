@@ -268,7 +268,7 @@ const Home = (open: any) => {
       barRef.current.resize();
     }
   }, [open]);
-
+  
   return (
     <div className="px-5 md:px-8 h-[calc(100vh-85px)] overflow-y-auto bg-white w-full pt-5">
       <section className="grid grid-cols-2 md:grid-cols-3 gap-y-4 gap-x-4 w-full pt-5">

@@ -855,7 +855,7 @@
 //                     : "Not recovered within period"}
 //                 </span>
 //               </div></div>
-              
+
 //             </div>
 //           )}
 //         <div className="bg-white w-full pt-2">
@@ -867,7 +867,16 @@
 // }
 
 
-import { useState } from "react";
+import { useEffect, useRef, useState } from "react";
+import $ from 'jquery';
+
+// DataTables core and responsive
+import 'datatables.net-dt/css/dataTables.dataTables.css';
+import 'datatables.net-responsive-dt/css/responsive.dataTables.css';
+
+import 'datatables.net';
+import 'datatables.net-responsive-dt';
+// import type DataTables from 'datatables.net-dt/types/dataTables';
 interface Capex {
   id: string;
   name: string;
@@ -914,7 +923,7 @@ export default function EconomyForm({ open }: any) {
 
   const [totalSubCatValue, setTotalSubCatValue] = useState(0);
   const [discount, setDiscount] = useState(10);
-  
+
   // State for custom input
   const [showCustomInput, setShowCustomInput] = useState(false);
   const [customInputValue, setCustomInputValue] = useState("");
@@ -934,7 +943,7 @@ export default function EconomyForm({ open }: any) {
         ...prev,
         capex: updated,
       }));
-    } 
+    }
     else if (currentInputType === 'opex') {
       setFormDataOpex((prev: any) => ({
         ...prev,
@@ -1074,11 +1083,11 @@ export default function EconomyForm({ open }: any) {
       opex: prev.opex.map((item: any) =>
         item.name === componentName
           ? {
-              ...item,
-              values: item.values.map((val: any, idx: any) =>
-                idx === colIndex ? value : val
-              ),
-            }
+            ...item,
+            values: item.values.map((val: any, idx: any) =>
+              idx === colIndex ? value : val
+            ),
+          }
           : item
       ),
     }));
@@ -1124,11 +1133,11 @@ export default function EconomyForm({ open }: any) {
       revenue: prev.revenue.map((item: any) =>
         item.name === componentName
           ? {
-              ...item,
-              values: item.values.map((val: any, idx: any) =>
-                idx === colIndex ? value : val
-              ),
-            }
+            ...item,
+            values: item.values.map((val: any, idx: any) =>
+              idx === colIndex ? value : val
+            ),
+          }
           : item
       ),
     }));
@@ -1240,6 +1249,34 @@ export default function EconomyForm({ open }: any) {
       paybackPeriod,
     };
   };
+  const tableRef = useRef<HTMLTableElement>(null);
+
+  const dataTableRef = useRef<any>(null);
+
+  useEffect(() => {
+    // Cleanup any existing DataTable before reinitializing
+    if (dataTableRef.current) {
+      dataTableRef.current.destroy();
+      dataTableRef.current = null;
+    }
+
+    // Reinitialize after DOM has updated
+    const timeout = setTimeout(() => {
+      if (tableRef.current && tableRef.current.querySelectorAll('tbody tr').length > 0) {
+        dataTableRef.current = $(tableRef.current).DataTable({
+          responsive: true,
+        });
+      }
+    }, 0); // wait for React to paint
+
+    return () => {
+      clearTimeout(timeout);
+      if (dataTableRef.current) {
+        dataTableRef.current.destroy();
+        dataTableRef.current = null;
+      }
+    };
+  }, [formData.capex]);
   return (
     <div className="w-full h-[calc(100vh-85px)] overflow-y-auto bg-white">
       <div className="">
@@ -1277,7 +1314,7 @@ export default function EconomyForm({ open }: any) {
                 </div>
               </div>
             )}
-            
+
             <div className="border-b border-gray-900/10 pb-8 mb-4">
               <h2 className="text-base/7 font-semibold text-gray-900">
                 Capital Cost (CAPEX)
@@ -1304,53 +1341,61 @@ export default function EconomyForm({ open }: any) {
                       ))}
                   </select>
 
-                  {formData.capex.length > 0 && (
-                    <table className="w-full border border-collapse border-gray-300 text-sm">
-                      <thead>
-                        <tr className="bg-gray-100">
-                          <th className="border p-2">Component</th>
-                          <th className="border p-2">Rs.</th>
-                          <th className="border p-2"></th>
+                  <table
+                    ref={tableRef}
+                    className="display nowrap"
+                    style={{ width: '100%' }}
+                  >
+                    <thead>
+                      <tr className="bg-gray-100">
+                        <th className="border p-2">Component</th>
+                        <th className="border p-2">Rs.</th>
+                        <th className="border p-2"></th>
+                      </tr>
+                    </thead>
+                    <tbody>
+                      {formData.capex.length === 0 ? (
+                        <tr>
+                          <td colSpan={1} className="text-center">No CAPEX data available.</td>
                         </tr>
-                      </thead>
-                      <tbody>
-                        {formData.capex.map((subCat, idx) => (
-                          <tr key={idx}>
-                            <td className="p-[0_!important] pl-[8px_!important]">
-                              {subCat.name}
-                            </td>
-                            <td className="p-[0_!important]">
-                              <input
-                                type="number"
-                                value={subCat.value}
-                                onChange={(e) =>
-                                  handleCapexValueChange({
-                                    name: subCat.name,
-                                    value: e.target.value,
-                                  })
-                                }
-                                className="text-center block h-[38px] w-full px-3 py-1.5 text-gray-900 focus:border-blue-500 focus:ring-blue-500 md:text-sm"
-                              />
-                            </td>
-                            <td>
-                              <button
-                                onClick={() => handleRemoveCapex(subCat.name)}
-                                className="text-red-500 hover:text-red-700 text-xs cursor-pointer"
-                              >
-                                ✕
-                              </button>
-                            </td>
+                      ) : (
+                        <>
+                          {formData.capex.map((subCat, idx) => (
+                            <tr key={idx}>
+                              <td className="p-[0_!important] pl-[8px_!important]">{subCat.name}</td>
+                              <td className="p-[0_!important]">
+                                <input
+                                  type="number"
+                                  value={subCat.value}
+                                  onChange={(e) =>
+                                    handleCapexValueChange({
+                                      name: subCat.name,
+                                      value: e.target.value,
+                                    })
+                                  }
+                                  className="text-center block h-[38px] w-full px-3 py-1.5 text-gray-900 focus:border-blue-500 focus:ring-blue-500 md:text-sm"
+                                />
+                              </td>
+                              <td>
+                                <button
+                                  onClick={() => handleRemoveCapex(subCat.name)}
+                                  className="text-red-500 hover:text-red-700 text-xs cursor-pointer"
+                                >
+                                  ✕
+                                </button>
+                              </td>
+                            </tr>
+                          ))}
+                          <tr className="bg-gray-100 font-semibold">
+                            <td className="border p-2">Total CAPEX</td>
+                            <td className="border p-2">{totalSubCatValue}</td>
+                            <td></td>
                           </tr>
-                        ))}
+                        </>
+                      )}
+                    </tbody>
+                  </table>
 
-                        <tr className="bg-gray-100 font-semibold">
-                          <td className="border p-2">Total CAPEX</td>
-                          <td className="border p-2">{totalSubCatValue}</td>
-                          <th></th>
-                        </tr>
-                      </tbody>
-                    </table>
-                  )}
                 </div>
               </div>
               <div className=" grid grid-cols-1 sm:grid-cols-2 gap-y-4 gap-x-6">
@@ -1704,11 +1749,11 @@ export default function EconomyForm({ open }: any) {
                     <th className="border p-2">Component</th>
                     {Array.from({ length: columns + 2 }, (_, i) => (
                       <th key={i} className="border p-2">
-                       {i === 0
-      ? "Year 0"
-      : i === columns + 1
-      ? "Sum"
-      : `Year ${i}`}
+                        {i === 0
+                          ? "Year 0"
+                          : i === columns + 1
+                            ? "Sum"
+                            : `Year ${i}`}
                       </th>
                     ))}
                   </tr>
@@ -1746,22 +1791,22 @@ export default function EconomyForm({ open }: any) {
               </table>
               <div className="grid grid-cols-1 sm:grid-cols-2 gap-5">
                 <div className="border p-3 rounded-md">
-                <label className="block text-sm font-medium text-gray-900">
-                  Benefit-Cost Ratio (BCR):
-                </label>
-                <span className="text-gray-700">{bcr.toFixed(8)} </span>{" "}
-              </div>
+                  <label className="block text-sm font-medium text-gray-900">
+                    Benefit-Cost Ratio (BCR):
+                  </label>
+                  <span className="text-gray-700">{bcr.toFixed(8)} </span>{" "}
+                </div>
 
-              <div className="border p-3 rounded-md">
-                <label className="block text-sm font-medium text-gray-900">
-                  Payback Period (PBP):
-                </label>
-                <span className="text-gray-700 ">
-                  {typeof cumulativePaybackPeriod === "number"
-                    ? `${cumulativePaybackPeriod.toFixed(2)} years`
-                    : "Not recovered within period"}
-                </span>
-              </div></div>
+                <div className="border p-3 rounded-md">
+                  <label className="block text-sm font-medium text-gray-900">
+                    Payback Period (PBP):
+                  </label>
+                  <span className="text-gray-700 ">
+                    {typeof cumulativePaybackPeriod === "number"
+                      ? `${cumulativePaybackPeriod.toFixed(2)} years`
+                      : "Not recovered within period"}
+                  </span>
+                </div></div>
             </div>
           )}
         <div className="bg-white w-full pt-2">

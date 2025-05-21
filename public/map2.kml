@@ -1,0 +1,41 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<kml xmlns="http://www.opengis.net/kml/2.2">
+  <Document>
+    <name>Lakhodair Dumpsite Boundary</name>
+    <description>Boundary of the Lakhodair Landfill Site, Lahore, Pakistan, defined using provided coordinates. Generated on May 19, 2025.</description>
+    <Style id="polyStyle">
+      <LineStyle>
+        <color>ff0000ff</color> <!-- Blue line -->
+        <width>2</width>
+      </LineStyle>
+      <PolyStyle>
+        <color>7f00ff00</color> <!-- Semi-transparent green fill -->
+      </PolyStyle>
+    </Style>
+    <Placemark>
+      <name>Lakhodair Dumpsite</name>
+      <styleUrl>#polyStyle</styleUrl>
+      <Polygon>
+        <extrude>1</extrude>
+        <altitudeMode>relativeToGround</altitudeMode>
+        <outerBoundaryIs>
+          <LinearRing>
+            <coordinates>
+              74.41350207173171,31.611575589066852,0
+              74.4082234843904,31.609053769770302,0
+              74.4131587489778,31.606933926793104,0
+              74.41753611409011,31.60759181426155,0
+              74.41895232044997,31.60978473891591,0
+              74.4186519130403,31.61197761191676,0
+              74.41766486012283,31.613147123062628,0
+              74.41646323048415,31.61197761191676,0
+              74.4148324474031,31.613366404766698,0
+              74.415175770157,31.610625346338175,0
+              74.41350207173171,31.611575589066852,0 <!-- Closing back to the first point -->
+            </coordinates>
+          </LinearRing>
+        </outerBoundaryIs>
+      </Polygon>
+    </Placemark>
+  </Document>
+</kml>

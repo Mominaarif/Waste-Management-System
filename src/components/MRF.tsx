@@ -1,15 +1,17 @@
 "use client";
 import { useState, useEffect, useRef } from "react";
-import "../Styles/MRF.css";
-
-// import $ from 'jquery';
-import '../Styles/TableCSS.css';
-
-// Import jQuery and make it global
 import $ from 'jquery';
-import 'datatables.net';
 
-// import 'datatables.net-dt/css/jquery.dataTables.css';
+// DataTables core and responsive
+import 'datatables.net-dt/css/dataTables.dataTables.css';
+import 'datatables.net-responsive-dt/css/responsive.dataTables.css';
+
+import 'datatables.net-dt/css/dataTables.dataTables.min.css';
+import 'datatables.net-responsive-dt/css/responsive.dataTables.min.css';
+
+
+import 'datatables.net';
+import 'datatables.net-responsive-dt';
 
 interface SubCategory {
   id: string;
@@ -427,15 +429,29 @@ const MRFDesign = () => {
   const shapes = ["Square", "Rectangle", "Circle", "Triangle"];
 
 
-  const tableRef = useRef<HTMLTableElement>(null);
+  const tableRef2 = useRef<HTMLTableElement>(null);
+  const tableRef1 = useRef<HTMLTableElement>(null);
 
-  useEffect(() => {
-    const table = $(tableRef.current!).DataTable();
+useEffect(() => {
+  if (editableSubcategories.length > 0 || formData.subCategories.length > 0) {
+    const table2 = $(tableRef2.current!).DataTable({
+      responsive: true,
+      destroy: true // Destroy previous instance
+    });
+    
+    const table1 = $(tableRef1.current!).DataTable({
+      responsive: true,
+      destroy: true
+    });
 
     return () => {
-      table.destroy(); // Cleanup on unmount
+      table2.destroy();
+      table1.destroy();
     };
-  }, []);
+  }
+}, [editableSubcategories, formData.subCategories, calculatedData]); // Add dependencies
+
+
   console.log(formData.subCategories)
   return (
     <div className="w-full h-[calc(100vh-85px)] overflow-y-auto bg-white">
@@ -543,7 +559,9 @@ const MRFDesign = () => {
 
                   {/* Table of selected components */}
                   {formData.subCategories.length > 0 && (
-                    <table className="w-full border border-collapse border-gray-300 text-sm">
+                    <table ref={tableRef1}
+                    className=" display nowrap"
+                    style={{ width: '100%' }}>
                       <thead>
                         <tr className="bg-gray-100">
                           <th className="border p-2">Component</th>
@@ -770,7 +788,9 @@ const MRFDesign = () => {
               {calculatedData?.recoveryData && (
                 <div>
                   {/* <h2 className="text-xl font-bold mt-6">Recovery Table</h2> */}
-                  <table ref={tableRef} style={{ width: '100%' }} className="display w-full border-collapse border border-gray-400 mt-4 text-sm">
+                  <table  ref={tableRef2}
+                    className=" display nowrap"
+                    style={{ width: '100%' }}>
                     <thead>
                       <tr className="bg-white">
                         <th className="border border-gray-400 p-2">Waste Type</th>

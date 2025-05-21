@@ -520,6 +520,8 @@ handleBoundaryClick
 
   // };
   // console.log(formData.subCategories[0])
+
+  
   return (
     <dialog id="my_modal_1" className="modal">
       <div className="modal-box rounded-none h-[100vh]  max-w-[100vw] w-[100vw] px-0 pb-0">

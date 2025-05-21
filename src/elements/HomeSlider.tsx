@@ -50,33 +50,33 @@ import 'swiper/css/navigation';
 // import required modules
 import { Autoplay, Pagination, Navigation } from 'swiper/modules';
 import { ChartLine, Layers, Mountain, Network, Truck } from 'lucide-react';
+import FadeIn from './FadeIn';
 
 export default function HomeService() {
-    const items = [
-        {
-            heading: "Unified Platform",
-            title: "Provide a one-stop, computer-aided platform to manage and optimize waste systems efficiently.",
-        },
-        {
-            heading: "Full Coverage",
-            title: "Support all waste types: solid, liquid, domestic, commercial, and medical waste streams.",
-        },
-        {
-            heading: "Circular Economy",
-            title: "Promote sustainability through Refuse, Reuse, Recycle, and Waste-to-Energy approaches.",
-        },
-        {
-            heading: "Integrated Approach",
-            title: "Combine technical, social, and policy elements into a single waste management model.",
-        },
-        {
-            heading: "Smart Decisions",
-            title: "Help policymakers simulate and select effective waste strategies using data-driven tools.",
-        }
-    ];
+    const items  = [
+  <>
+    To develop an <strong>integrated digital simulator</strong> for sustainability planning
+  </>,
+  <>
+    To enable accurate <strong>carbon footprint assessment</strong> for projects and policies
+  </>,
+  <>
+    To support <strong>social and economic impact</strong> analysis for holistic decision-making
+  </>,
+  <>
+    To facilitate <strong>preliminary design</strong> modeling for sustainable infrastructure
+  </>,
+  <>
+    To provide <strong>waste generation mapping</strong> for informed waste management strategies
+  </>,
+  <>
+    To empower <strong>cities and stakeholders</strong> in designing cleaner, smarter, and resilient urban environments
+  </>,
+];
+
 
     return (
-        <div className='h-full w-full flex justify-center items-center bg-[#1c4b41]'>
+        <div className='h-full w-full flex justify-center items-center bg-[#386641]'>
 
             <Swiper
                 spaceBetween={50}
@@ -89,16 +89,16 @@ export default function HomeService() {
                 //     clickable: true,
                 // }}
                 breakpoints={{
-                    640: {
+                    // 640: {
+                    //     slidesPerView: 2,
+                    //     spaceBetween: 10,
+                    // },
+                    768:{
                         slidesPerView: 2,
-                        spaceBetween: 20,
-                    },
-                    768: {
-                        slidesPerView: 4,
-                        spaceBetween: 40,
+                        spaceBetween: 10,
                     },
                     1024: {
-                        slidesPerView: 5,
+                        slidesPerView: 3,
                         spaceBetween: 50,
                     },
                 }}
@@ -107,15 +107,18 @@ export default function HomeService() {
                 className="mySwiper h-full w-full"
             >
                 {items.map((item, index) => (
-                    <SwiperSlide key={index} className="h-[350px_!important] w-[400px_!important] ">
+                          <FadeIn animation="animate__backInRight" delayClass="animate__delay-0s">
+
+                    <SwiperSlide key={index} className="md:h-[350px_!important] h-[300px_!important] md:w-[400px_!important] w-[100%_!important]">
                         <div className="flex justify-center items-center  h-full w-full">
-                            <div className="h-[200px_!important] w-[400px_!important] bg-[#69b31d] p-8 gap-5 flex flex-col items-center">
-                                <h1 className='text-2xl text-white  font-[600] text-left w-full'>{item.heading}</h1>
-                                <h1 className='text-[17px] font-light text-left text-[#ffffffa6]'>{item.title}</h1>
+                            <div className="h-[200px_!important] w-[100%_!important] md:w-[400px_!important] bg-[#A7C957] p-8 gap-5 flex flex-col justify-center items-center">
+                                {/* <h1 className='text-2xl text-white  font-[600] text-left w-full'>{item.heading}</h1> */}
+                                <h1 className='text-[17px] text-left text-white'>{item}</h1>
                                 {/* <div className=' absolute top-[-20px] right-[-20px] w-14 h-14 bg-[#1a7431] rounded-full flex justify-center items-center'>{item.btn}</div> */}
                             </div>
                         </div>
                     </SwiperSlide>
+                    </FadeIn>
                 ))}
             </Swiper>
 

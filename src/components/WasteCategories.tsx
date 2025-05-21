@@ -1075,6 +1075,15 @@ export default function WasteCategories(open: any) {
       },
     ],
   });
+
+  console.log( selectedPolygon
+        ?.getPath()
+        .getArray()
+        .map((latLng) => ({
+         
+          lng: latLng.lng(),
+           lat: latLng.lat(),
+        })))
   return (
     <div className="w-full h-[calc(100vh-85px)] overflow-y-auto bg-white pt-10 px-5 md:px-8">
       <form onSubmit={handleSubmit} className="">

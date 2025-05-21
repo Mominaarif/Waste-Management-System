@@ -299,6 +299,7 @@ import {
 
 export default function Example({ open, setOpen }: any) {
   const [isServicesOpen, setIsServicesOpen] = useState(false);
+  const [isServicesOpen1, setIsServicesOpen1] = useState(false);
 
   return (
     <div className="w-full">
@@ -356,18 +357,77 @@ export default function Example({ open, setOpen }: any) {
                     <span className="ml-3">Dashboard</span>
                   </li>
                 </a>
-                <a href="/landfills" className="text-sm">
+                 <li onClick={() => setIsServicesOpen1(!isServicesOpen1)} className="text-sm flex items-center mb-4 cursor-pointer hover:bg-gray-400/15 py-1.5 px-2 rounded w-full my-1">
+                  <LandPlot className="w-[18px]" />
+                  <p className="flex justify-between w-full">
+                  <span className="ml-3">Landfills</span>
+                      <ChevronDown className={`"w-[18px]" ${isServicesOpen1 ? "rotate-180 transition duration-300" : "transition duration-300"}`} />
+
+                  </p>
+                </li>
+                 <li>
+                  {isServicesOpen1 && (
+                    <ul className="ml-6 mt-2 text-sm">
+                      <a href="/landfills" className="text-sm">
+                        <li
+                          className={`flex items-center mb-3 cursor-pointer hover:bg-gray-400/15 py-1 px-2 rounded w-full my-0.5`}
+                        >
+                          <ChartNoAxesCombined className="w-[18px]" />
+
+                          <span className="ml-3">Display Landfills</span>
+
+                        </li>
+                      </a>
+                      {/* Economic Analysis */}
+                      <a href="/add-landfills" className="text-sm">
+                        <li
+                          className={`flex items-center mb-3 cursor-pointer hover:bg-gray-400/15 py-1 px-2 rounded w-full my-0.5`}
+                        >
+                          <DraftingCompass className="w-[18px]" />
+
+                          <span className="ml-3">Add Landfills</span>
+
+                        </li>
+                      </a>
+                      {/* <a href="/MRF-design" className="text-sm">
+                        <li
+                          className={`flex items-center mb-3 cursor-pointer hover:bg-gray-400/15 py-1 px-2 rounded w-full my-0.5`}
+                        >
+                          <Framer className="w-[18px]" />
+                          <span className="ml-3">MRF Design</span>
+                        </li>
+                      </a>
+                      <a href="/RDF-design" className="text-sm">
+                        <li
+                          className={`flex items-center mb-3 cursor-pointer hover:bg-gray-400/15 py-1 px-2 rounded w-full my-0.5`}
+                        >
+                          <SquareChartGantt className="w-[18px]" />
+                          <span className="ml-3">RDF Design</span>
+                        </li>
+                      </a>
+                      <a href="/anaerobic-design" className="text-sm">
+                        <li
+                          className={`flex items-center mb-3 cursor-pointer hover:bg-gray-400/15 py-1 px-2 rounded w-full my-0.5`}
+                        >
+                          <Frame className="w-[18px]" />
+                          <span className="ml-3">Anaerobic Design</span>
+                        </li>
+                      </a> */}
+                    </ul>
+                  )}
+                </li>
+                {/* <a href="/landfills" className="text-sm">
                   <li className="flex items-center mb-4 cursor-pointer hover:bg-gray-400/15 py-1.5 px-2 rounded w-full my-1">
                     <LandPlot className="w-[18px]" />
                     <span className="ml-3">Landfills</span>
                   </li>
-                </a>
-                <a href="/add-data" className="text-sm">
+                </a> */}
+                {/* <a href="/add-data" className="text-sm">
                   <li className="flex items-center mb-4 cursor-pointer hover:bg-gray-400/15 py-1.5 px-2 rounded w-full my-1">
                     <Plus className="w-[18px]" />
                     <span className="ml-3">Add Data</span>
                   </li>
-                </a>
+                </a> */}
                 <a href="/map" className="text-sm">
                   <li className="flex items-center mb-4 cursor-pointer hover:bg-gray-400/15 py-1.5 px-2 rounded w-full my-1">
                     <MapIcon className="w-[18px]" />
@@ -393,7 +453,7 @@ export default function Example({ open, setOpen }: any) {
 
                           <span className="ml-3">Economic Analysis</span>
 
-                        </li>i
+                        </li>
                       </a>
                       {/* Economic Analysis */}
                       <a href="/landfill-design" className="text-sm">
@@ -459,7 +519,7 @@ export default function Example({ open, setOpen }: any) {
                   </li>
                 </a> */}
               </ul>
-              <div className="">
+              {/* <div className="">
                 <h2 className="text-xs text-white pl-5 pt-5">About Us</h2>
 
                 <ul className="px-4 text-[15px] pt-3">
@@ -476,7 +536,7 @@ export default function Example({ open, setOpen }: any) {
                     </li>
                   </a>
                 </ul>
-              </div>
+              </div> */}
             </div>
 
           </DialogPanel>

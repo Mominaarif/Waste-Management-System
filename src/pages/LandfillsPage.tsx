@@ -2,7 +2,7 @@ import Header from "@/components/Header";
 import Landfills from "@/components/Landfills";
 
 function LandfillsPage({ open, setOpen }: any) {
-  const title = "Landfills";
+  const title = "Display Landfills";
 
   return (
     <div className="w-full">

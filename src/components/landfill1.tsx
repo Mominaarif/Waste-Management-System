@@ -134,28 +134,28 @@ const Landfill1 = () => {
     setTotalSubCatValue(total);
   };
 
-  const handleRemoveSubCategory = (name:any) => {
+  const handleRemoveSubCategory = (name: any) => {
     const updated = formData.subCategories.filter(
       (subCat) => subCat.name !== name
     );
-  
+
     const total = updated.reduce(
       (sum, subCat) => sum + (parseFloat(subCat.value) || 0),
       0
     );
-  
+
     setFormData((prev) => ({
       ...prev,
       subCategories: updated
     }));
-  
+
     setTotalSubCatValue(total);
   };
 
-  
+
   console.log(formData.subCategories);
 
-  
+
 
   // const [wasteInputs, setWasteInputs] = useState(defaultWasteInputs);
 
@@ -292,13 +292,12 @@ const Landfill1 = () => {
 
             {data1.length > 0 ? (
               <div
-                className={`grid grid-cols-1 ${
-                  data1.length > 2
-                    ? "md:grid-cols-3"
-                    : data1.length > 0
+                className={`grid grid-cols-1 ${data1.length > 2
+                  ? "md:grid-cols-3"
+                  : data1.length > 0
                     ? "md:grid-cols-2"
                     : "md:grid-cols-3"
-                } gap-y-4 gap-x-6`}
+                  } gap-y-4 gap-x-6`}
               >
                 <>
                   {data1.map((item: any, index: number) => (
@@ -340,54 +339,54 @@ const Landfill1 = () => {
 
                   {/* Table of selected components */}
                   {formData.subCategories.length > 0 && (
-                   <table className="w-full border border-collapse border-gray-300 text-sm">
-                   <thead>
-                     <tr className="bg-gray-100">
-                       <th className="border p-2">Component</th>
-                       <th className="border p-2">tonnes/day</th>
-                       <th className="border p-2"></th>
+                    <table className="w-full border border-collapse border-gray-300 text-sm">
+                      <thead>
+                        <tr className="bg-gray-100">
+                          <th className="border p-2">Component</th>
+                          <th className="border p-2">tonnes/day</th>
+                          <th className="border p-2"></th>
 
-                     </tr>
-                   </thead>
-                   <tbody>
-                     {formData.subCategories.map((subCat, idx) => (
-                       <tr key={idx}>
-                         <td className="p-[0_!important] pl-[8px_!important]">
-                           {subCat.name}
-                         </td>
-                         <td className="p-[0_!important]">
-                           <input
-                             type="number"
-                            
-                             value={subCat.value}
-                             onChange={(e) =>
-                               handleSubCategoryValueChange({
-                                 name: subCat.name,
-                                 value: e.target.value,
-                               })
-                             }
-                             className="block h-[38px] w-full px-3 py-1.5 text-gray-900 focus:border-blue-500 focus:ring-blue-500 md:text-sm"
-                           />
-                         </td>
-                         <td><button
- onClick={() => handleRemoveSubCategory(subCat.name)}
- className="text-red-500 hover:text-red-700 text-xs cursor-pointer"
->
-  ✕
-</button></td>
-                       </tr>
-                     ))}
+                        </tr>
+                      </thead>
+                      <tbody>
+                        {formData.subCategories.map((subCat, idx) => (
+                          <tr key={idx}>
+                            <td className="p-[0_!important] pl-[8px_!important]">
+                              {subCat.name}
+                            </td>
+                            <td className="p-[0_!important]">
+                              <input
+                                type="number"
 
-                     {/* Total row */}
-                     <tr className="bg-gray-100 font-semibold">
-                       <td className="border p-2">Total</td>
-                       <td className="border p-2">
-                         {totalSubCatValue.toFixed(8)}
-                       </td>
-                       <th></th>
-                     </tr>
-                   </tbody>
-                 </table>
+                                value={subCat.value}
+                                onChange={(e) =>
+                                  handleSubCategoryValueChange({
+                                    name: subCat.name,
+                                    value: e.target.value,
+                                  })
+                                }
+                                className="block h-[38px] w-full px-3 py-1.5 text-gray-900 focus:border-blue-500 focus:ring-blue-500 md:text-sm"
+                              />
+                            </td>
+                            <td><button
+                              onClick={() => handleRemoveSubCategory(subCat.name)}
+                              className="text-red-500 hover:text-red-700 text-xs cursor-pointer"
+                            >
+                              ✕
+                            </button></td>
+                          </tr>
+                        ))}
+
+                        {/* Total row */}
+                        <tr className="bg-gray-100 font-semibold">
+                          <td className="border p-2">Total</td>
+                          <td className="border p-2">
+                            {totalSubCatValue.toFixed(8)}
+                          </td>
+                          <th></th>
+                        </tr>
+                      </tbody>
+                    </table>
 
                   )}
                 </div>
@@ -676,7 +675,7 @@ const Landfill1 = () => {
         <div className="pt-10 bg-white">
           <div className="border p-8 rounded-md">
             <h2 className="text-lg font-semibold text-gray-900 ">Outputs</h2>
-            <div className="grid grid-cols-1 sm:grid-cols-3 gap-y-4 gap-x-6">
+            <div className="grid grid-cols-1 sm:grid-cols-2 gap-y-4 gap-x-6">
               <div className=" border p-3 rounded-md">
                 <label className="block text-sm font-medium text-gray-900">
                   Total Quantity (tonnes/day):
@@ -693,7 +692,11 @@ const Landfill1 = () => {
                   {outputs.totalWastePerYear.toFixed(2)} tonnes/year
                 </span>
               </div>
-
+            </div>
+            <h2 className="text-lg py-4 font-semibold text-gray-900 ">
+              Landfill Volume
+            </h2>
+            <div className="grid grid-cols-1 sm:grid-cols-3 gap-y-4 gap-x-6">
               <div className=" border p-3 rounded-md">
                 <label className="block text-sm font-medium text-gray-900">
                   Actual Landfilling Area:
@@ -737,6 +740,11 @@ const Landfill1 = () => {
                   m³
                 </span>
               </div>
+            </div>
+            <h2 className="text-lg py-4 font-semibold text-gray-900 ">
+              Trench Design
+            </h2>
+            <div className="grid grid-cols-1 sm:grid-cols-2 gap-y-4 gap-x-6">
               <div className=" border p-3 rounded-md">
                 <label className="block text-sm font-medium text-gray-900">
                   Trench Volume:
@@ -763,6 +771,11 @@ const Landfill1 = () => {
                   m
                 </span>
               </div>
+            </div>
+            <h2 className="text-lg py-4 font-semibold text-gray-900 ">
+              Time Required to Excavate a Trench
+            </h2>
+            <div className="grid grid-cols-1 gap-y-4 gap-x-6">
               <div className=" border p-3 rounded-md">
                 <label className="block text-sm font-medium text-gray-900">
                   Time Required to Excavate a Trench:
@@ -777,6 +790,11 @@ const Landfill1 = () => {
                   days
                 </span>
               </div>
+            </div>
+            <h2 className="text-lg py-4 font-semibold text-gray-900 ">
+              Cell Design
+            </h2>
+            <div className="grid grid-cols-1 sm:grid-cols-2 gap-y-4 gap-x-6">
               <div className=" border p-3 rounded-md">
                 <label className="block text-sm font-medium text-gray-900">
                   Cell Length:
@@ -793,6 +811,11 @@ const Landfill1 = () => {
                   {outputs.cellDimensions.depth.toFixed(2)} m
                 </span>
               </div>
+            </div>
+            <h2 className="text-lg py-4 font-semibold text-gray-900 ">
+              Cover Material
+            </h2>
+            <div className="grid grid-cols-1 sm:grid-cols-3 gap-y-4 gap-x-6">
               <div className=" border p-3 rounded-md">
                 <label className="block text-sm font-medium text-gray-900">
                   Area of 1 Cell:
@@ -851,12 +874,12 @@ const Landfill1 = () => {
                 <span className="text-gray-700">
                   {(
                     outputs.cellDimensions.length *
-                      outputs.cellDimensions.depth *
-                      designParams.dailyCoverThickness *
-                      365 *
-                      (outputs.totalLandfillVolume / 365) +
+                    outputs.cellDimensions.depth *
+                    designParams.dailyCoverThickness *
+                    365 *
+                    (outputs.totalLandfillVolume / 365) +
                     designParams.finalCoverThickness *
-                      outputs.actualLandfillArea
+                    outputs.actualLandfillArea
                   ).toFixed(2)}{" "}
                   m³
                 </span>
@@ -873,7 +896,7 @@ const Landfill1 = () => {
                       365 *
                       (outputs.totalLandfillVolume / 365) +
                       designParams.finalCoverThickness *
-                        outputs.actualLandfillArea) /
+                      outputs.actualLandfillArea) /
                     1000
                   ).toFixed(2)}{" "}
                   km³
