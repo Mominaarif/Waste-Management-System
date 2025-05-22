@@ -862,7 +862,7 @@ const MRFDesign = () => {
               </div>
 
               <div className="border-t grid grid-cols-1 md:grid-cols-1 gap-y-4 gap-x-6 pt-4 pb-4">
-               <div className="border p-3 rounded-md">
+                <div className="border p-3 rounded-md">
                   <label className="block text-sm font-medium text-gray-900">
                     Density of Recyclables:
                   </label>
@@ -894,7 +894,7 @@ const MRFDesign = () => {
                   </span>
                 </div>
 
-                
+
 
 
                 {/* <div className="border p-3 rounded-md">
@@ -927,12 +927,12 @@ const MRFDesign = () => {
                     {calculatedData.MRFLength} m
                   </span>
                 </div> */}
-              
+
               </div>
               <div className="">
-               
+
                 <div className="grid grid-cols-1 md:grid-cols-3 gap-y-4 gap-x-6">
-              
+
                 </div>
               </div>
 
@@ -945,14 +945,14 @@ const MRFDesign = () => {
 
                 <div className="border-t pt-4 grid grid-cols-1 md:grid-cols-2 gap-y-4 gap-x-6">
 
-  <div className="border p-3 rounded-md">
-                  <label className="block text-sm font-medium text-gray-900">
-                    Area Required:
-                  </label>
-                  <span className="text-gray-700">
-                    {calculatedData.areaRequired.toFixed(2)} m²
-                  </span>
-                </div>
+                  <div className="border p-3 rounded-md">
+                    <label className="block text-sm font-medium text-gray-900">
+                      Area Required:
+                    </label>
+                    <span className="text-gray-700">
+                      {calculatedData.areaRequired.toFixed(2)} m²
+                    </span>
+                  </div>
                   <div className="border p-3 rounded-md">
                     <label className="block text-sm font-medium text-gray-900">
                       Dimensions of MRF:

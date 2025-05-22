@@ -116,7 +116,7 @@ const AnaerobicDigesterCalculator = () => {
     "Food Waste",
     "Yard Waste",
     "Animal Dunk",
-   
+
   ];
 
   const [formData, setFormData] = useState<FormData>({
@@ -192,7 +192,7 @@ const AnaerobicDigesterCalculator = () => {
   };
   const TableData = formData.subCategories.map((waste) => ({
     name: waste.name,
-        value: waste.value,
+    value: waste.value,
   }))
   //  [
   //   {
@@ -242,30 +242,32 @@ const AnaerobicDigesterCalculator = () => {
     const drySludgeProduction =
       (totalSolidsInWaste - ashInWaste) * solidCaptureEfficiency * 365;
 
+      const volatileSolidsInWaste = totalBiodegradableWaste * (volatileSolids / 100)
     const dilutedFeedstockInflow =
-      totalBiodegradableWaste *
-      (volatileSolids / 100) *
-      1000 *
-      (1000 / (totalBiodegradableWaste * 1000));
+    (volatileSolidsInWaste*1000) / totalSlurry
+      // totalBiodegradableWaste *
+      // (volatileSolids / 100) *
+      // 1000 *
+      // (1000 / (totalBiodegradableWaste * 1000));
+
     const substrateConcentration =
-      totalBiodegradableWaste *
-      (volatileSolids / 100) *
-      1000 *
-      (1000 / (totalBiodegradableWaste * 1000));
+       (volatileSolidsInWaste*1000) / totalSlurry
 
     const organicLoadingRate =
       (totalSlurry * substrateConcentration) / volumeOfDigester;
 
     const biogasProduction =
       typicalBiogasYield * organicLoadingRate * volumeOfDigester;
-    // console.log(
-    //   "typicalBiogasYield:  " + typicalBiogasYield,
-    //   "organicLoadingRate: " + organicLoadingRate,
-    //   "volumeOfDigester: " + volumeOfDigester,
-    //   "volatileSolids: " + totalBiodegradableWaste * (volatileSolids / 100),
-    //   "totalBiodegradableWaste: " + totalBiodegradableWaste,
-    //   "dilutedFeedstockInflow" + dilutedFeedstockInflow
-    // );
+    console.log(
+      // "typicalBiogasYield:  " + typicalBiogasYield,
+      "totalBiodegradableWaste: " + totalBiodegradableWaste,
+      "totalBiodegradableWaste1: " + totalBiodegradableWaste1,
+      "organicLoadingRate: " + organicLoadingRate,
+      // "volumeOfDigester: " + volumeOfDigester,
+      "\nvolatileSolids: " + volatileSolidsInWaste,
+      // "totalBiodegradableWaste: " + totalBiodegradableWaste,
+      "dilutedFeedstockInflow" + dilutedFeedstockInflow
+    );
 
     const methaneProduction = biogasProduction * (methane / 100);
     const carbondioxide = biogasProduction * (CO2 / 100);
@@ -315,7 +317,7 @@ const AnaerobicDigesterCalculator = () => {
         };
       });
     } else {
-      recoveryData = TableData.map((waste:any) => {
+      recoveryData = TableData.map((waste: any) => {
         const recovered = (waste.value / totalBiodegradableWaste1) * 100;
         return {
           name: waste.name,
@@ -472,7 +474,7 @@ const AnaerobicDigesterCalculator = () => {
     },
   ];
 
- 
+
   return (
     <div className="w-full h-[calc(100vh-85px)] overflow-y-auto bg-white">
       {/* <h1 className="text-lg md:text-3xl pl-5 md:pl-14  border shadow-sm py-4 font-bold">
@@ -534,60 +536,61 @@ const AnaerobicDigesterCalculator = () => {
 
                   {/* Table of selected components */}
                   {formData.subCategories.length > 0 && (
-                   <table className="w-full border border-collapse border-gray-300 text-sm">
-                   <thead>
-                     <tr className="bg-gray-100">
-                       <th className="border p-2">Component</th>
-                       <th className="border p-2">tonnes/day</th>
-                       <th className="border p-2"></th>
+                    <table className="w-full border border-collapse border-gray-300 text-sm">
+                      <thead>
+                        <tr className="bg-gray-100">
+                          <th className="border p-2">Component</th>
+                          <th className="border p-2">tonnes/day</th>
+                          <th className="border p-2"></th>
+                        </tr>
+                      </thead>
+                      <tbody>
+                        {formData.subCategories.map((subCat, idx) => (
+                          <tr key={idx}>
+                            <td className="p-[0_!important] pl-[8px_!important] border">
+                              {subCat.name}
+                            </td>
+                            <td className="p-[0_!important] border">
+                              <input
+                                type="number"
+                                value={subCat.value}
+                                onChange={(e) =>
+                                  handleSubCategoryValueChange({
+                                    name: subCat.name,
+                                    value: e.target.value,
+                                  })
+                                }
+                                className="block h-[38px] w-full px-3 py-1.5 text-gray-900 focus:border-blue-500 focus:ring-blue-500 md:text-sm"
+                              />
+                            </td>
+                            <td className="border-b">
+                              <button
+                                onClick={() =>
+                                  handleRemoveSubCategory(subCat.name)
+                                }
+                                className="text-red-500 hover:text-red-700 text-xs cursor-pointer w-full text-center"
+                              >
+                                ✕
+                              </button>
+                            </td>
+                          </tr>
+                        ))}
 
-                     </tr>
-                   </thead>
-                   <tbody>
-                     {formData.subCategories.map((subCat, idx) => (
-                       <tr key={idx}>
-                         <td className="p-[0_!important] pl-[8px_!important]">
-                           {subCat.name}
-                         </td>
-                         <td className="p-[0_!important]">
-                           <input
-                             type="number"
-                            
-                             value={subCat.value}
-                             onChange={(e) =>
-                               handleSubCategoryValueChange({
-                                 name: subCat.name,
-                                 value: e.target.value,
-                               })
-                             }
-                             className="block h-[38px] w-full px-3 py-1.5 text-gray-900 focus:border-blue-500 focus:ring-blue-500 md:text-sm"
-                           />
-                         </td>
-                         <td><button
- onClick={() => handleRemoveSubCategory(subCat.name)}
- className="text-red-500 hover:text-red-700 text-xs cursor-pointer"
->
-  ✕
-</button></td>
-                       </tr>
-                     ))}
-
-                     {/* Total row */}
-                     <tr className="bg-gray-100 font-semibold">
-                       <td className="border p-2">Total</td>
-                       <td className="border p-2">
-                         {totalSubCatValue.toFixed(4)}
-                       </td>
-                       <th></th>
-                     </tr>
-                   </tbody>
-                 </table>
-
+                        {/* Total row */}
+                        <tr className="bg-gray-100 font-semibold">
+                          <td className="border p-2">Total</td>
+                          <td className="border p-2">
+                            {totalSubCatValue.toFixed(4)}
+                          </td>
+                          <th></th>
+                        </tr>
+                      </tbody>
+                    </table>
                   )}
                 </div>
               </>
             )}
-            
+
             <div className="grid grid-cols-1 sm:grid-cols-3 gap-y-4 gap-x-6 pt-4">
               <div className="">
                 <label className="block text-sm font-medium text-gray-900 pb-1">
@@ -893,11 +896,11 @@ const AnaerobicDigesterCalculator = () => {
                   setter: setCompostSalePrice,
                 },
 
-                {
-                  label: "Dry Sludge/Compost (kg/year)",
-                  value: drySludg,
-                  setter: setDrySludg,
-                },
+                // {
+                //   label: "Dry Sludge/Compost (kg/year)",
+                //   value: drySludg,
+                //   setter: setDrySludg,
+                // },
               ].map(({ label, value, setter }, index) => (
                 <div key={index}>
                   <label className="block text-sm font-medium text-gray-900 pb-1">
@@ -926,19 +929,21 @@ const AnaerobicDigesterCalculator = () => {
         {results && (
           <div className="pt-10 px-5 md:px-8 bg-white">
             <div className="border p-8 rounded-md">
-              <h2 className="text-lg font-semibold text-gray-900 ">Outputs</h2>
+              <h2 className="text-base font-semibold text-gray-900 ">
+                Solid Waste Inflow to Digestor
+              </h2>
 
-              <table className=" w-full border-collapse border border-gray-400 mt-4 text-sm">
+              <table className=" w-full border-collapse border mt-4 text-sm">
                 <thead>
-                  <tr className="bg-white">
-                    <th className="border border-gray-400 p-2">
+                  <tr className="bg-gray-100">
+                    <th className="border   p-2">
                       Waste Type (Biodegradables)
                     </th>
-                    <th className="border border-gray-400 p-2">
+                    <th className="border   p-2">
                       Quantities (tonnes/day)
                     </th>
 
-                    <th className="border border-gray-400 p-2">
+                    <th className="border   p-2">
                       Composition (%)
                     </th>
                   </tr>
@@ -946,33 +951,144 @@ const AnaerobicDigesterCalculator = () => {
                 <tbody>
                   {results.recoveryData?.map((waste: any, index: any) => (
                     <tr key={index} className="text-center">
-                      <td className="border border-gray-400 p-2">
+                      <td className="border   p-2">
                         {waste.name}
                       </td>
-                      <td className="border border-gray-400 p-2">
+                      <td className="border   p-2">
                         {waste.value}
                       </td>
-                      <td className="border border-gray-400 p-2">
+                      <td className="border   p-2">
                         {waste.recovered.toFixed(2)}
                       </td>
                     </tr>
                   ))}
                 </tbody>
               </table>
-              <div className="grid grid-cols-1 sm:grid-cols-3 gap-y-4 gap-x-6">
-                {resultsDisplay.map((waste, id) => (
+              <div className="grid grid-cols-1 sm:grid-cols-1 gap-y-4 gap-x-6 py-4">
+                {resultsDisplay.slice(0, 1).map((waste, id) => (
                   <div key={id} className="border p-3 rounded-md">
                     <label className="block text-sm font-medium text-gray-900">
                       {waste.name}:
                     </label>
                     <span className="text-gray-700">
-                      {waste.value ? waste.value.toFixed(2) : null}
+                      {waste.value
+                        ? waste.name ===
+                          "Total Biodegradable Waste Inflow (tonnes/day)"
+                          ? Math.round(waste.value).toFixed(2)
+                          : waste.value.toFixed(2)
+                        : null}
                     </span>
                   </div>
                 ))}
-                {/* {Object.entries(results).map(([key, value], index) => (
-                  
-                ))} */}
+              </div>
+              <h2 className="text-base font-semibold text-gray-900 ">
+                Volume of Digester
+              </h2>
+
+              <div className="grid grid-cols-1 sm:grid-cols-3 gap-y-4 gap-x-6 pt-4">
+                {resultsDisplay.slice(1, 6).map((waste, id) => (
+                  <div key={id} className="border p-3 rounded-md">
+                    <label className="block text-sm font-medium text-gray-900">
+                      {waste.name}:
+                    </label>
+                    <span className="text-gray-700">
+                      {waste.value
+                        ? waste.name ===
+                          "Total Biodegradable Waste Inflow (tonnes/day)"
+                          ? Math.round(waste.value).toFixed(2)
+                          : waste.value.toFixed(2)
+                        : null}
+                    </span>
+                  </div>
+                ))}
+              </div>
+
+              <h2 className="text-base font-semibold text-gray-900 pt-4">
+                Area and Diameter
+              </h2>
+
+              <div className="grid grid-cols-1 sm:grid-cols-2 gap-y-4 gap-x-6 pt-4">
+                {resultsDisplay.slice(6, 8).map((waste, id) => (
+                  <div key={id} className="border p-3 rounded-md">
+                    <label className="block text-sm font-medium text-gray-900">
+                      {waste.name}:
+                    </label>
+                    <span className="text-gray-700">
+                      {waste.value
+                        ? waste.name ===
+                          "Total Biodegradable Waste Inflow (tonnes/day)"
+                          ? Math.round(waste.value).toFixed(2)
+                          : waste.value.toFixed(2)
+                        : null}
+                    </span>
+                  </div>
+                ))}
+              </div>
+
+              <h2 className="text-base font-semibold text-gray-900 pt-4">
+                Biogas Production
+              </h2>
+
+              <div className="grid grid-cols-1 sm:grid-cols-3 gap-y-4 gap-x-6 pt-4">
+                {resultsDisplay.slice(8, 14).map((waste, id) => (
+                  <div key={id} className="border p-3 rounded-md">
+                    <label className="block text-sm font-medium text-gray-900">
+                      {waste.name}:
+                    </label>
+                    <span className="text-gray-700">
+                      {waste.value
+                        ? waste.name ===
+                          "Total Biodegradable Waste Inflow (tonnes/day)"
+                          ? Math.round(waste.value).toFixed(2)
+                          : waste.value.toFixed(2)
+                        : null}
+                    </span>
+                  </div>
+                ))}
+              </div>
+
+              <h2 className="text-base font-semibold text-gray-900 pt-4">
+                Electricity Production Potential
+              </h2>
+
+              <div className="grid grid-cols-1 sm:grid-cols-3 gap-y-4 gap-x-6 pt-4">
+                {resultsDisplay.slice(14, 20).map((waste, id) => (
+                  <div key={id} className="border p-3 rounded-md">
+                    <label className="block text-sm font-medium text-gray-900">
+                      {waste.name}:
+                    </label>
+                    <span className="text-gray-700">
+                      {waste.value
+                        ? waste.name ===
+                          "Total Biodegradable Waste Inflow (tonnes/day)"
+                          ? Math.round(waste.value).toFixed(2)
+                          : waste.value.toFixed(2)
+                        : null}
+                    </span>
+                  </div>
+                ))}
+              </div>
+
+              <h2 className="text-base font-semibold text-gray-900 pt-4">
+                Digestate Production
+              </h2>
+
+              <div className="grid grid-cols-1 sm:grid-cols-3 gap-y-4 gap-x-6 pt-4">
+                {resultsDisplay.slice(20).map((waste, id) => (
+                  <div key={id} className="border p-3 rounded-md">
+                    <label className="block text-sm font-medium text-gray-900">
+                      {waste.name}:
+                    </label>
+                    <span className="text-gray-700">
+                      {waste.value
+                        ? waste.name ===
+                          "Total Biodegradable Waste Inflow (tonnes/day)"
+                          ? Math.round(waste.value).toFixed(2)
+                          : waste.value.toFixed(2)
+                        : null}
+                    </span>
+                  </div>
+                ))}
               </div>
             </div>
           </div>

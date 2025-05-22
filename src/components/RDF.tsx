@@ -1458,7 +1458,7 @@ function RDF() {
               3. Pelletizer{" "}
             </h2>
             <div className="grid grid-cols-1 md:grid-cols-3 gap-y-4 gap-x-6">
-              {formFields.slice(10, 21).map(({ key, label, value }) => (
+              {formFields.slice(10, 17).map(({ key, label, value }) => (
                 <div key={key} className="">
                   <label className="block text-sm font-medium text-gray-900 pb-1">
                     {label}:
@@ -1478,7 +1478,7 @@ function RDF() {
               Coal Vs RDF
             </h2>
             <div className="grid grid-cols-1 md:grid-cols-3 gap-y-4 gap-x-6">
-              {formFields.slice(21, -1).map(({ key, label, value }) => (
+              {formFields.slice(17).map(({ key, label, value }) => (
                 <div key={key} className="">
                   <label className="block text-sm font-medium text-gray-900 pb-1">
                     {label}:
@@ -1495,7 +1495,7 @@ function RDF() {
               ))}
             </div>
 
-            <div className="overflow-x-auto w-full flex flex-col items-start">
+            {/* <div className="overflow-x-auto w-full flex flex-col items-start">
               <div className="mt-4 space-y-2 w-full">
                 <label className="block text-sm font-medium text-gray-900 pb-1 w-full text-left">
                   Waste Flows{" "}
@@ -1589,7 +1589,7 @@ function RDF() {
                   </tbody>
                 </table>
               </div>
-            </div>
+            </div> */}
 
             <div className="flex justify-center">
               {/* Calculate Button */}
