@@ -599,8 +599,7 @@ function RDF() {
       formFields.find((field) => field.key === "densificationRatio")?.value ||
       0;
 
-    const storageArea = totalVolumeInflow * numberOfDays;
-    const storageVolume = storageArea / depthOfStorageArea;
+
 
     const TotalComposition = wasteGenerationResults.reduce((sum: any, subCat: any) => {
       const percentage = subCat.wasteGenerated1; // Already a number
@@ -628,6 +627,13 @@ function RDF() {
       return sum + percentage;
     }, 0);
 
+
+    const storageVolume = ((totalWasteGenerated) /
+      (TotalDensityContribution * 1000)) * numberOfDays;
+
+    const storageArea = storageVolume / depthOfStorageArea;
+
+
     const typicalPowerRequirementPelletizer =
       formFields.find(
         (field) => field.key === "typicalPowerRequirementPelletizer"
@@ -638,21 +644,24 @@ function RDF() {
         (field) => field.key === "typicalPowerRequirementPelletizer1"
       )?.value || 0;
 
-    const adoptDesign = TotalWastePrimary / operatingHoursPrimary;
+    const adoptDesign = (totalWasteGenerated / 1000) / operatingHoursPrimary;
+    // TotalWastePrimary / operatingHoursPrimary;
     const powerRequiredPerDayPrimary =
       typicalPowerRequirementPrimary * operatingHoursPrimary;
     const ShreddedOutflowPrimary =
-      TotalWastePrimary * (ShreddedEfficiencypri / 100);
+      (totalWasteGenerated / 1000) * (ShreddedEfficiencypri / 100);
+    // TotalWastePrimary * (ShreddedEfficiencypri / 100);
 
-    const adoptDesignSec = TotalWasteSecondary / operatingHoursSecondary;
+    const adoptDesignSec = ShreddedOutflowPrimary / operatingHoursSecondary;
     const powerRequiredPerDaySec =
       typicalPowerRequirementSecondary * operatingHoursSecondary;
     const ShreddedOutflowSec =
-      TotalWasteSecondary * (ShreddedEfficiencySec / 100);
+      ShreddedOutflowPrimary * (ShreddedEfficiencySec / 100);
 
-    const adoptDesignPell = TotalWastePelletizer / operatingHoursPelletizer;
+    const adoptDesignPell = ShreddedOutflowSec / operatingHoursPelletizer;
+    // console.log(operatingHoursPelletizer, ShreddedOutflowSec)
     const RDFOutflowPell =
-      TotalWastePelletizer * (recoveryEfficiencyPelletizer / 100);
+      ShreddedOutflowSec * (recoveryEfficiencyPelletizer / 100);
 
     const totalPowerRequirementPelletizer =
       typicalPowerRequirementPelletizer + typicalPowerRequirementPelletizer1;
@@ -672,7 +681,7 @@ function RDF() {
       optimumMoistureContent - initialMoistureContent;
 
     const waterAdditionRequired =
-      ((moistureAdditionRequired / 100) * (TotalWastePelletizer * 1000)) / 1000;
+      ((moistureAdditionRequired / 100) * (ShreddedOutflowSec * 1000)) / 1000;
 
     const rdfOutput =
       totalWasteInput *
@@ -680,7 +689,7 @@ function RDF() {
       (pelletizer / 100);
     const equivalentCoal = (rdfOutput * calorificValue) / 28; // Assuming coal CV = 28 MJ/kg
 
-    const ResidueGeneratedPrimary = TotalWastePrimary - ShreddedOutflowPrimary;
+    const ResidueGeneratedPrimary = (totalWasteGenerated / 1000) - ShreddedOutflowPrimary;
     const ResidueGeneratedSecondary =
       ShreddedOutflowPrimary - ShreddedOutflowSec;
     const ResidueGeneratedPelletizing = ShreddedOutflowSec - RDFOutflowPell;
@@ -704,11 +713,11 @@ function RDF() {
 
     const ratioRDFCoal = calorificValueRDF / calorificValueCoal;
     const totalAmountCoalEqualTonnePerDay =
-      totalAmountRDFProduce * ratioRDFCoal;
-    const totalAmountRDFProduced = (totalAmountRDFProduce * 365) / 1000; // in Gg/year
+      RDFOutflowPell * ratioRDFCoal;
+    const totalAmountRDFProduced = (RDFOutflowPell * 365) / 1000; // in Gg/year
     const totalAmountCoalEqualGgPerYear =
       (totalAmountCoalEqualTonnePerDay * 365) / 1000; // in Gg/year
-    const totaPriceRDFProduce = totalAmountRDFProduce * 365 * RDFUnitPrice;
+    const totaPriceRDFProduce = RDFOutflowPell * 365 * RDFUnitPrice;
     const totalAmountCoalEqual =
       totalAmountCoalEqualTonnePerDay * 365 * coalUnitPrice;
     const RDF = totaPriceRDFProduce / 1000000000;
@@ -1391,7 +1400,7 @@ function RDF() {
             <h2 className="text-lg font-semibold text-gray-900 py-5">
               Storage Design
             </h2>
-            <div className="grid grid-cols-1 md:grid-cols-3 gap-y-4 gap-x-6">
+            <div className="grid grid-cols-1 md:grid-cols-2 gap-y-4 gap-x-6">
               {formFields.slice(0, 2).map(({ key, label, value }) => (
                 <div key={key} className="">
                   <label className="block text-sm font-medium text-gray-900 pb-1">
@@ -1725,6 +1734,29 @@ function RDF() {
                           </td> */}
                         </tr>
                       ))}
+                      <tr className=" bg-gray-100">
+
+                        <td style={{ textAlign: "left" }}
+                          className="border p-2"></td>
+                        <th style={{ textAlign: "left" }}
+                          className="border p-2"
+                        >Total</th>
+                        <td style={{ textAlign: "left" }}
+                          className="border p-2"
+                        >{calculatedValues.totalWasteGenerated.toFixed(2)}</td>
+                        <td style={{ textAlign: "left" }}
+                          className="border p-2"
+                        >{calculatedValues.TotalComposition.toFixed(2)}</td>
+                        <td style={{ textAlign: "left" }}
+                          className="border p-2"
+                        >{calculatedValues.TotalDensityContribution.toFixed(2)}</td>
+                        <td style={{ textAlign: "left" }}
+                          className="border p-2"
+                        >{calculatedValues.TotalMoistureContribution.toFixed(2)}</td>
+                        <td style={{ textAlign: "left" }}
+                          className="border p-2"
+                        >{calculatedValues.TotalCVContribution.toFixed(2)}</td>
+                      </tr>
                     </tbody>
                   </table>
                 </div>
@@ -1910,8 +1942,8 @@ function RDF() {
                   {
                     label: "Volume (m3/day)",
                     value:
-                      (calculatedValues.TotalDensityContribution * 1000) /
-                      calculatedValues.TotalDensityContribution,
+                      (calculatedValues.totalWasteGenerated) /
+                      (calculatedValues.TotalDensityContribution * 1000),
                   },
                 ].map((output, index) => (
                   <div className="border p-3 rounded-md" key={index}>
@@ -1932,15 +1964,15 @@ function RDF() {
                 {[
                   {
                     label: "Calorific Value (CV) of RDF (MJ/Kg)",
-                    value: calculatedValues.totalCV,
+                    value: calculatedValues.TotalCVContribution,
                   },
                   {
                     label: "Calorific Value (CV) of RDF (KJ/Kg)",
-                    value: calculatedValues.totalCV * 1000,
+                    value: calculatedValues.TotalCVContribution * 1000,
                   },
                   {
                     label: "Calorific Value (CV) of RDF (kcal/Kg)",
-                    value: (calculatedValues.totalCV * 1000) / 4.184,
+                    value: (calculatedValues.TotalCVContribution * 1000) / 4.184,
                   },
                 ].map((output, index) => (
                   <div className="border p-3 rounded-md" key={index}>
@@ -2063,19 +2095,18 @@ function RDF() {
                   {
                     label: "Final Volume, Pellets (m3/day)",
                     value:
-                      calculatedValues.RDFOutflowPell /
+                      (calculatedValues.RDFOutflowPell /
+                        calculatedValues.TotalDensityContribution) /
                       calculatedValues.densificationRatioPelletizer,
                   },
                   {
                     label: "Volume Reduction (%)",
                     value:
-                      (calculatedValues.RDFOutflowPell /
-                        calculatedValues.TotalDensityContribution -
-                        calculatedValues.RDFOutflowPell /
-                        calculatedValues.densificationRatioPelletizer /
-                        calculatedValues.RDFOutflowPell /
-                        calculatedValues.TotalDensityContribution) *
-                      100,
+                      (((calculatedValues.RDFOutflowPell / calculatedValues.TotalDensityContribution) - 
+                      ((calculatedValues.RDFOutflowPell /
+                          calculatedValues.TotalDensityContribution) /
+                          calculatedValues.densificationRatioPelletizer)) / ( calculatedValues.RDFOutflowPell /
+                      calculatedValues.TotalDensityContribution)) * 100,
                   },
                   {
                     label: "Total Power Requirement (kW)",
@@ -2181,7 +2212,7 @@ function RDF() {
 
                   {
                     label: "Coal (Equivalent to RDF)",
-                    value: calculatedValues.RDF,
+                    value: calculatedValues.Coal,
                   },
                 ].map((output, index) => (
                   <div className="border p-3 rounded-md" key={index}>
