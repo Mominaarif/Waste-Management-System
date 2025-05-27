@@ -9,6 +9,7 @@ interface Results {
   areaOfDigester: number;
   diameterOfDigester: number;
   biogasProduction: number;
+  carbondioxide: number;
   methaneProduction: number;
   electricityFromBiogas: number;
   electricityFromMethane: number;
@@ -75,6 +76,13 @@ const AnaerobicDigesterCalculator = () => {
     "Completely Mixed Anaerobic Digester (CSTR)",
     "Up-Flow Anaerobic Sludge Blanket (UASB)",
   ];
+
+
+  const [length, setLength] = useState<number>(0);
+  const [diaUnit, setDiaUnit] = useState<number>(0);
+  const [result, setResult] = useState<string | null>(null);
+
+
 
   // State for user inputs 5823862.42
   const [foodWaste, setFoodWaste] = useState(2154.827353);
@@ -242,16 +250,16 @@ const AnaerobicDigesterCalculator = () => {
     const drySludgeProduction =
       (totalSolidsInWaste - ashInWaste) * solidCaptureEfficiency * 365;
 
-      const volatileSolidsInWaste = totalBiodegradableWaste * (volatileSolids / 100)
+    const volatileSolidsInWaste = totalBiodegradableWaste * (volatileSolids / 100)
     const dilutedFeedstockInflow =
-    (volatileSolidsInWaste*1000) / totalSlurry
-      // totalBiodegradableWaste *
-      // (volatileSolids / 100) *
-      // 1000 *
-      // (1000 / (totalBiodegradableWaste * 1000));
+      (volatileSolidsInWaste * 1000) / totalSlurry
+    // totalBiodegradableWaste *
+    // (volatileSolids / 100) *
+    // 1000 *
+    // (1000 / (totalBiodegradableWaste * 1000));
 
     const substrateConcentration =
-       (volatileSolidsInWaste*1000) / totalSlurry
+      (volatileSolidsInWaste * 1000) / totalSlurry
 
     const organicLoadingRate =
       (totalSlurry * substrateConcentration) / volumeOfDigester;
@@ -276,7 +284,7 @@ const AnaerobicDigesterCalculator = () => {
 
     // const electricityFromMethane =
     // (methaneProduction * 365 * methaneEnergyContent) / 1000;
-    const electricityFromMethane = carbondioxide * energyContentMeth;
+    const electricityFromMethane = methaneProduction * energyContentMeth;
 
     const TotalNonBiodegradableSolids =
       (ashContent / 100) * (totalBiodegradableWaste * 1000) * 365;
@@ -327,6 +335,40 @@ const AnaerobicDigesterCalculator = () => {
       });
     }
 
+
+    const value = diameterOfDigester;
+    setLength(value);
+
+    if (!isNaN(value) && value > 1) {
+      const tolerance = 0.01;
+      let bestOption: { units: number; unitSize: number } | null = null;
+
+      for (let unitSize = 30; unitSize >= 2; unitSize -= 0.01) {
+        const units = value / unitSize;
+        const roundedUnits = Math.round(units);
+        const remainder = Math.abs(units - roundedUnits);
+
+        if (remainder < tolerance) {
+          bestOption = {
+            units: roundedUnits,
+            unitSize: parseFloat(unitSize.toFixed(2)),
+          };
+          break; // Stop at first match (largest unit size, fewest units)
+        }
+      }
+
+      if (bestOption) {
+        setResult(`${bestOption.units} unit(s) of ${bestOption.unitSize}m`);
+        setDiaUnit(bestOption.unitSize);
+      } else {
+        setResult("No valid unit size found between 2m and 30m.");
+      }
+    } else {
+      setResult(null);
+    }
+
+
+
     setResults({
       totalBiodegradableWaste,
       waterRequirement,
@@ -335,6 +377,7 @@ const AnaerobicDigesterCalculator = () => {
       volumeOfDigester,
       areaOfDigester,
       diameterOfDigester,
+      carbondioxide,
       biogasProduction,
       methaneProduction,
       electricityFromBiogas,
@@ -376,6 +419,11 @@ const AnaerobicDigesterCalculator = () => {
       name: "Total Biogas Production (m³/day)",
       value: results?.biogasProduction,
     },
+
+     {
+      name: "Total Carbon Dioxide Production (m³/day)",
+      value: results?.carbondioxide,
+    },
     {
       name: "Total Methane Production (m³/day)",
       value: results?.methaneProduction,
@@ -384,6 +432,10 @@ const AnaerobicDigesterCalculator = () => {
     {
       name: "Total Biogas Production (m³/year)",
       value: results?.biogasProduction ? results?.biogasProduction * 365 : 0,
+    },
+      {
+      name: "Total Carbon Dioxide Production (m³/year)",
+      value: results?.carbondioxide ? results?.carbondioxide * 365 : 0,
     },
     {
       name: "Total Methane Production (m³/year)",
@@ -394,6 +446,12 @@ const AnaerobicDigesterCalculator = () => {
       name: "Total Biogas Production (hm³/year)",
       value: results?.biogasProduction
         ? (results?.biogasProduction * 365) / 1000000
+        : 0,
+    },
+    {
+      name: "Total Carbon Dioxide Production (hm³/year)",
+       value: results?.carbondioxide
+        ? (results?.carbondioxide * 365) / 1000000
         : 0,
     },
     {
@@ -439,7 +497,7 @@ const AnaerobicDigesterCalculator = () => {
     },
 
     {
-      name: "Total Non- Biodegradable Solids (kg/year",
+      name: "Total Non- Biodegradable Solids (kg/year)",
       value: results?.TotalNonBiodegradableSolids,
     },
     {
@@ -488,13 +546,12 @@ const AnaerobicDigesterCalculator = () => {
             </h2>
             {data1.length > 0 ? (
               <div
-                className={`grid grid-cols-1 ${
-                  data1.length > 2
-                    ? "md:grid-cols-3"
-                    : data1.length > 0
+                className={`grid grid-cols-1 ${data1.length > 2
+                  ? "md:grid-cols-3"
+                  : data1.length > 0
                     ? "md:grid-cols-2"
                     : "md:grid-cols-3"
-                } gap-y-4 gap-x-6 border-b pb-4`}
+                  } gap-y-4 gap-x-6 border-b pb-4`}
               >
                 <>
                   {data1.map((item: any, index: number) => (
@@ -880,21 +937,21 @@ const AnaerobicDigesterCalculator = () => {
                   value: dewateringSolidCaptureEfficiency,
                   setter: setDewateringSolidCaptureEfficiency,
                 },
-                {
-                  label: "Electricity Rate (Rs./kWh)",
-                  value: electricityRate,
-                  setter: setElectricityRate,
-                },
+                // {
+                //   label: "Electricity Rate (Rs./kWh)",
+                //   value: electricityRate,
+                //   setter: setElectricityRate,
+                // },
                 {
                   label: "Electricity Consumption (kWh/house/year)",
                   value: electricityConsumption,
                   setter: setElectricityConsumption,
                 },
-                {
-                  label: "Compost Sale Price (Rs./Kg)",
-                  value: compostSalePrice,
-                  setter: setCompostSalePrice,
-                },
+                // {
+                //   label: "Compost Sale Price (Rs./Kg)",
+                //   value: compostSalePrice,
+                //   setter: setCompostSalePrice,
+                // },
 
                 // {
                 //   label: "Dry Sludge/Compost (kg/year)",
@@ -1009,17 +1066,27 @@ const AnaerobicDigesterCalculator = () => {
 
               <div className="grid grid-cols-1 sm:grid-cols-2 gap-y-4 gap-x-6 pt-4">
                 {resultsDisplay.slice(6, 8).map((waste, id) => (
-                  <div key={id} className="border p-3 rounded-md">
-                    <label className="block text-sm font-medium text-gray-900">
-                      {waste.name}:
-                    </label>
-                    <span className="text-gray-700">
-                      {waste.value
-                        ? waste.name ===
-                          "Total Biodegradable Waste Inflow (tonnes/day)"
-                          ? Math.round(waste.value).toFixed(2)
-                          : waste.value.toFixed(2)
-                        : null}
+                  <div key={id} className="">
+                    <div className="border p-3 rounded-md">
+                      <label className="block text-sm font-medium text-gray-900">
+                        {waste.name}:
+                      </label>
+                      <span className="text-gray-700">
+                        {waste.value
+                          ? waste.name ===
+                            "Total Biodegradable Waste Inflow (tonnes/day)"
+                            ? Math.round(waste.value).toFixed(2)
+                            : waste.value.toFixed(2)
+                          : null}
+                      </span>
+
+                    </div>
+                    <span>
+                      {waste.name === "Diameter (m)" && result ? (
+                        <span className="text-sm text-gray-500">
+                          ({result})
+                        </span>
+                      ) : null}
                     </span>
                   </div>
                 ))}
@@ -1030,7 +1097,7 @@ const AnaerobicDigesterCalculator = () => {
               </h2>
 
               <div className="grid grid-cols-1 sm:grid-cols-3 gap-y-4 gap-x-6 pt-4">
-                {resultsDisplay.slice(8, 14).map((waste, id) => (
+                {resultsDisplay.slice(8, 17).map((waste, id) => (
                   <div key={id} className="border p-3 rounded-md">
                     <label className="block text-sm font-medium text-gray-900">
                       {waste.name}:
@@ -1052,7 +1119,7 @@ const AnaerobicDigesterCalculator = () => {
               </h2>
 
               <div className="grid grid-cols-1 sm:grid-cols-3 gap-y-4 gap-x-6 pt-4">
-                {resultsDisplay.slice(14, 20).map((waste, id) => (
+                {resultsDisplay.slice(17, 23).map((waste, id) => (
                   <div key={id} className="border p-3 rounded-md">
                     <label className="block text-sm font-medium text-gray-900">
                       {waste.name}:
@@ -1074,7 +1141,7 @@ const AnaerobicDigesterCalculator = () => {
               </h2>
 
               <div className="grid grid-cols-1 sm:grid-cols-3 gap-y-4 gap-x-6 pt-4">
-                {resultsDisplay.slice(20).map((waste, id) => (
+                {resultsDisplay.slice(23).map((waste, id) => (
                   <div key={id} className="border p-3 rounded-md">
                     <label className="block text-sm font-medium text-gray-900">
                       {waste.name}:
@@ -1090,9 +1157,20 @@ const AnaerobicDigesterCalculator = () => {
                   </div>
                 ))}
               </div>
+              <div className="flex justify-center ">
+                <div className="relative w-[700px] h-full">
+                  <img src="/images/anaerobic.jpg" alt="" />
+                  <p className="absolute md:top-[42%] top-[43.5%] left-[47%] md:text-[10px] text-[8px] font-bold">{diaUnit}</p>
+                  <p className="absolute top-[47.5%] right-[20.5%] md:text-[10px] text-[8px] font-bold">{depth}</p>
+                </div>
+
+              </div>
+
             </div>
           </div>
         )}
+
+
         <div className="bg-white w-full pt-2">
           <p className=" text-center py-2 mt-0">Waste Management Tracking</p>
         </div>

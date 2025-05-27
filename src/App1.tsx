@@ -60,6 +60,7 @@ export function MainLayout() {
 
   const hideSidebar = hideSidebarRoutes.includes(location.pathname);
   const [open, setOpen] = useState(false);
+
 console.log(open)
   return (
     <div className="flex w-full">

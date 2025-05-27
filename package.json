@@ -27,6 +27,7 @@
     "datatables.net-responsive": "^3.0.4",
     "datatables.net-responsive-dt": "^3.0.4",
     "firebase": "^11.6.0",
+    "focus-trap-react": "^11.0.3",
     "jquery": "^3.7.1",
     "lucide-react": "^0.482.0",
     "react": "^19.0.0",

@@ -327,7 +327,7 @@ export default function Example({ open, setOpen }: any) {
               >
                 <span className="absolute -inset-0.5" />
                 <span className="sr-only">Close menu</span>
-                <X aria-hidden="true" className="size-6" />
+                <X  className="size-6" />
               </button>
             </div>
             <div>

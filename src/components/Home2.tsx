@@ -180,7 +180,7 @@ export default function Home2(open: any) {
               </FadeIn>
               <ul className="px-5 text-base leading-6 md:pt-5 pt-1">
                 {aim.map((i, id) => (
-                  <FadeIn animation="animate__fadeInUp" delayClass={`animate__delay-${id}s`}>
+                  <FadeIn animation="animate__fadeInUp" delayClass={`animate__delay-${id}s`} key={id}>
                     <div className=" flex gap-5">
                       <div className="w-fit h-fit flex justify-center items-center">
                         {i.btn}
@@ -208,7 +208,7 @@ export default function Home2(open: any) {
         </FadeIn>
         <ul className="grid grid-cols-1 md:grid-cols-3 gap-14 justify-center items-center px-[48px] h-full w-full pb-12">
           {steps.map((item, index) => (
-            <FadeIn animation="animate__fadeInUp" delayClass={`animate__delay-${index > 2 ? index - 2 : index}s`}>
+            <FadeIn animation="animate__fadeInUp" delayClass={`animate__delay-${index > 2 ? index - 2 : index}s`} key={index} >
               <div className='relative' key={index}>
 
 

@@ -380,10 +380,10 @@ const Landfill = () => {
                             <tbody>
                               {formData.subCategories.map((subCat, idx) => (
                                 <tr key={idx}>
-                                  <td className="p-[0_!important] pl-[8px_!important]">
+                                  <td className="p-[0_!important] border pl-[8px_!important]">
                                     {subCat.name}
                                   </td>
-                                  <td className="p-[0_!important]">
+                                  <td className="p-[0_!important] border">
                                     <input
                                       type="number"
 

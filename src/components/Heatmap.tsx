@@ -1590,36 +1590,42 @@ const CarbonFootprint = ({ open }: { open: boolean }) => {
   const handlePercentageChange = (
     category: WasteCategory,
     wasteType: WasteType,
-    percentage: number
+    percent: any
   ) => {
+    const percentage = parseFloat(percent);
+
+    if (isNaN(percentage)) {
+      setError("Please enter a valid number");
+      return;
+    }
+
     if (percentage < 0 || percentage > 100) {
       setError("Percentage must be between 0 and 100");
       return;
     }
 
-    const totalPercentage = Object.values(selectedWasteTypes).reduce(
-      (total, categoryData) => {
-        return (
-          total + ((categoryData as Record<WasteType, number>)[wasteType] || 0)
-        );
+    // Update the state first
+    const updatedState = {
+      ...selectedWasteTypes,
+      [category]: {
+        ...selectedWasteTypes[category],
+        [wasteType]: percentage,
       },
-      0
-    );
+    };
 
-    if (totalPercentage + percentage > 100 && percentage !== 0) {
-      setError(
-        "Total percentage for this waste type exceeds 100%. Please adjust the values."
-      );
+    // Calculate total percentage for this wasteType across all categories
+    const totalPercentage = Object.values(updatedState).reduce((total, categoryData) => {
+      return total + (categoryData[wasteType] || 0);
+    }, 0);
+
+    if (totalPercentage > 100) {
+      setError(`Total ${wasteType} allocation exceeds 100% (Current: ${totalPercentage.toFixed(1)}%)`);
     } else {
       setError(null);
-      setSelectedWasteTypes((prevState) => ({
-        ...prevState,
-        [category]: {
-          ...prevState[category],
-          [wasteType]: percentage,
-        },
-      }));
     }
+
+    // Always update the state even if there's an error
+    setSelectedWasteTypes(updatedState);
   };
 
   const handleCheckboxChange = (category: WasteCategory, wasteType: WasteType) => {
@@ -1760,12 +1766,12 @@ const CarbonFootprint = ({ open }: { open: boolean }) => {
       <section>
         {/* <h2 className="text-base font-bold pl-8">Select Waste Categories</h2> */}
         <div className="pt-5 px-5 md:px-8">
-          <table ref={tableRef} className="display nowrap" style={{ width: "100%" }}>
+          <table  className="w-full border border-collapse border-gray-300 text-sm" >
             <thead>
-              <tr className="bg-[#386641] text-white">
-                <th>Biodegradables</th>
-                <th>Combustibles</th>
-                <th>Recyclables</th>
+              <tr className="bg-[#386641] text-white border p-2">
+                <th className="border p-2">Biodegradables</th>
+                <th className="border p-2">Combustibles</th>
+                <th className="border p-2">Recyclables</th>
               </tr>
             </thead>
             <tbody>
@@ -1782,9 +1788,9 @@ const CarbonFootprint = ({ open }: { open: boolean }) => {
 
                 return (
                   <tr key={i}>
-                    <td>
+                    <td className="border p-2">
                       {bio && (
-                        <div className="flex md:flex-row flex-col items-center gap-0.5 pr-2">
+                        <div className="flex md:flex-row flex-col items-center gap-0.5 pr-2 relative">
                           <label className="md:w-1/2 w-full flex items-center gap-0.5">
                             <input
                               type="checkbox"
@@ -1794,94 +1800,97 @@ const CarbonFootprint = ({ open }: { open: boolean }) => {
                             <i className="fas fa-leaf" />
                             {bio} ({combinedWasteData[bio] || 0} kg)
                           </label>
-                          <input
-                            type="number"
-                            value={selectedWasteTypes.biodegradable[bio] || 0}
-                            onChange={(e) =>
-                              handlePercentageChange(
-                                "biodegradable",
-                                bio,
-                                parseFloat(e.target.value)
-                              )
-                            }
-                            className="border md:w-1/2 w-full rounded-md border-gray-300 px-3 py-[4.53px] text-gray-900 sm:text-sm"
-                            min={0}
-                            max={100}
-                            step={10}
-                            disabled={!enabledWasteTypes.biodegradable[bio]}
-                          />
+                          <div className="relative md:w-1/2 w-full">
+                            <input
+                              type="number"
+                              value={selectedWasteTypes.biodegradable[bio] || 0}
+                              onChange={(e) =>
+                                handlePercentageChange("biodegradable", bio, e.target.value)
+                              }
+                              className={`border w-full rounded-md px-3 py-[4.53px] text-gray-900 sm:text-sm  `}
+                              min={0}
+                              max={100}
+                              disabled={!enabledWasteTypes.biodegradable[bio]}
+                            />
+                            
+                          </div>
                         </div>
                       )}
                     </td>
-                    <td>
+
+                     <td  className="border p-2">
                       {comb && (
-                        <div className="flex md:flex-row flex-col items-center gap-0.5 pr-2">
+                        <div className="flex md:flex-row flex-col items-center gap-0.5 pr-2 relative">
                           <label className="md:w-1/2 w-full flex items-center gap-0.5">
                             <input
                               type="checkbox"
                               checked={enabledWasteTypes.combustible[comb] || false}
                               onChange={() => handleCheckboxChange("combustible", comb)}
                             />
-                            <i className="fas fa-fire" />
+                            <i className="fas fa-leaf" />
                             {comb} ({combinedWasteData[comb] || 0} kg)
                           </label>
-                          <input
-                            type="number"
-                            value={selectedWasteTypes.combustible[comb] || 0}
-                            onChange={(e) =>
-                              handlePercentageChange(
-                                "combustible",
-                                comb,
-                                parseFloat(e.target.value)
-                              )
-                            }
-                            className="border md:w-1/2 w-full rounded-md border-gray-300 px-3 py-[4.53px] text-gray-900 sm:text-sm"
-                            min={0}
-                            max={100}
-                            step={10}
-                            disabled={!enabledWasteTypes.combustible[comb]}
-                          />
+                          <div className="relative md:w-1/2 w-full">
+                            <input
+                              type="number"
+                              value={selectedWasteTypes.combustible[comb] || 0}
+                              onChange={(e) =>
+                                handlePercentageChange("combustible", comb, e.target.value)
+                              }
+                              className={`border w-full rounded-md px-3 py-[4.53px] text-gray-900 sm:text-sm  `}
+                              min={0}
+                              max={100}
+                              disabled={!enabledWasteTypes.combustible[comb]}
+                            />
+                            {/* {error && (
+                              <div className="w-fit mt-1 p-2 bg-red-100 text-red-800 text-sm rounded-md shadow-lg">
+                                {error}
+                              </div>
+                            )} */}
+                          </div>
                         </div>
                       )}
                     </td>
-                    <td>
-                      {recy && (
-                        <div className="flex md:flex-row flex-col items-center gap-0.5 pr-2">
-                          <label className="flex items-center gap-0.5 md:w-1/2 w-full">
+                    <td  className="border p-2">
+                     {recy && (
+                        <div className="flex md:flex-row flex-col items-center gap-0.5 pr-2 relative">
+                          <label className="md:w-1/2 w-full flex items-center gap-0.5">
                             <input
                               type="checkbox"
                               checked={enabledWasteTypes.recyclable[recy] || false}
                               onChange={() => handleCheckboxChange("recyclable", recy)}
                             />
-                            <i className="fas fa-recycle" />
+                            <i className="fas fa-leaf" />
                             {recy} ({combinedWasteData[recy] || 0} kg)
                           </label>
-                          <input
-                            type="number"
-                            value={selectedWasteTypes.recyclable[recy] || 0}
-                            onChange={(e) =>
-                              handlePercentageChange(
-                                "recyclable",
-                                recy,
-                                parseFloat(e.target.value)
-                              )
-                            }
-                            className="border md:w-1/2 w-full rounded-md border-gray-300 px-3 py-[4.53px] text-gray-900 sm:text-sm"
-                            min={0}
-                            max={100}
-                            step={10}
-                            disabled={!enabledWasteTypes.recyclable[recy]}
-                          />
+                          <div className="relative md:w-1/2 w-full">
+                            <input
+                              type="number"
+                              value={selectedWasteTypes.recyclable[recy] || 0}
+                              onChange={(e) =>
+                                handlePercentageChange("recyclable", recy, e.target.value)
+                              }
+                              className={`border w-full rounded-md px-3 py-[4.53px] text-gray-900 sm:text-sm  `}
+                              min={0}
+                              max={100}
+                              disabled={!enabledWasteTypes.recyclable[recy]}
+                            />
+                            
+                          </div>
                         </div>
                       )}
                     </td>
                   </tr>
                 );
-              })}
+              })} 
+              
+
             </tbody>
           </table>
+           {error && <div className="w-full mt-1 p-2 bg-red-100 text-red-800 text-sm rounded-md shadow-lg capitalize">{error}</div>}
         </div>
-        <div className="md:px-8 px-5 flex justify-start gap-5 pb-8 items-center">
+        <div className="md:px-8 px-5 flex justify-between gap-5 pb-8 items-center">
+          <div className="flex justify-between gap-5 pb-8 items-center">
           <Button
             onClick={() => {
               calculateWasteValues();
@@ -1900,6 +1909,15 @@ const CarbonFootprint = ({ open }: { open: boolean }) => {
           >
             Bar Chart
           </Button>
+        </div>
+         <div className="flex justify-end gap-5 pb-8">
+          <Button
+            onClick={handleNext}
+            className="bg-[#386641] transition duration-300 ease-in-out cursor-pointer text-white px-8 py-2 mt-8 rounded-md shadow-md"
+          >
+            Next
+          </Button>
+        </div>
         </div>
 
         <Dialog
@@ -1925,31 +1943,31 @@ const CarbonFootprint = ({ open }: { open: boolean }) => {
                 <DialogTitle as="h3" className="text-xl font-bold py-2">
                   Waste Forecast
                 </DialogTitle>
-                <div className={`${open ? "w-full" : "w-full"} bg-white overflow-y-auto`}>
+                <div className={`${open ? "w-full" : "w-full"} h-[80vh] bg-white overflow-y-auto`}>
                   <h2 className="block text-sm font-medium text-gray-900 pb-1">
                     Waste Forecast by Type
                   </h2>
                   <table
-                    ref={tableRef1}
-                    className="display nowrap"
-                    style={{ width: "100%" }}
+                    // ref={tableRef1}
+                    className="w-full border border-collapse border-gray-300 text-sm"
+                    // style={{ width: "100%" }}
                   >
                     <thead>
                       <tr className="bg-[#386641] text-white">
-                        <th colSpan={2}>Biodegradable</th>
-                        <th colSpan={2}>Combustible</th>
-                        <th colSpan={2}>Recyclable</th>
-                        <th colSpan={2}>Residues</th>
+                        <th className="border p-2" colSpan={2}>Biodegradable</th>
+                        <th className="border p-2" colSpan={2}>Combustible</th>
+                        <th className="border p-2" colSpan={2}>Recyclable</th>
+                        <th className="border p-2" colSpan={2}>Residues</th>
                       </tr>
                       <tr className="bg-[#386641] text-white">
-                        <th>Waste Type</th>
-                        <th>Amount (Kg)</th>
-                        <th>Waste Type</th>
-                        <th>Amount (Kg)</th>
-                        <th>Waste Type</th>
-                        <th>Amount (Kg)</th>
-                        <th>Waste Type</th>
-                        <th>Amount (Kg)</th>
+                        <th className="border p-2">Waste Type</th>
+                        <th className="border p-2">Amount (Kg)</th>
+                        <th className="border p-2">Waste Type</th>
+                        <th className="border p-2">Amount (Kg)</th>
+                        <th className="border p-2">Waste Type</th>
+                        <th className="border p-2">Amount (Kg)</th>
+                        <th className="border p-2">Waste Type</th>
+                        <th className="border p-2">Amount (Kg)</th>
                       </tr>
                     </thead>
                     <tbody>
@@ -1968,19 +1986,19 @@ const CarbonFootprint = ({ open }: { open: boolean }) => {
 
                         return (
                           <tr key={index}>
-                            <td>{bioKeys[index] || ""}</td>
-                            <td>{(calculatedData.biodegradable?.[bioKeys[index]] || 0).toFixed(2)}</td>
-                            <td>{comKeys[index] || ""}</td>
-                            <td>{(calculatedData.combustible?.[comKeys[index]] || 0).toFixed(2)}</td>
-                            <td>{recKeys[index] || ""}</td>
-                            <td>{(calculatedData.recyclable?.[recKeys[index]] || 0).toFixed(2)}</td>
-                            <td>{resKeys[index] || ""}</td>
-                            <td>{(calculatedData.residual?.[resKeys[index]] || 0).toFixed(2)}</td>
+                            <td className="border p-2">{bioKeys[index] || ""}</td>
+                            <td className="border p-2">{(calculatedData.biodegradable?.[bioKeys[index]] ? calculatedData.biodegradable?.[bioKeys[index]].toFixed(2) : calculatedData.biodegradable?.[bioKeys[index]] === 0 ? calculatedData.biodegradable?.[bioKeys[index]].toFixed(2) : "")}</td>
+                            <td className="border p-2">{comKeys[index] || ""}</td>
+                            <td className="border p-2">{(calculatedData.combustible?.[comKeys[index]] ? calculatedData.combustible?.[comKeys[index]].toFixed(2) :  calculatedData.combustible?.[comKeys[index]] === 0 ? calculatedData.combustible?.[comKeys[index]].toFixed(2) : "")}</td>
+                            <td className="border p-2">{recKeys[index] || ""}</td>
+                            <td className="border p-2">{(calculatedData.recyclable?.[recKeys[index]] ? calculatedData.recyclable?.[recKeys[index]].toFixed(2) : calculatedData.recyclable?.[recKeys[index]] === 0 ? calculatedData.recyclable?.[recKeys[index]].toFixed(2) : "")}</td>
+                            <td className="border p-2">{resKeys[index] || ""}</td>
+                            <td className="border p-2">{(calculatedData.residual?.[resKeys[index]] ? calculatedData.residual?.[resKeys[index]].toFixed(2) : calculatedData.residual?.[resKeys[index]] === 0 ?  calculatedData.residual?.[resKeys[index]].toFixed(2) : "")}</td>
                           </tr>
                         );
                       })}
                       <tr>
-                        <td><strong>Total</strong></td>
+                        <td className="border p-2"><strong>Total</strong></td>
                         <td>
                           <strong>
                             {Object.values(calculatedData.biodegradable || {}).reduce(
@@ -1989,8 +2007,8 @@ const CarbonFootprint = ({ open }: { open: boolean }) => {
                             ).toFixed(2)}
                           </strong>
                         </td>
-                        <td><strong>Total</strong></td>
-                        <td>
+                        <td className="border p-2"><strong>Total</strong></td>
+                        <td className="border p-2">
                           <strong>
                             {Object.values(calculatedData.combustible || {}).reduce(
                               (sum, val) => sum + (Number(val) || 0),
@@ -1998,7 +2016,7 @@ const CarbonFootprint = ({ open }: { open: boolean }) => {
                             ).toFixed(2)}
                           </strong>
                         </td>
-                        <td><strong>Total</strong></td>
+                        <td className="border p-2"><strong>Total</strong></td>
                         <td>
                           <strong>
                             {Object.values(calculatedData.recyclable || {}).reduce(
@@ -2007,8 +2025,8 @@ const CarbonFootprint = ({ open }: { open: boolean }) => {
                             ).toFixed(2)}
                           </strong>
                         </td>
-                        <td><strong>Total</strong></td>
-                        <td>
+                        <td className="border p-2"><strong>Total</strong></td>
+                        <td className="border p-2">
                           <strong>
                             {Object.values(calculatedData.residual || {}).reduce(
                               (sum, val) => sum + (Number(val) || 0),
@@ -2057,9 +2075,9 @@ const CarbonFootprint = ({ open }: { open: boolean }) => {
         </Dialog>
       </section>
 
-      {error && <div style={{ color: "red" }}>{error}</div>}
+     
 
-      <section>
+      {/* <section>
         <div className="md:px-8 px-5 flex justify-end gap-5 pb-8">
           <Button
             onClick={handleNext}
@@ -2068,7 +2086,7 @@ const CarbonFootprint = ({ open }: { open: boolean }) => {
             Next
           </Button>
         </div>
-      </section>
+      </section> */}
     </div>
   );
 };

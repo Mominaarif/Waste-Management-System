@@ -1092,12 +1092,26 @@ const GeneateMap = ({ setCurrentValues, open }: any) => {
                                 onCloseClick={handleCloseClick}
                             >
                                 <div style={infoWindowStyle}>
-                                    <div style={titleStyle}>{`UC ${selectedPolygon.id + 1}`}</div>
+                                    <div style={titleStyle}>{` ${viewType === "district"
+                                    ? "District"
+                                    : viewType === "unionCouncil"
+                                        ? "UC"
+                                        : viewType === "province"
+                                            ? "Province"
+                                            : viewType
+                                    } ${selectedPolygon.id + 1}`}</div>
                                     <div className=" grid grid-cols-2 gap-2">
                                         <div style={labelStyle}>
                                             <span style={iconStyle}>🏷️</span>City ID:
                                         </div>
-                                        <div style={valueStyle}>{`UC${selectedPolygon.id +
+                                        <div style={valueStyle}>{`${viewType === "district"
+                                    ? "District"
+                                    : viewType === "unionCouncil"
+                                        ? "UC"
+                                        : viewType === "province"
+                                            ? "Province"
+                                            : viewType
+                                    } ${selectedPolygon.id +
                                             1}`}</div>
                                         <div style={labelStyle}>
                                             <span style={iconStyle}>👨‍👩‍👧‍👦</span>Population:
@@ -1112,7 +1126,7 @@ const GeneateMap = ({ setCurrentValues, open }: any) => {
                                         </div>
                                         <div style={valueStyle}>{households}</div>
                                         <div style={labelStyle}>
-                                            <span style={iconStyle}>💰</span>Wealth Category:
+                                            <span style={iconStyle}>💰</span>Income Group:
                                         </div>
                                         <div style={valueStyle}>{wealthCategory}</div>
                                         <div style={labelStyle}>

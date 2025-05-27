@@ -66,7 +66,7 @@ export default function Header({ open, setOpen, title }: any) {
                 >
                   <span className="absolute -inset-0.5" />
                   <span className="sr-only">Open menu</span>
-                  <MenuIcon1 aria-hidden="true" className="size-6" />
+                  <MenuIcon1  className="size-6" />
                 </button>
               </div>
               <div className="ml-auto flex items-center">
@@ -135,7 +135,7 @@ export default function Header({ open, setOpen, title }: any) {
                   >
                     Sign in
                   </a>
-                  <span aria-hidden="true" className="h-6 w-px bg-gray-200" />
+                  <span className="h-6 w-px bg-gray-200" />
                   <a
                     href="/signup"
                     className="text-sm font-medium text-gray-700 hover:text-gray-800"
