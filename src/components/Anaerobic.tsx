@@ -23,6 +23,8 @@ interface Results {
   DrySludgeGgPerYear: number;
   LiquidEffluentGgPerYear: number;
 
+  organicLoadingRate: number;
+
   recoveryData: { name: string; value: number; recovered: number }[];
 }
 
@@ -77,12 +79,9 @@ const AnaerobicDigesterCalculator = () => {
     "Up-Flow Anaerobic Sludge Blanket (UASB)",
   ];
 
-
   const [length, setLength] = useState<number>(0);
   const [diaUnit, setDiaUnit] = useState<number>(0);
   const [result, setResult] = useState<string | null>(null);
-
-
 
   // State for user inputs 5823862.42
   const [foodWaste, setFoodWaste] = useState(2154.827353);
@@ -124,7 +123,6 @@ const AnaerobicDigesterCalculator = () => {
     "Food Waste",
     "Yard Waste",
     "Animal Dunk",
-
   ];
 
   const [formData, setFormData] = useState<FormData>({
@@ -201,7 +199,7 @@ const AnaerobicDigesterCalculator = () => {
   const TableData = formData.subCategories.map((waste) => ({
     name: waste.name,
     value: waste.value,
-  }))
+  }));
   //  [
   //   {
   //     name: "Food Waste",
@@ -250,16 +248,15 @@ const AnaerobicDigesterCalculator = () => {
     const drySludgeProduction =
       (totalSolidsInWaste - ashInWaste) * solidCaptureEfficiency * 365;
 
-    const volatileSolidsInWaste = totalBiodegradableWaste * (volatileSolids / 100)
-    const dilutedFeedstockInflow =
-      (volatileSolidsInWaste * 1000) / totalSlurry
+    const volatileSolidsInWaste =
+      totalBiodegradableWaste * (volatileSolids / 100);
+    const dilutedFeedstockInflow = (volatileSolidsInWaste * 1000) / totalSlurry;
     // totalBiodegradableWaste *
     // (volatileSolids / 100) *
     // 1000 *
     // (1000 / (totalBiodegradableWaste * 1000));
 
-    const substrateConcentration =
-      (volatileSolidsInWaste * 1000) / totalSlurry
+    const substrateConcentration = (volatileSolidsInWaste * 1000) / totalSlurry;
 
     const organicLoadingRate =
       (totalSlurry * substrateConcentration) / volumeOfDigester;
@@ -335,7 +332,6 @@ const AnaerobicDigesterCalculator = () => {
       });
     }
 
-
     const value = diameterOfDigester;
     setLength(value);
 
@@ -367,8 +363,6 @@ const AnaerobicDigesterCalculator = () => {
       setResult(null);
     }
 
-
-
     setResults({
       totalBiodegradableWaste,
       waterRequirement,
@@ -393,6 +387,8 @@ const AnaerobicDigesterCalculator = () => {
       DigesterSolidsGgPerYear,
       DrySludgeGgPerYear,
       LiquidEffluentGgPerYear,
+
+      organicLoadingRate,
     });
   };
 
@@ -420,7 +416,7 @@ const AnaerobicDigesterCalculator = () => {
       value: results?.biogasProduction,
     },
 
-     {
+    {
       name: "Total Carbon Dioxide Production (m³/day)",
       value: results?.carbondioxide,
     },
@@ -433,7 +429,7 @@ const AnaerobicDigesterCalculator = () => {
       name: "Total Biogas Production (m³/year)",
       value: results?.biogasProduction ? results?.biogasProduction * 365 : 0,
     },
-      {
+    {
       name: "Total Carbon Dioxide Production (m³/year)",
       value: results?.carbondioxide ? results?.carbondioxide * 365 : 0,
     },
@@ -450,7 +446,7 @@ const AnaerobicDigesterCalculator = () => {
     },
     {
       name: "Total Carbon Dioxide Production (hm³/year)",
-       value: results?.carbondioxide
+      value: results?.carbondioxide
         ? (results?.carbondioxide * 365) / 1000000
         : 0,
     },
@@ -530,8 +526,30 @@ const AnaerobicDigesterCalculator = () => {
       name: "Liquid Effluent (Gg/year)",
       value: results?.LiquidEffluentGgPerYear,
     },
-  ];
 
+    {
+      name: "Volume of Biogas (m³)",
+      value: results?.biogasProduction,
+    },
+    {
+      name: "Reactor Volume (m³/day)",
+      value: results?.volumeOfDigester,
+    },
+    {
+      name: "GPR (m³/m³/day)",
+      value: results?.biogasProduction
+        ? results?.biogasProduction / results?.volumeOfDigester
+        : 0,  
+    },
+    {
+      name: "OLR (kg VS/m3/day)",
+      value: results?.organicLoadingRate,
+    },
+    {
+      name: "SGP (biogas/kg VS fed",
+      value: results?.biogasProduction ? (results?.biogasProduction / results?.volumeOfDigester) / results?.organicLoadingRate : 0,
+    },
+  ];
 
   return (
     <div className="w-full h-[calc(100vh-85px)] overflow-y-auto bg-white">
@@ -546,12 +564,13 @@ const AnaerobicDigesterCalculator = () => {
             </h2>
             {data1.length > 0 ? (
               <div
-                className={`grid grid-cols-1 ${data1.length > 2
-                  ? "md:grid-cols-3"
-                  : data1.length > 0
+                className={`grid grid-cols-1 ${
+                  data1.length > 2
+                    ? "md:grid-cols-3"
+                    : data1.length > 0
                     ? "md:grid-cols-2"
                     : "md:grid-cols-3"
-                  } gap-y-4 gap-x-6 border-b pb-4`}
+                } gap-y-4 gap-x-6 border-b pb-4`}
               >
                 <>
                   {data1.map((item: any, index: number) => (
@@ -996,24 +1015,16 @@ const AnaerobicDigesterCalculator = () => {
                     <th className="border   p-2">
                       Waste Type (Biodegradables)
                     </th>
-                    <th className="border   p-2">
-                      Quantities (tonnes/day)
-                    </th>
+                    <th className="border   p-2">Quantities (tonnes/day)</th>
 
-                    <th className="border   p-2">
-                      Composition (%)
-                    </th>
+                    <th className="border   p-2">Composition (%)</th>
                   </tr>
                 </thead>
                 <tbody>
                   {results.recoveryData?.map((waste: any, index: any) => (
                     <tr key={index} className="text-center">
-                      <td className="border   p-2">
-                        {waste.name}
-                      </td>
-                      <td className="border   p-2">
-                        {waste.value}
-                      </td>
+                      <td className="border   p-2">{waste.name}</td>
+                      <td className="border   p-2">{waste.value}</td>
                       <td className="border   p-2">
                         {waste.recovered.toFixed(2)}
                       </td>
@@ -1079,7 +1090,6 @@ const AnaerobicDigesterCalculator = () => {
                             : waste.value.toFixed(2)
                           : null}
                       </span>
-
                     </div>
                     <span>
                       {waste.name === "Diameter (m)" && result ? (
@@ -1141,7 +1151,7 @@ const AnaerobicDigesterCalculator = () => {
               </h2>
 
               <div className="grid grid-cols-1 sm:grid-cols-3 gap-y-4 gap-x-6 pt-4">
-                {resultsDisplay.slice(23).map((waste, id) => (
+                {resultsDisplay.slice(23, 31).map((waste, id) => (
                   <div key={id} className="border p-3 rounded-md">
                     <label className="block text-sm font-medium text-gray-900">
                       {waste.name}:
@@ -1157,19 +1167,42 @@ const AnaerobicDigesterCalculator = () => {
                   </div>
                 ))}
               </div>
+
+              <h2 className="text-base font-semibold text-gray-900 pt-4">
+                Gas Production Rate
+              </h2>
+
+              <div className="grid grid-cols-1 sm:grid-cols-3 gap-y-4 gap-x-6 pt-4">
+                {resultsDisplay.slice(31).map((waste, id) => (
+                  <div key={id} className="border p-3 rounded-md">
+                    <label className="block text-sm font-medium text-gray-900">
+                      {waste.name}:
+                    </label>
+                    <span className="text-gray-700">
+                      {waste.value
+                        ? waste.name ===
+                          "GPR (m³/m³/day)"
+                          ? waste.value.toFixed(8)
+                          : waste.value.toFixed(2)
+                        : null}
+                    </span>
+                  </div>
+                ))}
+              </div>
               <div className="flex justify-center ">
                 <div className="relative w-[700px] h-full">
                   <img src="/images/anaerobic.jpg" alt="" />
-                  <p className="absolute md:top-[42%] top-[43.5%] left-[47%] md:text-[10px] text-[8px] font-bold">{diaUnit}</p>
-                  <p className="absolute top-[47.5%] right-[20.5%] md:text-[10px] text-[8px] font-bold">{depth}</p>
+                  <p className="absolute md:top-[42%] top-[43.5%] md:left-[47.5%] left-[47%] md:text-[10px] text-[8px] font-bold">
+                    {diaUnit}
+                  </p>
+                  <p className="absolute top-[47.5%] right-[20.5%] md:text-[10px] text-[8px] font-bold">
+                    {depth}
+                  </p>
                 </div>
-
               </div>
-
             </div>
           </div>
         )}
-
 
         <div className="bg-white w-full pt-2">
           <p className=" text-center py-2 mt-0">Waste Management Tracking</p>

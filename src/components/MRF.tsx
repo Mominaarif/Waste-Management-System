@@ -1,17 +1,16 @@
 "use client";
 import { useState, useEffect, useRef } from "react";
-import $ from 'jquery';
+import $ from "jquery";
 
 // DataTables core and responsive
-import 'datatables.net-dt/css/dataTables.dataTables.css';
-import 'datatables.net-responsive-dt/css/responsive.dataTables.css';
+import "datatables.net-dt/css/dataTables.dataTables.css";
+import "datatables.net-responsive-dt/css/responsive.dataTables.css";
 
-import 'datatables.net-dt/css/dataTables.dataTables.min.css';
-import 'datatables.net-responsive-dt/css/responsive.dataTables.min.css';
+import "datatables.net-dt/css/dataTables.dataTables.min.css";
+import "datatables.net-responsive-dt/css/responsive.dataTables.min.css";
 
-
-import 'datatables.net';
-import 'datatables.net-responsive-dt';
+import "datatables.net";
+import "datatables.net-responsive-dt";
 
 interface SubCategory {
   id: string;
@@ -92,13 +91,11 @@ const MRFDesign = () => {
     setTotalWasteInput(totalSubCatValue);
   };
 
-
   const handleChange = (index: any, field: any, newValue: any) => {
     const updated = [...editableSubcategories];
     updated[index][field] = newValue;
 
     setEditableSubcategories(updated);
-
 
     const totalTypicalDensity = updated.reduce(
       (sum, subCat) => sum + (parseFloat(subCat.typicalDensity) || 0),
@@ -110,7 +107,6 @@ const MRFDesign = () => {
       0
     );
 
-    ;
     setTotalSubCatTypicalDensity(totalTypicalDensity);
     setTotalRecoveryEfficiency(totalRecoveryEfficiency);
   };
@@ -144,7 +140,7 @@ const MRFDesign = () => {
     // if (alreadyExists) return;
 
     const alreadyExists = formData.subCategories.some(
-      (subCat:any) => subCat.name === selectedName
+      (subCat: any) => subCat.name === selectedName
     );
     if (alreadyExists) return;
 
@@ -163,9 +159,8 @@ const MRFDesign = () => {
     //   subCategories: updated,
     // }));
 
-
     const updated = [...formData.subCategories, newComponent];
-    setFormData((prev:any) => ({
+    setFormData((prev: any) => ({
       ...prev,
       subCategories: updated,
     }));
@@ -178,22 +173,19 @@ const MRFDesign = () => {
     newValue,
   }: {
     name: string;
-    field:
-    | "value"
-    | "typicalDensity"
-    | "recoveryEfficiency";
+    field: "value" | "typicalDensity" | "recoveryEfficiency";
     newValue: string;
   }) => {
     const parsedNewValue = parseFloat(newValue);
 
     if (isNaN(parsedNewValue)) return;
 
-    const updated = formData.subCategories.map((subCat:any) =>
+    const updated = formData.subCategories.map((subCat: any) =>
       subCat.name === name
         ? {
-          ...subCat,
-          [field]: newValue,
-        }
+            ...subCat,
+            [field]: newValue,
+          }
         : subCat
     );
 
@@ -212,9 +204,7 @@ const MRFDesign = () => {
       0
     );
 
-
-
-    setFormData((prev:any) => ({
+    setFormData((prev: any) => ({
       ...prev,
       subCategories: updated,
     }));
@@ -229,25 +219,23 @@ const MRFDesign = () => {
 
   const handleRemoveSubCategory = (name: any) => {
     const updated = formData.subCategories.filter(
-      (subCat:any) => subCat.name !== name
+      (subCat: any) => subCat.name !== name
     );
 
     const total = updated.reduce(
-      (sum, subCat:any) => sum + (parseFloat(subCat.value) || 0),
+      (sum, subCat: any) => sum + (parseFloat(subCat.value) || 0),
       0
     );
 
     const totalTypicalDensity = updated.reduce(
-      (sum, subCat:any) => sum + (parseFloat(subCat.typicalDensity) || 0),
+      (sum, subCat: any) => sum + (parseFloat(subCat.typicalDensity) || 0),
       0
     );
 
     const totalRecoveryEfficiency = updated.reduce(
-      (sum, subCat:any) => sum + (parseFloat(subCat.recoveryEfficiency) || 0),
+      (sum, subCat: any) => sum + (parseFloat(subCat.recoveryEfficiency) || 0),
       0
     );
-
-
 
     setFormData((prev) => ({
       ...prev,
@@ -296,23 +284,17 @@ const MRFDesign = () => {
   };
 
   const calculateMRF = () => {
-    let totalInflow: any
-    let totalRecovered: any
-    let mrfEfficiency: any
-    let overallDensity: any
-    let compositionSum: any
-    let totalVolume: any
-    let areaRequired: any
-    let dimensions: any
-    let recoveryData: any
-
-
-
-
-
+    let totalInflow: any;
+    let totalRecovered: any;
+    let mrfEfficiency: any;
+    let overallDensity: any;
+    let compositionSum: any;
+    let totalVolume: any;
+    let areaRequired: any;
+    let dimensions: any;
+    let recoveryData: any;
 
     if (data1.length > 0) {
-
       totalInflow = editableSubcategories.reduce((sum, subCat) => {
         const percentage = parseFloat(subCat.waste); // Ensure it's a number
         return sum + percentage;
@@ -332,7 +314,8 @@ const MRFDesign = () => {
       compositionSum = editableSubcategories.reduce((sum, row) => {
         const compositionPercent = (row.waste / totalInflow) * 100;
 
-        const DensityContribution = (row.typicalDensity * (compositionPercent / 100));
+        const DensityContribution =
+          row.typicalDensity * (compositionPercent / 100);
         return sum + DensityContribution;
       }, 0);
       totalVolume = (totalInflow / compositionSum) * designPeriod;
@@ -343,7 +326,8 @@ const MRFDesign = () => {
       recoveryData = editableSubcategories.map((waste) => {
         const recovered = (waste.waste / 100) * waste.recoveryEfficiency;
         const compositionPercent = (waste.waste / totalInflow) * 100;
-        const DensityContribution = (waste.typicalDensity * (compositionPercent / 100));
+        const DensityContribution =
+          waste.typicalDensity * (compositionPercent / 100);
         // const sum = sum + DensityContribution;
 
         return {
@@ -353,32 +337,36 @@ const MRFDesign = () => {
           typicalDensities: waste.typicalDensities,
           recovered,
           compositionPercent,
-          DensityContribution
+          DensityContribution,
           // revenue: recovered * waste.typicalDensities * 365,
         };
       });
-    }
-    else {
-      totalInflow = formData.subCategories.reduce((sum, subCat:any) => {
+    } else {
+      totalInflow = formData.subCategories.reduce((sum, subCat: any) => {
         const percentage = parseFloat(subCat.value); // Ensure it's a number
         return sum + percentage;
       }, 0);
 
       console.log(totalInflow);
       totalRecovered = formData.subCategories.reduce(
-        (sum, waste:any) => sum + (parseFloat(waste.value) * parseFloat(waste.recoveryEfficiency)) / 100,
+        (sum, waste: any) =>
+          sum +
+          (parseFloat(waste.value) * parseFloat(waste.recoveryEfficiency)) /
+            100,
         0
       );
       mrfEfficiency = ((totalRecovered / totalInflow) * 100).toFixed(2);
       overallDensity = formData.subCategories.reduce(
-        (sum, waste:any) => sum + (totalSubCatValue * parseFloat(waste.typicalDensity)) / 100,
+        (sum, waste: any) =>
+          sum + (totalSubCatValue * parseFloat(waste.typicalDensity)) / 100,
         0
       );
 
-      compositionSum = formData.subCategories.reduce((sum, row:any) => {
+      compositionSum = formData.subCategories.reduce((sum, row: any) => {
         const compositionPercent = (parseFloat(row.value) / totalInflow) * 100;
 
-        const DensityContribution = (parseFloat(row.typicalDensity) * (compositionPercent / 100));
+        const DensityContribution =
+          parseFloat(row.typicalDensity) * (compositionPercent / 100);
         return sum + DensityContribution;
       }, 0);
       totalVolume = (totalInflow / compositionSum) * designPeriod;
@@ -386,10 +374,14 @@ const MRFDesign = () => {
       dimensions = Math.sqrt(areaRequired).toFixed(1);
 
       // Calculate per waste recovery & revenue
-      recoveryData = formData.subCategories.map((waste:any) => {
-        const recovered = (parseFloat(waste.value) / 100) * parseFloat(waste.recoveryEfficiency);
-        const compositionPercent = (parseFloat(waste.value) / totalInflow) * 100;
-        const DensityContribution = (parseFloat(waste.typicalDensity) * (compositionPercent / 100));
+      recoveryData = formData.subCategories.map((waste: any) => {
+        const recovered =
+          (parseFloat(waste.value) / 100) *
+          parseFloat(waste.recoveryEfficiency);
+        const compositionPercent =
+          (parseFloat(waste.value) / totalInflow) * 100;
+        const DensityContribution =
+          parseFloat(waste.typicalDensity) * (compositionPercent / 100);
         // const sum = sum + DensityContribution;
 
         return {
@@ -399,7 +391,7 @@ const MRFDesign = () => {
           typicalDensities: waste.typicalDensity,
           recovered,
           compositionPercent,
-          DensityContribution
+          DensityContribution,
           // revenue: recovered * waste.typicalDensities * 365,
         };
       });
@@ -439,15 +431,11 @@ const MRFDesign = () => {
 
   const shapes = ["Square", "Rectangle", "Circle", "Triangle"];
 
-
   const tableRef2 = useRef<HTMLTableElement>(null);
   const tableRef1 = useRef<HTMLTableElement>(null);
 
   useEffect(() => {
-    if (
-      editableSubcategories.length > 0 ||
-      formData.subCategories.length > 0
-    ) {
+    if (editableSubcategories.length > 0 || formData.subCategories.length > 0) {
       const table2 = $(tableRef2.current!).DataTable({
         responsive: true,
         destroy: true, // Destroy previous instance
@@ -465,8 +453,7 @@ const MRFDesign = () => {
     }
   }, [editableSubcategories, formData.subCategories, calculatedData]); // Add dependencies
 
-
-  console.log(formData.subCategories)
+  console.log(formData.subCategories);
   return (
     <div className="w-full h-[calc(100vh-85px)] overflow-y-auto bg-white">
       {/* <h1 className="text-lg md:text-3xl pl-5 md:pl-14 border shadow-sm py-4 font-bold">
@@ -486,49 +473,51 @@ const MRFDesign = () => {
                       <th className="border p-2">Component</th>
                       <th className="border p-2">Inflow (Kg/day)</th>
                       {/* <th className="border p-2">tonnes/day</th> */}
-                      <th className="border p-2">
-                        Typical Densities (Kg/m³)
-                      </th>
+                      <th className="border p-2">Typical Densities (Kg/m³)</th>
                       <th className="border p-2">Recovery Efficiency (%)</th>
                     </tr>
                   </thead>
                   <tbody>
                     {editableSubcategories.map((subCat, idx) => (
                       <tr key={idx}>
-                        <td className="p-[0_!important] pl-[8px_!important]">
+                        <td className="p-[0_!important] pl-[8px_!important] border">
                           {subCat.name}
                         </td>
 
-                        <td className="p-[0_!important]">
+                        <td className="p-[0_!important] border">
                           <p className="block h-[38px] w-full px-3 py-1.5 text-gray-900 focus:border-blue-500 focus:ring-blue-500 md:text-sm">
                             {subCat.waste}
                           </p>
                         </td>
 
-
-                        <td className="p-[0_!important]">
+                        <td className="p-[0_!important] border">
                           <input
                             type="number"
                             value={subCat.typicalDensity}
                             className="block w-full  border-gray-300 px-3 py-1.5 text-gray-900 focus:border-blue-500 focus:ring-blue-500 md:text-sm"
                             onChange={(e) =>
-                              handleChange(idx, "typicalDensity", e.target.value)
+                              handleChange(
+                                idx,
+                                "typicalDensity",
+                                e.target.value
+                              )
                             }
                           />
                         </td>
-                        <td className="p-[0_!important]">
+                        <td className="p-[0_!important] border">
                           <input
                             type="number"
                             className="block w-full  border-gray-300 px-3 py-1.5 text-gray-900 focus:border-blue-500 focus:ring-blue-500 md:text-sm"
                             value={subCat.moistureContent}
                             onChange={(e) =>
-                              handleChange(idx, "recoveryEfficiency", e.target.value)
+                              handleChange(
+                                idx,
+                                "recoveryEfficiency",
+                                e.target.value
+                              )
                             }
                           />
                         </td>
-
-
-
                       </tr>
                     ))}
 
@@ -543,7 +532,6 @@ const MRFDesign = () => {
                       <td className="border p-2">
                         {/* {totalRecoveryEfficiency} */}
                       </td>
-
                     </tr>
                   </tbody>
                 </table>
@@ -561,7 +549,7 @@ const MRFDesign = () => {
                       .filter(
                         (option) =>
                           !formData.subCategories.some(
-                            (subCat:any) => subCat.name === option
+                            (subCat: any) => subCat.name === option
                           )
                       )
                       .map((option) => (
@@ -576,7 +564,7 @@ const MRFDesign = () => {
                     <table
                       // ref={tableRef1}
                       className="w-full border border-collapse border-gray-300 text-sm"
-                    // style={{ width: '100%' }}
+                      // style={{ width: '100%' }}
                     >
                       <thead>
                         <tr className="bg-gray-100">
@@ -586,13 +574,15 @@ const MRFDesign = () => {
                           <th className="border p-2">
                             Typical Densities (Kg/m³)
                           </th>
-                          <th className="border p-2">Recovery Efficiency (%)</th>
+                          <th className="border p-2">
+                            Recovery Efficiency (%)
+                          </th>
 
                           <th className="border p-2"></th>
                         </tr>
                       </thead>
                       <tbody>
-                        {formData.subCategories.map((subCat:any, idx) => (
+                        {formData.subCategories.map((subCat: any, idx) => (
                           <tr key={idx}>
                             <td className="p-[0_!important] pl-[8px_!important] border">
                               {subCat.name}
@@ -641,9 +631,6 @@ const MRFDesign = () => {
                                 className="block h-[38px] w-full px-3 py-1.5 text-gray-900 focus:border-blue-500 focus:ring-blue-500 md:text-sm"
                               />
                             </td>
-
-
-
 
                             <td>
                               <button
@@ -794,7 +781,6 @@ const MRFDesign = () => {
           </div>
         </div>
 
-
         {calculatedData && (
           <div className="pt-10 px-5 md:px-8 bg-white">
             <div className="border p-8 rounded-md">
@@ -804,24 +790,18 @@ const MRFDesign = () => {
               {calculatedData?.recoveryData && (
                 <div>
                   {/* <h2 className="text-xl font-bold mt-6">Recovery Table</h2> */}
-                  <table 
-                  // ref={tableRef2}
+                  <table
+                    // ref={tableRef2}
                     className="w-full border text-sm mb-3"
                     // {/* style={{ width: '100%' }} */}
-                    >
+                  >
                     <thead className="bg-gray-100">
                       <tr className="">
                         <th className="border   p-2">Waste Type</th>
                         {/* <th className="border   p-2">Inflow (Kg/day)</th> */}
-                        <th className="border   p-2">
-                          Recovered (Kg/day)
-                        </th>
-                        <th className="border   p-2">
-                          Recovered(Kg/year)
-                        </th>
-                        <th className="border   p-2">
-                          Composition (%)
-                        </th>
+                        <th className="border   p-2">Recovered (Kg/day)</th>
+                        <th className="border   p-2">Recovered(Kg/year)</th>
+                        <th className="border   p-2">Composition (%)</th>
                         {/* <th className="border   p-2">
                           Density Contribution in Stream (Kg/m³)
                         </th> */}
@@ -831,74 +811,74 @@ const MRFDesign = () => {
                       </tr>
                     </thead>
                     <tbody>
-                      {calculatedData.recoveryData?.map((waste: any, index: any) => (
-                        <tr key={index} className="text-center">
-                          <td className="border   p-2">{waste.type}</td>
-                          <td className="border   p-2">
-                            {waste.recovered.toFixed(2)}
-                          </td>
-                          <td className="border   p-2">
-                            {(waste.recovered.toFixed(2) * 365).toFixed(2)}
-                          </td>
-                          <td className="border   p-2">
-                            {waste.compositionPercent.toFixed(2)}
-                          </td>
-                          {/* <td className="border   p-2">
+                      {calculatedData.recoveryData?.map(
+                        (waste: any, index: any) => (
+                          <tr key={index} className="text-center">
+                            <td className="border   p-2">{waste.type}</td>
+                            <td className="border   p-2">
+                              {waste.recovered.toFixed(2)}
+                            </td>
+                            <td className="border   p-2">
+                              {(waste.recovered.toFixed(2) * 365).toFixed(2)}
+                            </td>
+                            <td className="border   p-2">
+                              {waste.compositionPercent.toFixed(2)}
+                            </td>
+                            {/* <td className="border   p-2">
                             {waste.DensityContribution.toFixed(2)}
                           </td> */}
-                          {/* <td className="border   p-2">
+                            {/* <td className="border   p-2">
                       {waste.recoveryEfficiency}
                     </td> */}
-                        </tr>
-                      ))}
+                          </tr>
+                        )
+                      )}
                     </tbody>
                   </table>
                 </div>
               )}
 
-               {calculatedData?.recoveryData && (
+              {calculatedData?.recoveryData && (
                 <div>
                   {/* <h2 className="text-xl font-bold mt-6">Recovery Table</h2> */}
-                  <table 
-                  // ref={tableRef2}
+                  <table
+                    // ref={tableRef2}
                     className="w-full border text-sm mb-3"
                     // {/* style={{ width: '100%' }} */}
-                    >
+                  >
                     <thead className="bg-gray-100">
                       <tr className="">
                         <th className="border   p-2">Waste Type</th>
-                     
-                       
+
                         <th className="border   p-2">
                           Density Contribution in Stream (Kg/m³)
                         </th>
-                       
                       </tr>
                     </thead>
                     <tbody>
-                      {calculatedData.recoveryData?.map((waste: any, index: any) => (
-                        <tr key={index} className="text-center">
-                          <td className="border   p-2">{waste.type}</td>
-                          <td className="border   p-2">
-                            {waste.DensityContribution.toFixed(2)}
-                          </td>
-                          
-                        </tr>
-                      ))}
-                       <tr className="text-center">
-                          <td className="border   p-2">Total</td>
-                          <td className="border   p-2">
-                            {calculatedData.compositionSum.toFixed(2)}
-                          </td>
-                          {/* <td className="border   p-2">
+                      {calculatedData.recoveryData?.map(
+                        (waste: any, index: any) => (
+                          <tr key={index} className="text-center">
+                            <td className="border   p-2">{waste.type}</td>
+                            <td className="border   p-2">
+                              {waste.DensityContribution.toFixed(2)}
+                            </td>
+                          </tr>
+                        )
+                      )}
+                      <tr className="text-center bg-gray-100 font-bold">
+                        <td className="border   p-2">Total</td>
+                        <td className="border   p-2">
+                          {calculatedData.compositionSum.toFixed(2)}
+                        </td>
+                        {/* <td className="border   p-2">
                       {waste.recoveryEfficiency}
                     </td> */}
-                        </tr>
+                      </tr>
                     </tbody>
                   </table>
                 </div>
               )}
-
 
               <div className="grid grid-cols-1 md:grid-cols-2 gap-y-4 gap-x-6 pb-4">
                 <div className="border p-3 rounded-md">
@@ -934,13 +914,17 @@ const MRFDesign = () => {
               <h2 className="text-lg font-semibold text-gray-900 pb-3">
                 Size of MRF
               </h2>
-              <div className="grid grid-cols-1 md:grid-cols-3 gap-y-4 gap-x-6">
+              <div className="grid grid-cols-1 md:grid-cols-2 gap-y-4 gap-x-6">
                 <div className="border p-3 rounded-md">
                   <label className="block text-sm font-medium text-gray-900">
                     Total Inflow Volume of Waste:
                   </label>
                   <span className="text-gray-700">
-                    {(calculatedData.totalInflow.toFixed(2) / calculatedData.compositionSum.toFixed(2)).toFixed(2)} m³/day
+                    {(
+                      calculatedData.totalInflow.toFixed(2) /
+                      calculatedData.compositionSum.toFixed(2)
+                    ).toFixed(2)}{" "}
+                    m³/day
                   </span>
                 </div>
 
@@ -952,9 +936,6 @@ const MRFDesign = () => {
                     {calculatedData.totalVolume.toFixed(2)} m³
                   </span>
                 </div>
-
-
-
 
                 {/* <div className="border p-3 rounded-md">
                   <label className="block text-sm font-medium text-gray-900">
@@ -974,10 +955,6 @@ const MRFDesign = () => {
                   </span>
                 </div> */}
 
-
-
-
-
                 {/* <div className="border p-3 rounded-md">
                   <label className="block text-sm font-medium text-gray-900">
                     Length:
@@ -986,13 +963,9 @@ const MRFDesign = () => {
                     {calculatedData.MRFLength} m
                   </span>
                 </div> */}
-
               </div>
               <div className="">
-
-                <div className="grid grid-cols-1 md:grid-cols-3 gap-y-4 gap-x-6">
-
-                </div>
+                <div className="grid grid-cols-1 md:grid-cols-3 gap-y-4 gap-x-6"></div>
               </div>
 
               <div className=" mt-5">
@@ -1001,9 +974,7 @@ const MRFDesign = () => {
                 Density and Volume Calculations
               </h2> */}
 
-
                 <div className="border-t pt-4 grid grid-cols-1 md:grid-cols-2 gap-y-4 gap-x-6">
-
                   <div className="border p-3 rounded-md">
                     <label className="block text-sm font-medium text-gray-900">
                       Area Required:
@@ -1022,6 +993,51 @@ const MRFDesign = () => {
                     </span>
                   </div>
                 </div>
+                <table 
+                  // ref={tableRef2}
+                    className="w-full border text-sm my-3"
+                    // {/* style={{ width: '100%' }} */}
+                    >
+                    <thead className="bg-gray-100">
+                      <tr className="">
+                        <th colSpan={2} className="border   p-2">Size and Dimensions of MRF</th>
+                     
+                       
+                      </tr>
+                    </thead>
+                    <tbody>
+                   
+                       <tr className="text-center">
+                          <td className="border  w-[70%] p-2">Length (m)</td>
+                          <td className="border   p-2">
+                            {calculatedData.dimensions}
+                          </td>
+                        </tr>
+
+                       <tr className="text-center">
+                          <td className="border w-[70%]  p-2">Width (m)</td>
+                          <td className="border   p-2">
+                            {calculatedData.dimensions}
+                          </td>
+                        </tr>
+
+                        <tr className="text-center">
+                          <td className="border w-[70%]  p-2">Depth (m)</td>
+                          <td className="border   p-2">
+                            {depth}
+                          </td>
+                        </tr>
+                    </tbody>
+                  </table>
+                   <div className="flex justify-center ">
+                <div className="relative w-[700px] h-full">
+                  <img src="/images/mrf.jpg" alt="" />
+                  <p className="absolute md:top-[20.5%] top-[20.5%] left-[33%] md:text-[10px] text-[8px] font-bold">{calculatedData.dimensions}</p>
+                  <p className="absolute md:top-[36.5%] top-[36.5%] left-[32%] md:text-[10px] text-[8px] font-bold">{calculatedData.dimensions}</p>
+                  <p className="absolute top-[65.5%] right-[24.5%] md:text-[10px] text-[8px] font-bold" style={{transform: "rotate(32deg)"}}>{depth}</p>
+                </div>
+
+              </div>
               </div>
 
               {/* <div className="">

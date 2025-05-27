@@ -1054,6 +1054,116 @@ const Landfill1 = () => {
                 <span className="text-gray-700">{outputs.totalCoverMaterial.toFixed(2)} m³</span>
               </div> */}
             </div>
+              <table 
+                  // ref={tableRef2}
+                    className="w-full border text-sm my-3"
+                    // {/* style={{ width: '100%' }} */}
+                    >
+                    <thead className="bg-gray-100">
+                      <tr className="">
+                        <th colSpan={2} className="border   p-2">Cell Dimensions</th>
+                     
+                       
+                      </tr>
+                    </thead>
+                    <tbody>
+                   
+                       <tr className="text-center">
+                          <td className="border  w-[70%] p-2">Trench Length (m)</td>
+                          <td className="border   p-2">
+                           {outputs.cellDimensions.length.toFixed(2)}
+                          </td>
+                        </tr>
+
+                       <tr className="text-center">
+                          <td className="border w-[70%]  p-2">Trench Width (m)</td>
+                          <td className="border   p-2">
+                            {designParams.trenchWidth.toFixed(2)}
+                          </td>
+                        </tr>
+
+                        <tr className="text-center">
+                          <td className="border w-[70%]  p-2">Trench Depth (m)</td>
+                          <td className="border   p-2">
+                            {designParams.trenchDepth.toFixed(2)}
+                          </td>
+                        </tr>
+                    </tbody>
+                  </table>
+                   <table 
+                  // ref={tableRef2}
+                    className="w-full border text-sm my-3"
+                    // {/* style={{ width: '100%' }} */}
+                    >
+                    <thead className="bg-gray-100">
+                      <tr className="">
+                        <th colSpan={2} className="border   p-2">Size and Dimensions of MRF</th>
+                     
+                       
+                      </tr>
+                    </thead>
+                    <tbody>
+                   
+                       <tr className="text-center">
+                          <td className="border  w-fit p-2">Cell Length (m)</td>
+                          <td className="border   p-2">
+                           {(
+                          (outputs.totalWastePerDay *
+                            designParams.trenchLifespan) /
+                          designParams.density /
+                          (designParams.trenchDepth * designParams.trenchWidth)
+                        ).toFixed(2)}{" "}
+                          </td>
+                        </tr>
+
+                       <tr className="text-center">
+                          <td className="border  w-fit  p-2">Cell Width (m)</td>
+                          <td className="border   p-2">
+                            {designParams.cellWidth.toFixed(2)}
+                          </td>
+                        </tr>
+
+                        <tr className="text-center">
+                          <td className="border  w-fit p-2">Cell Depth (m)</td>
+                          <td className="border   p-2">
+                            {outputs.cellDimensions.depth.toFixed(2)}
+                          </td>
+                        </tr>
+                    </tbody>
+                  </table>
+          <div className="flex justify-center ">
+                    <div className="relative w-[700px] h-full">
+                      <img src="/images/landfill.jpg" alt="" />
+                      <p className="absolute md:top-[63%] top-[43.5%] md:left-[59%] left-[47%] md:text-[10px] text-[8px] font-bold" style={{transform: "rotate(318deg)"}}>
+                        {(
+                          (outputs.totalWastePerDay *
+                            designParams.trenchLifespan) /
+                          designParams.density /
+                          (designParams.trenchDepth * designParams.trenchWidth)
+                        ).toFixed(2)}
+                      </p>
+                      <p className="absolute top-[47.5%] right-[20.5%] md:text-[10px] text-[8px] font-bold">
+                        {designParams.cellWidth.toFixed(2)}
+                      </p>
+                      <p className="absolute md:top-[42%] top-[43.5%] md:left-[47.5%] left-[47%] md:text-[10px] text-[8px] font-bold">
+                        {outputs.cellDimensions.depth.toFixed(2)}
+                      </p>
+                      <p className="absolute top-[47.5%] right-[20.5%] md:text-[10px] text-[8px] font-bold">
+                        {}
+                      </p>
+                      <p className="absolute md:top-[42%] top-[43.5%] md:left-[47.5%] left-[47%] md:text-[10px] text-[8px] font-bold">
+                        {}
+                      </p>
+                      <p className="absolute top-[47.5%] right-[20.5%] md:text-[10px] text-[8px] font-bold">
+                        {}
+                      </p>
+                       <p className="absolute top-[47.5%] right-[20.5%] md:text-[10px] text-[8px] font-bold">
+                        {}
+                      </p>
+
+                    </div>
+                  </div>
+          
           </div>
         </div>
       )

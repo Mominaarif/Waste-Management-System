@@ -40,6 +40,7 @@ export default function Header({ open, setOpen, title }: any) {
       await signOut(auth);
       await logout();
       alert("Logged out successfully!");
+      localStorage.clear();
       setTimeout(() => {
         navigate("/signin");
       }, 2000);
