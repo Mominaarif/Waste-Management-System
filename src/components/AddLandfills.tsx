@@ -339,7 +339,7 @@ const AddLandfills = ({ open }: { open?: boolean }) => {
           )}
         </GoogleMap>
       </LoadScript>
-      <div className="absolute w-full h-full top-0 bg-white/60 p-1.5 rounded shadow-md z-10">
+      <div className="absolute w-full h-full top-0 bg-white/60 p-1.5 rounded shadow-md z-8">
 
         {uploadedFileName ? (
           <div className="w-full h-full flex justify-center items-center ">
