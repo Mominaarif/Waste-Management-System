@@ -1896,7 +1896,7 @@ const CarbonFootprint = ({ open }: { open: boolean }) => {
               calculateWasteValues();
               setShowModal(true);
             }}
-            className="bg-[#386641] transition duration-300 ease-in-out cursor-pointer text-white px-8 py-2 mt-8 rounded-md shadow-md"
+            className="bg-[#386641] hover:bg-[#386641]/90  transition duration-300 ease-in-out cursor-pointer text-white px-8 py-2 mt-8 rounded-md shadow-md"
           >
             Calculated Waste Values
           </Button>
@@ -1905,18 +1905,18 @@ const CarbonFootprint = ({ open }: { open: boolean }) => {
               calculateWasteValues();
               setShowChart(true);
             }}
-            className="bg-[#386641] transition duration-300 ease-in-out cursor-pointer text-white px-8 py-2 mt-8 rounded-md shadow-md"
+            className="bg-[#386641] hover:bg-[#386641]/90  transition duration-300 ease-in-out cursor-pointer text-white px-8 py-2 mt-8 rounded-md shadow-md"
           >
             Bar Chart
           </Button>
         </div>
          <div className="flex justify-end gap-5 pb-8">
-          <Button
+          {/* <Button
             onClick={handleNext}
-            className="bg-[#386641] transition duration-300 ease-in-out cursor-pointer text-white px-8 py-2 mt-8 rounded-md shadow-md"
+            className="bg-[#386641] hover:bg-[#386641]/80 transition duration-300 ease-in-out cursor-pointer text-white px-8 py-2 mt-8 rounded-md shadow-md"
           >
             Next
-          </Button>
+          </Button> */}
         </div>
         </div>
 
@@ -1934,7 +1934,7 @@ const CarbonFootprint = ({ open }: { open: boolean }) => {
               >
                 <div className="absolute top-0 right-0 p-2">
                   <Button
-                    className="cursor-pointer"
+                    className="cursor-pointer bg-[#386641] hover:bg-[#386641]/90 "
                     onClick={() => setShowModal(false)}
                   >
                     <X />
@@ -2057,7 +2057,7 @@ const CarbonFootprint = ({ open }: { open: boolean }) => {
               >
                 <div className="absolute top-0 right-0 p-2">
                   <Button
-                    className="cursor-pointer"
+                    className="cursor-pointer bg-[#386641] hover:bg-[#386641]/90 "
                     onClick={() => setShowChart(false)}
                   >
                     <X />

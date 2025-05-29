@@ -149,7 +149,7 @@ const AddLandfills = ({ open }: { open?: boolean }) => {
   //   reader.readAsText(file);
   // };
 
- const [toast, setToast] = useState<{ message: string; type: string }>({
+  const [toast, setToast] = useState<{ message: string; type: string }>({
     message: "",
     type: "",
   });
@@ -239,10 +239,10 @@ const AddLandfills = ({ open }: { open?: boolean }) => {
         for (const polygon of newPolygons) {
           await setDoc(doc(db, "landfillsData", polygon.id), polygon);
         }
- setToast({ message: "File uploaded Successfully!", type: "success" });
-  setTimeout(() => {
-          navigate("/landfills"); 
-        }, 2000); 
+        setToast({ message: "File uploaded Successfully!", type: "success" });
+        setTimeout(() => {
+          navigate("/landfills");
+        }, 2000);
         // navigate("/landfills"); 
 
         setPolygons((prev) => [...prev, ...newPolygons]);
@@ -275,6 +275,7 @@ const AddLandfills = ({ open }: { open?: boolean }) => {
   useEffect(() => {
     fetchLandfills();
   }, []);
+
   const closeToast = () => {
     console.log("Closing toast");
     setToast({ message: "", type: "" });
@@ -282,13 +283,13 @@ const AddLandfills = ({ open }: { open?: boolean }) => {
   return (
     <div className="w-full bg-white relative">
       {toast.message || toast.type ? (
-          <Toast
-            message={toast.message || ""}
-            type={toast.type || ""}
-            onClose={closeToast}
-            timeout={3000}
-          />
-        ) : null}
+        <Toast
+          message={toast.message || ""}
+          type={toast.type || ""}
+          onClose={closeToast}
+          timeout={3000}
+        />
+      ) : null}
       <LoadScript
         googleMapsApiKey="AIzaSyClURLc6gcn9M_AOXj6gUsYYk147-T_FDA"
         libraries={libraries}
@@ -342,47 +343,323 @@ const AddLandfills = ({ open }: { open?: boolean }) => {
 
         {uploadedFileName ? (
           <div className="w-full h-full flex justify-center items-center ">
-          <div className=" bg-white w-4/5 p-4 rounded-lg shadow-md ">
-          <p className="mt-2 text-sm text-gray-600">
-            Uploaded: <span className="font-medium">{uploadedFileName}</span>
-          </p>
-          </div>
+            <div className=" bg-white w-4/5 p-4 rounded-lg shadow-md ">
+              <p className="mt-2 text-sm text-gray-600">
+                Uploaded: <span className="font-medium">{uploadedFileName}</span>
+              </p>
+            </div>
           </div>
         ) : (
           <div className="w-full h-full flex justify-center items-center">
             <div className="col-span-full bg-white w-4/5 p-4 rounded-lg shadow-md">
-            <div className="col-span-full bg-white ">
-              {/* <label htmlFor="cover-photo" className="block text-sm/6 font-medium text-gray-900">
-                Cover photo
-              </label> */}
-              <div className="mt-2 flex justify-center rounded-lg border border-dashed border-gray-900/25 px-6 py-10">
-                <div className="text-center">
-                  <CloudUpload className="mx-auto size-12 text-gray-300" />
-                  <div className="mt-4 flex text-sm/6 text-gray-600">
-                    <label
-                      htmlFor="file-upload"
-                      className="relative w-full flex items-center justify-center text-center cursor-pointer rounded-md bg-white font-semibold text-indigo-600 focus-within:ring-2 focus-within:ring-indigo-600 focus-within:ring-offset-2 focus-within:outline-hidden hover:text-indigo-500"
-                    >
-                      <span>Upload a file</span>
-                      {/* <input id="file-upload" name="file-upload" type="file" className="sr-only" /> */}
-                      <input
-                        type="file"
-                        id="file-upload" name="file-upload"
-                        accept=".geojson,.json,.kml"
-                        onChange={handleFileUpload}
-                        className=" sr-only"
-                      />
-                    </label>
-                    {/* <p className="pl-1">or drag and drop</p> */}
+              <div className="col-span-full w-full flex justify-center items-center flex-col bg-white ">
+
+                <div className="mt-2 w-4/5 flex justify-center rounded-lg border border-dashed border-gray-900/25 px-6 py-10">
+                  <div className="text-center">
+                    <CloudUpload className="mx-auto size-12 text-gray-300" />
+                    <div className="mt-4 flex text-sm/6 text-gray-600">
+                      <label
+                        htmlFor="file-upload"
+                        className="relative w-full flex items-center justify-center text-center cursor-pointer rounded-md bg-white font-semibold  focus-within:ring-2 focus-within:ring-transparent focus-within:ring-offset-2 focus-within:outline-hidden "
+                      >
+                        <span>Upload a file</span>
+                        {/* <input id="file-upload" name="file-upload" type="file" className="sr-only" /> */}
+                        <input
+                          type="file"
+                          id="file-upload" name="file-upload"
+                          accept=".geojson,.json,.kml"
+                          onChange={handleFileUpload}
+                          className=" sr-only"
+                        />
+                      </label>
+                      {/* <p className="pl-1">or drag and drop</p> */}
+                    </div>
+                    <p className="text-xs/5 text-gray-600">GEOJSON, JSON, KML</p>
                   </div>
-                  <p className="text-xs/5 text-gray-600">GEOJSON, JSON, KML</p>
+                </div>
+
+                <div className="w-full hidden pt-5 overflow-y-auto h-[40vh]">
+                  <form
+                    // onSubmit={handleSubmit}
+                    className="w-full h-fit flex flex-col items-center justify-center"
+                  >
+                    <div className="w-full h-full flex flex-col py-5 gap-5 items-start">
+                      <div className="w-full h-full grid grid-cols-3 gap-5 items-center justify-center">
+                        <div className="w-full h-full flex flex-col items-center justify-center">
+                          <label className="block text-sm font-medium text-gray-900  pb-1 text-left w-full">
+                            Landfill Name:
+                          </label>
+                          <input
+                            // onChange={handleInputChange}
+                            // value={roundedArea ?? ""}
+                            className="block w-full border rounded-md border-gray-300 px-3 py-1.5 text-gray-900 focus:border-blue-500 focus:ring-blue-500 sm:text-sm"
+                          />
+                        </div>
+
+                        <div className="w-full h-full flex flex-col items-center justify-center">
+                          <label className="block text-sm font-medium text-gray-900  pb-1 text-left w-full">
+                            Ownership:
+                          </label>
+                          <select
+
+                            className='block w-full border rounded-md border-gray-300 px-3 py-[0.45rem] text-gray-900 focus:border-blue-500 focus:ring-blue-500 sm:text-sm'
+                          >
+                            <option value="">Select </option>
+                            {/* {provinces[selectedCountry]?.map((province:any) => ( */}
+                            <option value="government">
+                              Government
+                            </option>
+                            <option value="private">
+                              Private
+                            </option>
+                          </select>
+
+                        </div>
+
+                        <div className="w-full h-full flex flex-col items-center justify-center">
+                          <label className="block text-sm font-medium text-gray-900  pb-1 text-left w-full">
+                            Current Status:
+                          </label>
+                          <select
+
+                            className='block w-full border rounded-md border-gray-300 px-3 py-[0.45rem] text-gray-900 focus:border-blue-500 focus:ring-blue-500 sm:text-sm'
+                          >
+                            <option value="">Select</option>
+                            {/* {provinces[selectedCountry]?.map((province:any) => ( */}
+                            <option value="operational">
+                              Operational
+                            </option>
+                            <option value="colsed">
+                              Closed
+                            </option>
+                          </select>
+
+                        </div>
+
+
+                        <div className="w-full h-full flex flex-col items-center justify-center">
+                          <label className="block text-sm font-medium text-gray-900  pb-1 text-left w-full">
+                            Start Date of Operation:
+                          </label>
+                          <input
+                            type="date"
+                            name="population"
+                            // value={fPopulation ?? ""}
+                            // onChange={handleInputChange}
+                            required
+                            className="block w-full border rounded-md border-gray-300 px-3 py-1.5 text-gray-900 focus:border-blue-500 focus:ring-blue-500 sm:text-sm"
+                          />
+                        </div>
+
+                        <div className="w-full h-full flex flex-col items-center justify-center">
+                          <label className="block text-sm font-medium text-gray-900  pb-1 text-left w-full">
+                            Expected Closure Date:
+                          </label>
+                          <input
+                            type="date"
+                            name="population"
+                            // value={fPopulation ?? ""}
+                            // onChange={handleInputChange}
+                            required
+                            className="block w-full border rounded-md border-gray-300 px-3 py-1.5 text-gray-900 focus:border-blue-500 focus:ring-blue-500 sm:text-sm"
+                          />
+                        </div>
+
+                        <div className="w-full h-full flex flex-col items-center justify-center">
+                          <label className="block text-sm font-medium text-gray-900  pb-1 text-left w-full">
+                            Landfill Type:
+                          </label>
+                          <select
+
+                            className='block w-full border rounded-md border-gray-300 px-3 py-[0.45rem] text-gray-900 focus:border-blue-500 focus:ring-blue-500 sm:text-sm'
+                          >
+                            <option value="">Select</option>
+                            {/* {provinces[selectedCountry]?.map((province:any) => ( */}
+                            <option value="with">
+                              With LGR
+                            </option>
+                            <option value="without">
+                              Without LGR
+                            </option>
+                          </select>
+
+                        </div>
+
+
+                        <div className="w-full h-full flex flex-col items-center justify-center">
+                          <label className="block text-sm font-medium text-gray-900  pb-1 text-left w-full">
+                            Landfill Components/Processes:
+                          </label>
+                          <select
+
+                            className='block w-full border rounded-md border-gray-300 px-3 py-[0.45rem] text-gray-900 focus:border-blue-500 focus:ring-blue-500 sm:text-sm'
+                          >
+                            <option value="">Select</option>
+                            {/* {provinces[selectedCountry]?.map((province:any) => ( */}
+                            <option value="leachate_collection">
+                              Leachate collection & treatment system
+                            </option>
+                            <option value="air_quality">
+                              Air quality monitoring system
+                            </option>
+                            <option value="gas_collection">
+                              Gas collection system
+                            </option>
+                          </select>
+
+                        </div>
+
+
+                        <div className="w-full h-full flex flex-col items-center justify-center">
+                          <label className="block text-sm font-medium text-gray-900  pb-1 text-left w-full">
+                            Surrounding Landuse:
+                          </label>
+                          <select
+
+                            className='block w-full border rounded-md border-gray-300 px-3 py-[0.45rem] text-gray-900 focus:border-blue-500 focus:ring-blue-500 sm:text-sm'
+                          >
+                            <option value="">Select</option>
+                            {/* {provinces[selectedCountry]?.map((province:any) => ( */}
+                            <option value="residential">
+                              Residential
+                            </option>
+                            <option value="industrial">
+                              Industrial
+                            </option>
+                            <option value="waterbody">
+                              Waterbody
+                            </option>
+                            <option value="agricultural">
+                              Agricultural
+                            </option>
+                          </select>
+
+                        </div>
+
+
+                        <div className="w-full h-full flex flex-col items-center justify-center">
+                          <label className="block text-sm font-medium text-gray-900  pb-1 text-left w-full">
+                            Landfill Area(hectares):     
+                          </label>
+                          <input
+                            type="number"
+                            name="population"
+                            // value={fPopulation ?? ""}
+                            // onChange={handleInputChange}
+                            required
+                            className="block w-full border rounded-md border-gray-300 px-3 py-1.5 text-gray-900 focus:border-blue-500 focus:ring-blue-500 sm:text-sm"
+                          />
+
+                        </div>
+
+                        <div className="w-full h-full flex flex-col items-center justify-center">
+                          <label className="block text-sm font-medium text-gray-900  pb-1 text-left w-full">
+                           Designed Operational Lifespan of Landfill(years):        
+                          </label>
+                          <input
+                            type="number"
+                            name="population"
+                            // value={fPopulation ?? ""}
+                            // onChange={handleInputChange}
+                            required
+                            className="block w-full border rounded-md border-gray-300 px-3 py-1.5 text-gray-900 focus:border-blue-500 focus:ring-blue-500 sm:text-sm"
+                          />
+
+                        </div>
+
+                         <div className="w-full h-full flex flex-col items-center justify-center">
+                          <label className="block text-sm font-medium text-gray-900  pb-1 text-left w-full">
+                          Total Design Capacity(tonnes & m3):    
+      
+                          </label>
+                          <input
+                            type="number"
+                            name="population"
+                            // value={fPopulation ?? ""}
+                            // onChange={handleInputChange}
+                            required
+                            className="block w-full border rounded-md border-gray-300 px-3 py-1.5 text-gray-900 focus:border-blue-500 focus:ring-blue-500 sm:text-sm"
+                          />
+
+                        </div>
+
+                         <div className="w-full h-full flex flex-col items-center justify-center">
+                          <label className="block text-sm font-medium text-gray-900  pb-1 text-left w-full">
+                          Waste Intake Rate(kg/tonnes per day):       
+         
+                          </label>
+                          <input
+                            type="number"
+                            name="population"
+                            // value={fPopulation ?? ""}
+                            // onChange={handleInputChange}
+                            required
+                            className="block w-full border rounded-md border-gray-300 px-3 py-1.5 text-gray-900 focus:border-blue-500 focus:ring-blue-500 sm:text-sm"
+                          />
+
+                        </div>
+
+                         <div className="w-full h-full flex flex-col items-center justify-center">
+                          <label className="block text-sm font-medium text-gray-900  pb-1 text-left w-full">
+                         Utilized Capacity to Date(tonnes, m3 & %):     
+     
+                          </label>
+                          <input
+                            type="number"
+                            name="population"
+                            // value={fPopulation ?? ""}
+                            // onChange={handleInputChange}
+                            required
+                            className="block w-full border rounded-md border-gray-300 px-3 py-1.5 text-gray-900 focus:border-blue-500 focus:ring-blue-500 sm:text-sm"
+                          />
+
+                        </div>
+
+
+                        <div className="w-full h-full flex flex-col items-center justify-center">
+                          <label className="block text-sm font-medium text-gray-900  pb-1 text-left w-full">
+                      Remaining Capacity(tonnes, m3 & %):     
+
+     
+                          </label>
+                          <input
+                            type="number"
+                            name="population"
+                            // value={fPopulation ?? ""}
+                            // onChange={handleInputChange}
+                            required
+                            className="block w-full border rounded-md border-gray-300 px-3 py-1.5 text-gray-900 focus:border-blue-500 focus:ring-blue-500 sm:text-sm"
+                          />
+
+                        </div>
+
+                         <div className="w-full h-full flex flex-col items-center justify-center">
+                          <label className="block text-sm font-medium text-gray-900  pb-1 text-left w-full">
+                       Remaining Landfill Life(years): 
+                          </label>
+                          <input
+                            type="number"
+                            name="population"
+                            // value={fPopulation ?? ""}
+                            // onChange={handleInputChange}
+                            required
+                            className="block w-full border rounded-md border-gray-300 px-3 py-1.5 text-gray-900 focus:border-blue-500 focus:ring-blue-500 sm:text-sm"
+                          />
+
+                        </div>
+                      </div>
+                    </div>
+
+                   
+
+                  </form>
                 </div>
               </div>
             </div>
-            </div>
           </div>
-        )}
-      </div>
+        )
+        }
+      </div >
       {/* </div>
 </div> */}
       {/* <div className="absolute top-2 right-4 bg-white p-1.5 rounded shadow-md z-10">
@@ -405,7 +682,7 @@ const AddLandfills = ({ open }: { open?: boolean }) => {
           </p>
         )}
       </div> */}
-    </div>
+    </div >
   );
 };
 

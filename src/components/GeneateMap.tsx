@@ -975,7 +975,7 @@ const GeneateMap = ({ setCurrentValues, open }: any) => {
                             ? `Hide ${viewType === "district"
                                 ? "District"
                                 : viewType === "unionCouncil"
-                                    ? "Union Council"
+                                    ? "UC"
                                     : viewType === "province"
                                         ? "Province"
                                         : viewType
@@ -983,7 +983,7 @@ const GeneateMap = ({ setCurrentValues, open }: any) => {
                             : `Show ${viewType === "district"
                                 ? "District"
                                 : viewType === "unionCouncil"
-                                    ? "Union Council"
+                                    ? "UC"
                                     : viewType === "province"
                                         ? "Province"
                                         : viewType
@@ -1001,7 +1001,7 @@ const GeneateMap = ({ setCurrentValues, open }: any) => {
                                 placeholder={`Enter ${viewType === "district"
                                     ? "District"
                                     : viewType === "unionCouncil"
-                                        ? "Union Council"
+                                        ? "UC"
                                         : viewType === "province"
                                             ? "Province"
                                             : viewType
@@ -1017,7 +1017,7 @@ const GeneateMap = ({ setCurrentValues, open }: any) => {
                                 placeholder={`Enter ${viewType === "district"
                                     ? "District"
                                     : viewType === "unionCouncil"
-                                        ? "Union Council"
+                                        ? "UC"
                                         : viewType === "province"
                                             ? "Province"
                                             : viewType

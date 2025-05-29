@@ -317,7 +317,7 @@ export default function Example({ open, setOpen }: any) {
         <div className="fixed inset-0 z-40 flex">
           <DialogPanel
             transition
-            className="bg-gray-800 text-white relative flex w-full max-w-xs transform flex-col overflow-y-auto pb-12 shadow-xl transition duration-300 ease-in-out data-closed:-translate-x-full"
+            className="bg-[#004b23] text-white relative flex w-full max-w-xs transform flex-col overflow-y-auto pb-12 shadow-xl transition duration-300 ease-in-out data-closed:-translate-x-full"
           >
             <div className="flex px-4 pt-5 pb-2">
               <button

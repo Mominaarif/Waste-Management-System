@@ -16,7 +16,7 @@ import {
 import { onAuthStateChanged, signOut } from "firebase/auth";
 import { useAuth } from "./AuthContext";
 
-import { Menu as MenuIcon1, Search, ShoppingBag, X } from "lucide-react";
+import { Menu as MenuIcon1, Search, ShoppingBag, UserRound, X } from "lucide-react";
 import Example from "./SidebarMobile";
 
 type UserData = {
@@ -91,13 +91,10 @@ export default function Header({ open, setOpen, title }: any) {
                   // </>
                   <Menu as="div" className="relative ml-3">
                     <div>
-                      <MenuButton className="relative flex rounded-full bg-gray-800 text-sm focus:ring-2 focus:ring-white focus:ring-offset-2 focus:ring-offset-gray-800 focus:outline-none">
+                      <MenuButton className="relative flex rounded-full bg-gray-100 text-sm focus:ring-2 focus:ring-white focus:ring-offset-2 focus:ring-offset-gray-800 focus:outline-none">
                         <span className="absolute -inset-1.5" />
                         <span className="sr-only">Open user menu</span>
-                        <img
-                          alt="User Avatar"
-                          src="https://images.unsplash.com/photo-1472099645785-5658abf4ff4e?ixlib=rb-1.2.1&ixid=eyJhcHBfaWQiOjEyMDd9&auto=format&fit=facearea&facepad=2&w=256&h=256&q=80"
-                          className="size-8 rounded-full"
+                        <UserRound  className="size-8 rounded-full text-gray-500"
                         />
                       </MenuButton>
                     </div>

@@ -1671,7 +1671,7 @@ export default function EconomyForm({ open }: any) {
               </div>
               <div className=" flex justify-center">
                 <button
-                  className=" bg-blue-500 cursor-pointer text-white px-8 py-2 mt-8 rounded-md shadow-md hover:bg-blue-600"
+                  className=" bg-[#386641] cursor-pointer text-white px-8 py-2 mt-8 rounded-md shadow-md hover:bg-[#386641]/90"
                   onClick={() => {
                     const {
                       npv,

@@ -240,7 +240,7 @@ const Landfill = () => {
     const newComponent = {
       id: `s${formData.subCategories.length + 1}`,
       name: selectedName,
-      value: "0",
+      value: "",
     };
 
     const updated = [...formData.subCategories, newComponent];
@@ -319,13 +319,12 @@ const Landfill = () => {
 
                   {data1.length > 0 ? (
                     <div
-                      className={`grid grid-cols-1 ${
-                        data1.length > 2
-                          ? "md:grid-cols-3"
-                          : data1.length > 0
+                      className={`grid grid-cols-1 ${data1.length > 2
+                        ? "md:grid-cols-3"
+                        : data1.length > 0
                           ? "md:grid-cols-2"
                           : "md:grid-cols-3"
-                      } gap-y-4 gap-x-6`}
+                        } gap-y-4 gap-x-6`}
                     >
                       <>
                         {data1.map((item: any, index: number) => (
@@ -791,7 +790,7 @@ const Landfill = () => {
                   </div>
                   <div className=" flex justify-center">
                     <button
-                      className=" bg-blue-500 cursor-pointer text-white px-8 py-2 mt-8 rounded-md shadow-md hover:bg-blue-600"
+                      className=" bg-[#386641] cursor-pointer text-white px-8 py-2 mt-8 rounded-md shadow-md hover:bg-[#386641]/90"
                       onClick={calculateLandfillDesign}
                     >
                       Calculate
@@ -804,294 +803,294 @@ const Landfill = () => {
             {/* Output Section */}
             {(outputs.totalWastePerDay > 0 ||
               outputs.totalWastePerYear > 0) && (
-              <div className="pt-10 bg-white">
-                <div className="border p-8 rounded-md">
-                  <h2 className="text-lg font-semibold pb-3 text-gray-900 ">
-                    Outputs
-                  </h2>
-                  <div className="grid grid-cols-1 sm:grid-cols-2 gap-y-4 gap-x-6">
-                    <div className=" border p-3 rounded-md">
-                      <label className="block text-sm font-medium text-gray-900">
-                        Total Quantity (tonnes/day):
-                      </label>
-                      <span className="text-gray-700">
-                        {outputs.totalWastePerDay.toFixed(2)} tonnes/day
-                      </span>
+                <div className="pt-10 bg-white">
+                  <div className="border p-8 rounded-md">
+                    <h2 className="text-lg font-semibold pb-3 text-gray-900 ">
+                      Outputs
+                    </h2>
+                    <div className="grid grid-cols-1 sm:grid-cols-2 gap-y-4 gap-x-6">
+                      <div className=" border p-3 rounded-md">
+                        <label className="block text-sm font-medium text-gray-900">
+                          Total Quantity (tonnes/day):
+                        </label>
+                        <span className="text-gray-700">
+                          {outputs.totalWastePerDay.toFixed(2)} tonnes/day
+                        </span>
+                      </div>
+                      <div className=" border p-3 rounded-md">
+                        <label className="block text-sm font-medium text-gray-900">
+                          Total Quantity (tonnes/year):
+                        </label>
+                        <span className="text-gray-700">
+                          {outputs.totalWastePerYear.toFixed(2)} tonnes/year
+                        </span>
+                      </div>
                     </div>
-                    <div className=" border p-3 rounded-md">
-                      <label className="block text-sm font-medium text-gray-900">
-                        Total Quantity (tonnes/year):
-                      </label>
-                      <span className="text-gray-700">
-                        {outputs.totalWastePerYear.toFixed(2)} tonnes/year
-                      </span>
+                    <h2 className="text-lg py-4 font-semibold text-gray-900 ">
+                      Landfill Volume
+                    </h2>
+                    <div className="grid grid-cols-1 sm:grid-cols-2 gap-y-4 gap-x-6">
+                      <div className=" border p-3 rounded-md">
+                        <label className="block text-sm font-medium text-gray-900">
+                          Daily Volume Inflow:
+                        </label>
+                        <span className="text-gray-700">
+                          {outputs.dailyVolumeInflow.toFixed(2)} m³/day
+                        </span>
+                      </div>
+                      <div className=" border p-3 rounded-md">
+                        <label className="block text-sm font-medium text-gray-900">
+                          Total Volume of Landfill required in 1 year:
+                        </label>
+                        <span className="text-gray-700">
+                          {(
+                            outputs.totalWastePerYear / designParams.density
+                          ).toFixed(2)}{" "}
+                          m³/year
+                        </span>
+                      </div>
+                      <div className=" border p-3 rounded-md">
+                        <label className="block text-sm font-medium text-gray-900">
+                          Total Volume of Landfill required in {designParams.designPeriod} years:
+                        </label>
+                        <span className="text-gray-700">
+                          {outputs.totalLandfillVolume.toFixed(2)} m³
+                        </span>
+                      </div>
+                      <div className=" border p-3 rounded-md">
+                        <label className="block text-sm font-medium text-gray-900">
+                          Total Volume of Landfill required in {designParams.designPeriod} years:
+                        </label>
+                        <span className="text-gray-700">
+                          {(outputs.totalLandfillVolume / 1000000).toFixed(2)} hm³
+                        </span>
+                      </div>
                     </div>
-                  </div>
-                  <h2 className="text-lg py-4 font-semibold text-gray-900 ">
-                    Landfill Volume
-                  </h2>
-                  <div className="grid grid-cols-1 sm:grid-cols-2 gap-y-4 gap-x-6">
-                    <div className=" border p-3 rounded-md">
-                      <label className="block text-sm font-medium text-gray-900">
-                        Daily Volume Inflow:
-                      </label>
-                      <span className="text-gray-700">
-                        {outputs.dailyVolumeInflow.toFixed(2)} m³/day
-                      </span>
-                    </div>
-                    <div className=" border p-3 rounded-md">
-                      <label className="block text-sm font-medium text-gray-900">
-                        Total Volume of Landfill required in 1 year:
-                      </label>
-                      <span className="text-gray-700">
-                        {(
-                          outputs.totalWastePerYear / designParams.density
-                        ).toFixed(2)}{" "}
-                        m³/year
-                      </span>
-                    </div>
-                    <div className=" border p-3 rounded-md">
-                      <label className="block text-sm font-medium text-gray-900">
-                        Total Volume of Landfill required in 20 years:
-                      </label>
-                      <span className="text-gray-700">
-                        {outputs.totalLandfillVolume.toFixed(2)} m³
-                      </span>
-                    </div>
-                    <div className=" border p-3 rounded-md">
-                      <label className="block text-sm font-medium text-gray-900">
-                        Total Volume of Landfill required in 20 years:
-                      </label>
-                      <span className="text-gray-700">
-                        {(outputs.totalLandfillVolume / 1000000).toFixed(2)} hm³
-                      </span>
-                    </div>
-                  </div>
-                  <h2 className="text-lg py-4 font-semibold text-gray-900 ">
-                    Landfill Area Requirement
-                  </h2>
-                  <div className="grid grid-cols-1 sm:grid-cols-2 gap-y-4 gap-x-6">
-                    <div className=" border p-3 rounded-md">
-                      <label className="block text-sm font-medium text-gray-900">
-                        Total LF Design Volume:
-                      </label>
-                      <span className="text-gray-700">
-                        {outputs.totalLandfillVolume.toFixed(2)} m³
-                      </span>
-                    </div>
-                    {/* <div className=" border p-3 rounded-md">
+                    <h2 className="text-lg py-4 font-semibold text-gray-900 ">
+                      Landfill Area Requirement
+                    </h2>
+                    <div className="grid grid-cols-1 sm:grid-cols-2 gap-y-4 gap-x-6">
+                      <div className=" border p-3 rounded-md">
+                        <label className="block text-sm font-medium text-gray-900">
+                          Total LF Design Volume:
+                        </label>
+                        <span className="text-gray-700">
+                          {outputs.totalLandfillVolume.toFixed(2)} m³
+                        </span>
+                      </div>
+                      {/* <div className=" border p-3 rounded-md">
                 <label className="block text-sm font-medium text-gray-900">
                 Area Required for LF:
                 </label>
                 <span className="text-gray-700">{(outputs.totalLandfillVolume/designParams.landfillDepth).toFixed(2)} m²</span>
               </div> */}
-                    <div className=" border p-3 rounded-md">
-                      <label className="block text-sm font-medium text-gray-900">
-                        Area Required for LF:
-                      </label>
-                      <span className="text-gray-700">
-                        {(
-                          outputs.totalLandfillVolume /
-                          designParams.landfillDepth
-                        ).toFixed(2)}{" "}
-                        m²
-                      </span>
-                    </div>
-                    <div className=" border p-3 rounded-md">
-                      <label className="block text-sm font-medium text-gray-900">
-                        Total LF Area Required, At:
-                      </label>
-                      <span className="text-gray-700">
-                        {outputs.landfillArea.toFixed(2)} m²
-                      </span>
+                      <div className=" border p-3 rounded-md">
+                        <label className="block text-sm font-medium text-gray-900">
+                          Area Required for LF:
+                        </label>
+                        <span className="text-gray-700">
+                          {(
+                            outputs.totalLandfillVolume /
+                            designParams.landfillDepth
+                          ).toFixed(2)}{" "}
+                          m²
+                        </span>
+                      </div>
+                      <div className=" border p-3 rounded-md">
+                        <label className="block text-sm font-medium text-gray-900">
+                          Total LF Area Required, At:
+                        </label>
+                        <span className="text-gray-700">
+                          {outputs.landfillArea.toFixed(2)} m²
+                        </span>
+                      </div>
+
+                      <div className=" border p-3 rounded-md">
+                        <label className="block text-sm font-medium text-gray-900">
+                          Total LF Area Required, At:
+                        </label>
+                        <span className="text-gray-700">
+                          {(outputs.landfillArea / 10000).toFixed(2)} hectares
+                        </span>
+                      </div>
                     </div>
 
-                    <div className=" border p-3 rounded-md">
-                      <label className="block text-sm font-medium text-gray-900">
-                        Total LF Area Required, At:
-                      </label>
-                      <span className="text-gray-700">
-                        {(outputs.landfillArea / 10000).toFixed(2)} hectares
-                      </span>
-                    </div>
-                  </div>
+                    <h2 className="text-lg py-4 font-semibold text-gray-900 ">
+                      Trench Design
+                    </h2>
+                    <div className="grid grid-cols-1 sm:grid-cols-3 gap-y-4 gap-x-6">
+                      <div className=" border p-3 rounded-md">
+                        <label className="block text-sm font-medium text-gray-900">
+                          Trench Volume:
+                        </label>
+                        <span className="text-gray-700">
+                          {(
+                            (outputs.totalWastePerDay *
+                              defaultDesignParams.trenchLifespan) /
+                            designParams.density
+                          ).toFixed(2)}{" "}
+                          m³
+                        </span>
+                      </div>
 
-                  <h2 className="text-lg py-4 font-semibold text-gray-900 ">
-                    Trench Design
-                  </h2>
-                  <div className="grid grid-cols-1 sm:grid-cols-3 gap-y-4 gap-x-6">
-                    <div className=" border p-3 rounded-md">
-                      <label className="block text-sm font-medium text-gray-900">
-                        Trench Volume:
-                      </label>
-                      <span className="text-gray-700">
-                        {(
-                          (outputs.totalWastePerDay *
-                            defaultDesignParams.trenchLifespan) /
-                          designParams.density
-                        ).toFixed(2)}{" "}
-                        m³
-                      </span>
-                    </div>
-
-                    <div className=" border p-3 rounded-md">
-                      <label className="block text-sm font-medium text-gray-900">
-                        Trench Length:
-                      </label>
-                      <span className="text-gray-700">
-                        {(
-                          (outputs.totalWastePerDay *
-                            designParams.trenchLifespan) /
-                          designParams.density /
-                          (designParams.trenchDepth * designParams.trenchWidth)
-                        ).toFixed(2)}{" "}
-                        m
-                      </span>
-                    </div>
-                    <div className=" border p-3 rounded-md">
-                      <label className="block text-sm font-medium text-gray-900">
-                        Time Required to Excavate a Trench:
-                      </label>
-                      <span className="text-gray-700">
-                        {(
-                          (outputs.totalWastePerDay *
-                            designParams.trenchLifespan) /
-                          designParams.density /
-                          (designParams.excavationPerformance *
-                            designParams.workHoursPerDay)
-                        ).toFixed(2)}{" "}
-                        days
-                      </span>
-                    </div>
-                  </div>
-
-                  <h2 className="text-lg py-4 font-semibold text-gray-900 ">
-                    Cell Design
-                  </h2>
-                  <div className="grid grid-cols-1 sm:grid-cols-2 gap-y-4 gap-x-6">
-                    <div className=" border p-3 rounded-md">
-                      <label className="block text-sm font-medium text-gray-900">
-                        Cell Length:
-                      </label>
-                      <span className="text-gray-700">
-                        {outputs.cellDimensions.length.toFixed(2)} m
-                      </span>
-                    </div>
-                    <div className=" border p-3 rounded-md">
-                      <label className="block text-sm font-medium text-gray-900">
-                        Total Depth of Cell:
-                      </label>
-                      <span className="text-gray-700">
-                        {outputs.cellDimensions.depth.toFixed(2)} m
-                      </span>
-                    </div>
-                  </div>
-
-                  <h2 className="text-lg py-4 font-semibold text-gray-900 ">
-                    Cover Material
-                  </h2>
-                  <div className="grid grid-cols-1 sm:grid-cols-3 gap-y-4 gap-x-6">
-                    <div className=" border p-3 rounded-md">
-                      <label className="block text-sm font-medium text-gray-900">
-                        Area of 1 Cell:
-                      </label>
-                      <span className="text-gray-700">
-                        {(
-                          outputs.cellDimensions.length *
-                          outputs.cellDimensions.depth
-                        ).toFixed(2)}{" "}
-                        m²
-                      </span>
+                      <div className=" border p-3 rounded-md">
+                        <label className="block text-sm font-medium text-gray-900">
+                          Trench Length:
+                        </label>
+                        <span className="text-gray-700">
+                          {(
+                            (outputs.totalWastePerDay *
+                              designParams.trenchLifespan) /
+                            designParams.density /
+                            (designParams.trenchDepth * designParams.trenchWidth)
+                          ).toFixed(2)}{" "}
+                          m
+                        </span>
+                      </div>
+                      <div className=" border p-3 rounded-md">
+                        <label className="block text-sm font-medium text-gray-900">
+                          Time Required to Excavate a Trench:
+                        </label>
+                        <span className="text-gray-700">
+                          {(
+                            (outputs.totalWastePerDay *
+                              designParams.trenchLifespan) /
+                            designParams.density /
+                            (designParams.excavationPerformance *
+                              designParams.workHoursPerDay)
+                          ).toFixed(2)}{" "}
+                          days
+                        </span>
+                      </div>
                     </div>
 
-                    <div className=" border p-3 rounded-md">
-                      <label className="block text-sm font-medium text-gray-900">
-                        Daily Cover Material required for each cell:
-                      </label>
-                      <span className="text-gray-700">
-                        {(
-                          outputs.cellDimensions.length *
-                          outputs.cellDimensions.depth *
-                          designParams.dailyCoverThickness
-                        ).toFixed(2)}{" "}
-                        m³/day
-                      </span>
+                    <h2 className="text-lg py-4 font-semibold text-gray-900 ">
+                      Cell Design
+                    </h2>
+                    <div className="grid grid-cols-1 sm:grid-cols-2 gap-y-4 gap-x-6">
+                      <div className=" border p-3 rounded-md">
+                        <label className="block text-sm font-medium text-gray-900">
+                          Cell Length:
+                        </label>
+                        <span className="text-gray-700">
+                          {outputs.cellDimensions.length.toFixed(2)} m
+                        </span>
+                      </div>
+                      <div className=" border p-3 rounded-md">
+                        <label className="block text-sm font-medium text-gray-900">
+                          Total Depth of Cell:
+                        </label>
+                        <span className="text-gray-700">
+                          {outputs.cellDimensions.depth.toFixed(2)} m
+                        </span>
+                      </div>
                     </div>
 
-                    <div className=" border p-3 rounded-md">
-                      <label className="block text-sm font-medium text-gray-900">
-                        Total Daily Cover Material required for{" "}
-                        {designParams.designPeriod}-years design period:
-                      </label>
-                      <span className="text-gray-700">
-                        {(
-                          outputs.cellDimensions.length *
-                          outputs.cellDimensions.depth *
-                          designParams.dailyCoverThickness *
-                          365 *
-                          designParams.designPeriod
-                        ).toFixed(2)}{" "}
-                        m³
-                      </span>
-                    </div>
+                    <h2 className="text-lg py-4 font-semibold text-gray-900 ">
+                      Cover Material
+                    </h2>
+                    <div className="grid grid-cols-1 sm:grid-cols-3 gap-y-4 gap-x-6">
+                      <div className=" border p-3 rounded-md">
+                        <label className="block text-sm font-medium text-gray-900">
+                          Area of 1 Cell:
+                        </label>
+                        <span className="text-gray-700">
+                          {(
+                            outputs.cellDimensions.length *
+                            outputs.cellDimensions.depth
+                          ).toFixed(2)}{" "}
+                          m²
+                        </span>
+                      </div>
 
-                    <div className=" border p-3 rounded-md">
-                      <label className="block text-sm font-medium text-gray-900">
-                        Total Daily Cover Material required for 20-years design
-                        period:
-                      </label>
-                      <span className="text-gray-700">
-                        {(
-                          designParams.finalCoverThickness *
-                          (outputs.totalLandfillVolume /
-                            designParams.landfillDepth)
-                        ).toFixed(2)}{" "}
-                        m³
-                      </span>
-                    </div>
+                      <div className=" border p-3 rounded-md">
+                        <label className="block text-sm font-medium text-gray-900">
+                          Daily Cover Material required for each cell:
+                        </label>
+                        <span className="text-gray-700">
+                          {(
+                            outputs.cellDimensions.length *
+                            outputs.cellDimensions.depth *
+                            designParams.dailyCoverThickness
+                          ).toFixed(2)}{" "}
+                          m³/day
+                        </span>
+                      </div>
 
-                    <div className=" border p-3 rounded-md">
-                      <label className="block text-sm font-medium text-gray-900">
-                        Total Cover Material required in Landfill Life:
-                      </label>
-                      <span className="text-gray-700">
-                        {(
-                          designParams.finalCoverThickness *
-                            (outputs.totalLandfillVolume /
-                              designParams.landfillDepth) +
-                          outputs.cellDimensions.length *
+                      <div className=" border p-3 rounded-md">
+                        <label className="block text-sm font-medium text-gray-900">
+                          Total Daily Cover Material required for{" "}
+                          {designParams.designPeriod}-years design period:
+                        </label>
+                        <span className="text-gray-700">
+                          {(
+                            outputs.cellDimensions.length *
                             outputs.cellDimensions.depth *
                             designParams.dailyCoverThickness *
                             365 *
                             designParams.designPeriod
-                        ).toFixed(2)}{" "}
-                        m³
-                      </span>
-                    </div>
+                          ).toFixed(2)}{" "}
+                          m³
+                        </span>
+                      </div>
 
-                    <div className=" border p-3 rounded-md">
-                      <label className="block text-sm font-medium text-gray-900">
-                        Total Cover Material required in Landfill Life:
-                      </label>
-                      <span className="text-gray-700">
-                        {(
-                          (designParams.finalCoverThickness *
+                      {/* <div className=" border p-3 rounded-md">
+                        <label className="block text-sm font-medium text-gray-900">
+                          Total Daily Cover Material required for 20-years design
+                          period:
+                        </label>
+                        <span className="text-gray-700">
+                          {(
+                            designParams.finalCoverThickness *
+                            (outputs.totalLandfillVolume /
+                              designParams.landfillDepth)
+                          ).toFixed(2)}{" "}
+                          m³
+                        </span>
+                      </div> */}
+
+                      <div className=" border p-3 rounded-md">
+                        <label className="block text-sm font-medium text-gray-900">
+                          Total Cover Material required in Landfill Life:
+                        </label>
+                        <span className="text-gray-700">
+                          {(
+                            designParams.finalCoverThickness *
                             (outputs.totalLandfillVolume /
                               designParams.landfillDepth) +
                             outputs.cellDimensions.length *
+                            outputs.cellDimensions.depth *
+                            designParams.dailyCoverThickness *
+                            365 *
+                            designParams.designPeriod
+                          ).toFixed(2)}{" "}
+                          m³
+                        </span>
+                      </div>
+
+                      <div className=" border p-3 rounded-md">
+                        <label className="block text-sm font-medium text-gray-900">
+                          Total Cover Material required in Landfill Life:
+                        </label>
+                        <span className="text-gray-700">
+                          {(
+                            (designParams.finalCoverThickness *
+                              (outputs.totalLandfillVolume /
+                                designParams.landfillDepth) +
+                              outputs.cellDimensions.length *
                               outputs.cellDimensions.depth *
                               designParams.dailyCoverThickness *
                               365 *
                               designParams.designPeriod) /
-                          1000
-                        ).toFixed(2)}{" "}
-                        km³
-                      </span>
-                    </div>
+                            1000
+                          ).toFixed(2)}{" "}
+                          km³
+                        </span>
+                      </div>
 
-                    {/* designParams.excavationPerformance * designParams.workHoursPerDay */}
+                      {/* designParams.excavationPerformance * designParams.workHoursPerDay */}
 
-                    {/* <div className=" border p-3 rounded-md">
+                      {/* <div className=" border p-3 rounded-md">
                 <label className="block text-sm font-medium text-gray-900">
                   Trench Dimensions:
                 </label>
@@ -1141,29 +1140,29 @@ const Landfill = () => {
                 </label>
                 <span className="text-gray-700">{outputs.totalCoverMaterial.toFixed(2)} m³</span>
               </div> */}
-                  </div>
-                   <table 
-                  // ref={tableRef2}
-                    className="w-full border text-sm my-3"
+                    </div>
+                    <table
+                      // ref={tableRef2}
+                      className="w-full border text-sm my-3"
                     // {/* style={{ width: '100%' }} */}
                     >
-                    <thead className="bg-gray-100">
-                      <tr className="">
-                        <th colSpan={2} className="border   p-2">Cell Dimensions</th>
-                     
-                       
-                      </tr>
-                    </thead>
-                    <tbody>
-                   
-                       <tr className="text-center">
+                      <thead className="bg-gray-100">
+                        <tr className="">
+                          <th colSpan={2} className="border   p-2">Trench Dimensions</th>
+
+
+                        </tr>
+                      </thead>
+                      <tbody>
+
+                        <tr className="text-center">
                           <td className="border  w-[70%] p-2">Trench Length (m)</td>
                           <td className="border   p-2">
-                           {outputs.cellDimensions.length.toFixed(2)}
+                            {outputs.cellDimensions.length.toFixed(2)}
                           </td>
                         </tr>
 
-                       <tr className="text-center">
+                        <tr className="text-center">
                           <td className="border w-[70%]  p-2">Trench Width (m)</td>
                           <td className="border   p-2">
                             {designParams.trenchWidth.toFixed(2)}
@@ -1176,35 +1175,35 @@ const Landfill = () => {
                             {designParams.trenchDepth.toFixed(2)}
                           </td>
                         </tr>
-                    </tbody>
-                  </table>
-                   <table 
-                  // ref={tableRef2}
-                    className="w-full border text-sm my-3"
+                      </tbody>
+                    </table>
+                    <table
+                      // ref={tableRef2}
+                      className="w-full border text-sm my-3"
                     // {/* style={{ width: '100%' }} */}
                     >
-                    <thead className="bg-gray-100">
-                      <tr className="">
-                        <th colSpan={2} className="border   p-2">Size and Dimensions of MRF</th>
-                     
-                       
-                      </tr>
-                    </thead>
-                    <tbody>
-                   
-                       <tr className="text-center">
+                      <thead className="bg-gray-100">
+                        <tr className="">
+                          <th colSpan={2} className="border   p-2">Cell Dimensions</th>
+
+
+                        </tr>
+                      </thead>
+                      <tbody>
+
+                        <tr className="text-center">
                           <td className="border  w-[70%] p-2">Cell Length (m)</td>
                           <td className="border   p-2">
-                           {(
-                          (outputs.totalWastePerDay *
-                            designParams.trenchLifespan) /
-                          designParams.density /
-                          (designParams.trenchDepth * designParams.trenchWidth)
-                        ).toFixed(2)}{" "}
+                            {(
+                              (outputs.totalWastePerDay *
+                                designParams.trenchLifespan) /
+                              designParams.density /
+                              (designParams.trenchDepth * designParams.trenchWidth)
+                            ).toFixed(2)}{" "}
                           </td>
                         </tr>
 
-                       <tr className="text-center">
+                        <tr className="text-center">
                           <td className="border w-[70%]  p-2">Cell Width (m)</td>
                           <td className="border   p-2">
                             {designParams.cellWidth}
@@ -1217,43 +1216,42 @@ const Landfill = () => {
                             {outputs.cellDimensions.depth.toFixed(2)}
                           </td>
                         </tr>
-                    </tbody>
-                  </table>
-                  <div className="flex justify-center ">
-                    <div className="relative w-[700px] h-full">
-                      <img src="/images/landfill.jpg" alt="" />
-                      <p className="absolute md:top-[63%] top-[43.5%] md:left-[59%] left-[47%] md:text-[10px] text-[8px] font-bold" style={{transform: "rotate(318deg)"}}>
-                        {(
-                          (outputs.totalWastePerDay *
-                            designParams.trenchLifespan) /
-                          designParams.density /
-                          (designParams.trenchDepth * designParams.trenchWidth)
-                        ).toFixed(2)}
-                      </p>
-                      <p style={{transform: "rotate(318deg)"}} className="absolute md:top-[60%] top-[43.5%] md:left-[30%] left-[20%] md:text-[10px] text-[8px] font-bold">
-                        {designParams.cellWidth.toFixed(2)}
-                      </p>
-                      <p className="absolute md:top-[42%] top-[43.5%] md:left-[47.5%] left-[47%] md:text-[10px] text-[8px] font-bold">
-                        {outputs.cellDimensions.depth.toFixed(2)}
-                      </p>
-                      <p className="absolute top-[47.5%] right-[20.5%] md:text-[10px] text-[8px] font-bold">
-                        {}
-                      </p>
-                      <p className="absolute md:top-[42%] top-[43.5%] md:left-[47.5%] left-[47%] md:text-[10px] text-[8px] font-bold">
-                        {}
-                      </p>
-                      <p className="absolute top-[47.5%] right-[20.5%] md:text-[10px] text-[8px] font-bold">
-                        {}
-                      </p>
-                       <p className="absolute top-[47.5%] right-[20.5%] md:text-[10px] text-[8px] font-bold">
-                        {}
-                      </p>
+                      </tbody>
+                    </table>
+                    <div className="flex justify-center ">
+                      <div className="relative w-[700px] h-full">
+                        <img src="/images/landfill.jpg" alt="" />
+                        <p className="absolute md:top-[63%] top-[63%] md:left-[59%] left-[59%] md:text-[10px] text-[8px] font-bold" style={{ transform: "rotate(318deg)" }}>
+                          {(
+                            (outputs.totalWastePerDay *
+                              designParams.trenchLifespan) /
+                            designParams.density /
+                            (designParams.trenchDepth * designParams.trenchWidth)
+                          ).toFixed(2)}
+                        </p>
+                        <p style={{ transform: "rotate(318deg)" }} className="absolute md:top-[52%] top-[52%] md:left-[20.5%] left-[20.5%] md:text-[10px] text-[8px] font-bold">
+                          {designParams.cellWidth.toFixed(2)}
+                        </p>
+                        <p className="absolute md:top-[51.5%] top-[51.5%] md:left-[8%] left-[8%] md:text-[10px] text-[8px] font-bold">
+                          {outputs.cellDimensions.depth.toFixed(2)}
+                        </p>
+                        <p className="absolute md:top-[39.9%] top-[39.9%] md:left-[14%] left-[14%] md:text-[10px] text-[8px] font-bold">
+                          {designParams.dailyCoverThickness.toFixed(2)}                      </p>
+                        <p style={{ transform: "rotate(18deg)" }} className="absolute md:top-[42%] top-[42%] md:left-[57.5%] left-[57.5%] md:text-[10px] text-[8px] font-bold">
+                          {outputs.cellDimensions.length.toFixed(2)}
+                        </p>
+                        <p style={{ transform: "rotate(318deg)" }} className="absolute md:top-[41%] top-[41%] md:left-[29.5%] left-[29.5%] md:text-[10px] text-[8px] font-bold">
+                          {designParams.trenchWidth.toFixed(2)}
+                        </p>
+                        <p className="absolute md:top-[20%] top-[20%] md:left-[34%] left-[34%] md:text-[10px] text-[8px] font-bold">
+                          {designParams.trenchDepth.toFixed(2)}
+                        </p>
 
+                      </div>
                     </div>
                   </div>
                 </div>
-              </div>
-            )}
+              )}
           </div>
 
           <input

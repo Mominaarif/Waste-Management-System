@@ -33,10 +33,10 @@ const steps = [
 const theme = {
   background: '#f5f8fb',
   fontFamily: 'Arial',
-  headerBgColor: '#007bff',
+  headerBgColor: '#6A994E',
   headerFontColor: '#fff',
   headerFontSize: '15px',
-  botBubbleColor: '#007bff',
+  botBubbleColor: '#6A994E',
   botFontColor: '#fff',
   userBubbleColor: '#fff',
   userFontColor: '#4a4a4a',

@@ -68,9 +68,13 @@ const Home = (open: any) => {
     ],
   });
 
-  const countries = ["Pakistan", "India", "USA", "Germany", "Canada"];
+  const countries = ["Pakistan"];
   const provinces: { [key: string]: string[] } = {
     Pakistan: ["Punjab", "KPK", "Balochistan", "Sindh"],
+    // India: ["Punjab", "KPK", "Balochistan", "Sindh"],
+    // USA: ["Punjab", "KPK", "Balochistan", "Sindh"],
+    // Germany: ["Punjab", "KPK", "Balochistan", "Sindh"],
+    // Canada: ["Punjab", "KPK", "Balochistan", "Sindh"],
   };
 
   const cities = {
@@ -271,7 +275,7 @@ const Home = (open: any) => {
   
   return (
     <div className="px-5 md:px-8 h-[calc(100vh-85px)] overflow-y-auto bg-white w-full pt-5">
-      <section className="grid grid-cols-2 md:grid-cols-3 gap-y-4 gap-x-4 w-full pt-5">
+      <section className="grid grid-cols-1 md:grid-cols-3 gap-y-4 gap-x-4 w-full pt-5">
         <label className="w-full">
           <span className="block text-sm font-medium text-gray-900 pb-1">
             Country:
@@ -350,7 +354,7 @@ const Home = (open: any) => {
 
       <span className=" w-full h-[0.9px] mt-5 mb-3 flex bg-[#e5e7eb]"></span>
 
-      <section className="flex justify-between gap-6 w-full pt-5">
+      <section className="flex flex-col-reverse md:flex-row justify-between gap-6 w-full pt-5">
         <div
           className={`${
             open ? "w-full  md:w-[65%]" : "w-full md:w-[70%]"
@@ -360,7 +364,7 @@ const Home = (open: any) => {
           <div className="pl-4 h-[50vh]">
             <Bar
               ref={barRef}
-              className="h-[100%_!important] min-w-[70vh]"
+              className="h-[100%_!important] min-w-[70vw] md:min-w-[70vh]"
               data={wasteData}
               options={{ responsive: true, maintainAspectRatio: false }}
             />
@@ -376,13 +380,13 @@ const Home = (open: any) => {
             <CardContent className="flex flex-col justify-center gap-2 h-full">
               <Button
                 onClick={openForecast}
-                className="transition duration-300 ease-in-out bg-blue-500 cursor-pointer text-white px-8 py-2 mt-8 rounded-md shadow-md hover:bg-blue-600"
+                className="transition duration-300 ease-in-out bg-[#386641]  cursor-pointer text-white px-8 py-2 mt-8 rounded-md shadow-md hover:bg-[#386641]/90 "
               >
                 Forecast
               </Button>
               <Button
                 onClick={openCarbonFootprint}
-                className="transition duration-300 ease-in-out bg-blue-500 cursor-pointer text-white px-8 py-2 mt-8 rounded-md shadow-md hover:bg-blue-600"
+                className="transition duration-300 ease-in-out bg-[#386641]  cursor-pointer text-white px-8 py-2 mt-8 rounded-md shadow-md hover:bg-[#386641]/90 "
               >
                 Carbon Footprint
               </Button>
@@ -463,11 +467,11 @@ const Home = (open: any) => {
                     </DialogTitle>
                     <div className="flex ">
                       <div
-                        className={`w-full md:w-[50%] flex flex-col justify-center border-r  p-8`}
+                        className={`h-full flex items-center justify-center w-full  p-8`}
                       >
-                        <div className="pie-chart w-full flex justify-center ">
+                        <div className="pie-chart w-[450px_!important] flex justify-center ">
                           <div
-                            className={`pie-chart w-full md:w-[80%] `}
+                            className={`pie-chart w-[450px_!important]  `}
                           >
                             <Pie data={pieData} />
                             <h2 className="block text-sm text-center font-medium text-gray-900 pt-5">
@@ -479,7 +483,7 @@ const Home = (open: any) => {
                           </div>
                         </div>
                       </div>
-                      <div className="w-[50%] px-8">
+                      {/* <div className="w-[50%] px-8">
                       <DialogTitle
                       as="h3"
                       className="text-base font-bold  w-full text-center"
@@ -560,7 +564,7 @@ const Home = (open: any) => {
                           </label>
 
                         </section>
-                      </div>
+                      </div> */}
                     </div>
                   </DialogPanel>
                 </div>

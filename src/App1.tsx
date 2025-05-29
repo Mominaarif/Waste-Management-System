@@ -1,5 +1,6 @@
 "use client";
 import React, { useEffect, useState } from "react";
+import { SidebarProvider } from "./SidebarContext";
 import {
   BrowserRouter as Router,
   Route,
@@ -64,6 +65,7 @@ export function MainLayout() {
   const [open, setOpen] = useState(false);
 
   return (
+    
     <div className="flex w-full">
       {!hideSidebar && (
         <div className="hidden md:flex">

@@ -7,7 +7,7 @@
 ---break--- */
 @custom-variant dark (&:is(.dark *));
 .radio-info {
-  --input-color: #7007e8;
+  --input-color: #386641;
 }
 
 .slick-track {
@@ -18,7 +18,17 @@
   display: none !important;
 }
 
-
+.tabs-border {
+    & .tab {
+        &:is(.tab-active, [aria-selected="true"]):not(.tab-disabled, [disabled]), &:is(input:checked), &:is(label:has(:checked)) {
+            &:before {
+                --tab-border-color: #386641 !important;
+                border-top: 3px solid;
+                border-color: #386641 !important;
+            }
+        }
+    }
+}
 /* 
 :root {
   font-family: system-ui, Avenir, Helvetica, Arial, sans-serif;

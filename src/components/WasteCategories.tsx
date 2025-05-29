@@ -1098,7 +1098,7 @@ export default function WasteCategories(open: any) {
                   modal.showModal();
                 }
               }}
-              className="bg-violet-700 text-sm not-last:cursor-pointer w-fit text-white px-8 py-2 mt-1 rounded-md shadow-xs hover:bg-violet-600"
+              className="bg-[#386641] text-sm not-last:cursor-pointer w-fit text-white px-8 py-2 mt-1 rounded-md shadow-xs hover:bg-[#386641]/90"
             >
               Select The Area
             </p>
@@ -1164,7 +1164,7 @@ export default function WasteCategories(open: any) {
               <div className="grid grid-cols-2 gap-5">
                 {formData.mainCategories.slice(0, 3).map((category: any) => (
                   <div key={category.id} className="border">
-                    <div className="flex justify-between items-center bg-violet-700 text-white border-b px-5 py-3">
+                    <div className="flex justify-between items-center bg-[#386641]  text-white border-b px-5 py-3">
                       <h2 className="text-sm font-medium text-left w-full">
                         {category.name}
                       </h2>
@@ -1284,7 +1284,7 @@ export default function WasteCategories(open: any) {
                 {firstThreeDone && (
                   <div className="border">
                     <div className="">
-                      <h2 className="text-sm font-normal text-left w-full flex justify-between items-center bg-violet-700 text-white border-b px-5 py-3">
+                      <h2 className="text-sm font-normal text-left w-full flex justify-between items-center bg-[#386641]  text-white border-b px-5 py-3">
                         Residues
                       </h2>
                       <div className="">
@@ -1308,13 +1308,13 @@ export default function WasteCategories(open: any) {
           <div>
             <button
               type="submit"
-              className=" bg-violet-700 cursor-pointer text-white px-8 py-2 mt-5 text-sm rounded-md shadow-md hover:bg-violet-600"
+              className=" bg-[#386641] cursor-pointer text-white px-8 py-2 mt-5 text-sm rounded-md shadow-md hover:bg-[#386641]/90"
             >
               Proceed
             </button>
             {/* <p
             onClick={calculateOutputs}
-            className=" bg-violet-700 cursor-pointer text-white px-8 py-2 mt-5 text-sm rounded-md shadow-md hover:bg-violet-600"
+            className=" bg-[#386641]  cursor-pointer text-white px-8 py-2 mt-5 text-sm rounded-md shadow-md hover:bg-violet-600"
           >
             cal
           </p> */}

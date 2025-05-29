@@ -144,7 +144,7 @@ const AnaerobicDigesterCalculator = () => {
     const newComponent = {
       id: `s${formData.subCategories.length + 1}`,
       name: selectedName,
-      value: "0",
+      value: "",
     };
 
     const updated = [...formData.subCategories, newComponent];
@@ -994,7 +994,7 @@ const AnaerobicDigesterCalculator = () => {
             <div className="flex justify-center">
               <button
                 onClick={calculateOutputs}
-                className=" bg-blue-500 cursor-pointer text-white px-8 py-2 mt-8 rounded-md shadow-md hover:bg-blue-600"
+                className=" bg-[#386641] cursor-pointer text-white px-8 py-2 mt-8 rounded-md shadow-md hover:bg-[#386641]/90"
               >
                 Calculate
               </button>
@@ -1192,10 +1192,10 @@ const AnaerobicDigesterCalculator = () => {
               <div className="flex justify-center ">
                 <div className="relative w-[700px] h-full">
                   <img src="/images/anaerobic.jpg" alt="" />
-                  <p className="absolute md:top-[42%] top-[43.5%] md:left-[47.5%] left-[47%] md:text-[10px] text-[8px] font-bold">
+                  <p className="absolute md:top-[41%] top-[41%] md:left-[47.5%] left-[47%] md:text-[10px] text-[8px] font-bold">
                     {diaUnit}
                   </p>
-                  <p className="absolute top-[47.5%] right-[20.5%] md:text-[10px] text-[8px] font-bold">
+                  <p className="absolute top-[48%] right-[20.5%] md:text-[10px] text-[8px] font-bold">
                     {depth}
                   </p>
                 </div>

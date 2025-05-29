@@ -48,8 +48,8 @@ const Userdef: React.FC<GeneateMap1Props> = ({
 
 
   return (
-    <dialog id="my_modal_3" className="modal">
-      <div className="modal-box rounded-none h-[100vh] max-w-[100vw] w-[100vw]">
+    <dialog id="my_modal_3" className="modal p-[0px_!important] m-[0px_!important]">
+      <div className="modal-box rounded-none h-[100vh] min-w-[99vw] w-[99vw]">
         <div className="pt-4 pb-2 bg-white px-5">
           <h3 className="text-lg font-semibold text-gray-900 w-full text-left pt-5">
             Waste Generation Parameter
@@ -196,11 +196,11 @@ const Userdef: React.FC<GeneateMap1Props> = ({
                   <div className="flex items-center gap-2">
                     <p
                       onClick={handleAddSubCategory}
-                      className="btn btn-primary bg-violet-700 border-0 text-sm/6 font-medium ml-2 text-white"
+                      className="btn btn-primary bg-[#386641] border-0 text-sm/6 font-medium ml-2 text-white"
                     >
                       Add Component
                     </p>
-                    <p  className="btn btn-primary bg-violet-700 border-0 text-sm/6 font-medium text-white">Total: {totalSubCatValue}</p>
+                    <p  className="btn btn-primary bg-[#386641] border-0 text-sm/6 font-medium text-white">Total Percentage: {totalSubCatValue}</p>
                   </div>
                 </div>
               </div>
@@ -269,7 +269,7 @@ const Userdef: React.FC<GeneateMap1Props> = ({
                     modal.close();
                   }
                 }}
-                className=" bg-violet-700 cursor-pointer text-white px-8 py-2 mt-5 text-sm rounded-md shadow-md hover:bg-violet-600"
+                className=" bg-[#386641] cursor-pointer text-white px-8 py-2 mt-5 text-sm rounded-md shadow-md hover:bg-[#386641]/90"
               >
                 Save
               </p> 

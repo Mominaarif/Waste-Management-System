@@ -52,9 +52,11 @@
 import { ChartLine, Layers, Mountain, Network, Truck, Target, AlertTriangle } from 'lucide-react';
 import HomeService from "@/elements/HomeSlider";
 import 'animate.css';
+import { useSidebar } from "../SidebarContext";
 import FadeIn from '@/elements/FadeIn';
 
-export default function Home2(open: any) {
+export default function Home2(isOpen: any) {
+  // const { isOpen, setIsOpen } = useSidebar();
   const steps = [
     {
       title: "Select Your Area",
@@ -94,7 +96,7 @@ export default function Home2(open: any) {
     { title: "Open dumping & overflowing landfills", btn: "🏞️" },
     { title: "No simulation tools/analytics", btn: "📊" }
   ];
-  console.log(open)
+  // console.log(open)
   return (
     <div className="h-[calc(100vh-85px)] overflow-y-auto bg-white">
       <FadeIn animation="animate__backInLeft" delayClass="animate__delay-0s">
@@ -108,7 +110,7 @@ export default function Home2(open: any) {
                 <div className=" gap-5 flex flex-col  h-full justify-center pl-16 w-full">
                   <FadeIn animation="animate__fadeInUp" delayClass="animate__delay-1s">
 
-                    <h1 className="text-2xl font-bold md:text-[52px] w-5/6 "><u className='text-[#526c55]'>Sustainable</u> Waste Solutions for Clean Cities</h1>
+                    <h1 className="text-2xl font-bold lg:text-[52px] md:text-[38px] w-5/6 "><u className='text-[#526c55]'>Sustainable</u> Waste Solutions for Clean Cities</h1>
                   </FadeIn>
                   {/* <FadeIn animation="animate__fadeInUp" delayClass="animate__delay-2s">
                     <h1 className="text-2xl font-bold  md:text-4xl pl-16 flex ">
@@ -117,11 +119,11 @@ export default function Home2(open: any) {
                     </h1>
                   </FadeIn> */}
                   <FadeIn animation="animate__fadeInUp" delayClass="animate__delay-2s">
-                    <p className=" text-xl md:text-2xl w-full text-left font-light">An integrated tool to simulate and analyze waste management strategies in Pakistan</p>
+                    <p className=" text-xl lg:text-2xl  md:text-[18px] w-full text-left font-light">An integrated tool to simulate and analyze waste management strategies in Pakistan</p>
                   </FadeIn>
                   <FadeIn animation="animate__fadeInUp" delayClass="animate__delay-2s">
                     <div className=" flex w-full justify-start items-center text-base">
-                      <p className="bg-white text-[#526c55] w-fit p-2 px-6 border-3 border-[#526c55] rounded-md text-center cursor-pointer font-semibold">Get Started</p>
+                      <p  onClick={() => (location.href = "/waste-categories")} className="bg-white text-[#526c55] w-fit p-2 px-6 border-3 border-[#526c55] rounded-md text-center cursor-pointer font-semibold">Get Started</p>
                     </div>
                   </FadeIn>
                 </div>
@@ -150,7 +152,7 @@ export default function Home2(open: any) {
                   </FadeIn>
                   <FadeIn animation="animate__fadeInUp" delayClass="animate__delay-2s">
                     <div className=" flex w-full justify-center items-center text-base">
-                      <p className="bg-transparent text-[#526c55] w-fit p-2 px-6 border-3 border-[#526c55] rounded-md text-center cursor-pointer font-semibold">Get Started</p>
+                      <p onClick={() => (location.href = "/waste-categories")} className="bg-transparent text-[#526c55] w-fit p-2 px-6 border-3 border-[#526c55] rounded-md text-center cursor-pointer font-semibold">Get Started</p>
                     </div>
                   </FadeIn>
                 </div>
@@ -162,21 +164,23 @@ export default function Home2(open: any) {
       {/* <FadeIn animation="animate__fadeInUp" delayClass="animate__delay-2s"> */}
       <div className="bg-[#386641] ">
         <h1 className="pl-8 pt-12 text-3xl text-[white_!important] font-light">Our Aim</h1>
-        <div className={`px-5 md:h-[350px] h-[300px] ${open ? "md:w-[90vw_!important] w-full" : "md:w-[90vw_!important] w-full"}`}>
+        <div className="bg-[#386641] flex w-full justify-center" >
+        <div className={`px-5 md:h-[350px] h-[300px] md:w-[77vw_!important] w-full`}>
           <HomeService />
+        </div>
         </div>
       </div>
       {/* </FadeIn> */}
 
       {/* <FadeIn animation="animate__fadeInUp" delayClass="animate__delay-0s"> */}
       <div className=" md:h-[550px] h-[430px] bg-[#A7C957]/50 w-full md:py-8 py-4">
-        <div className="flex rounded-md shadow-lg md:m-12 m-5 mt-0 md:mt-0 h-full">
-          <img src="https://img.freepik.com/premium-photo/isometric-3d-views-recycling-facilities-overview-sustainable-waste-management-solutions-ai_721440-16861.jpg?w=1380" alt="" className="md:flex hidden h-full w-1/2 object-cover object-center rounded-tl-md rounded-bl-md" />
+        <div className="flex rounded-md shadow-lg md:m-12 m-5 mt-0 md:mt-0 h-full bg-white">
+          <img src="https://img.freepik.com/premium-photo/isometric-3d-views-recycling-facilities-overview-sustainable-waste-management-solutions-ai_721440-16861.jpg?w=1380" alt="" className="md:flex hidden h-full lg:w-1/2 md:w-[35%] object-cover object-center rounded-tl-md rounded-bl-md" />
 
-          <div className="md:w-1/2 w-full h-full">
+          <div className="lg:w-1/2 md:w-[65%] w-full h-full">
             <div className="flex flex-col justify-center h-full bg-white md:rounded-r-md rounded-md ">
               <FadeIn animation="animate__fadeInUp" delayClass="animate__delay-0s">
-                <h1 className="pl-5 py-5 md:pt-8 pt-4 md:text-4xl text-2xl font-light">Waste Management Problems</h1>
+                <h1 className="pl-5 py-5 md:pt-8 pt-4 lg:text-4xl md:text-3xl text-2xl font-light">Waste Management Problems</h1>
               </FadeIn>
               <ul className="px-5 text-base leading-6 md:pt-5 pt-1">
                 {aim.map((i, id) => (
@@ -200,20 +204,20 @@ export default function Home2(open: any) {
       {/* <FadeIn animation="animate__fadeInUp" delayClass="animate__delay-1s"> */}
       <div className="bg-white">
         <FadeIn animation="animate__fadeInUp" delayClass="animate__delay-0s">
-          <h2 className=" text-3xl md:text-5xl w-full text-center font-light mb-6 pt-16">Sustainable Waste Management Workflow</h2>
+          <h2 className=" text-3xl lg:text-5xl md:text-4xl w-full text-center font-light mb-6 pt-16">Sustainable Waste Management Workflow</h2>
           <div className="pb-12 flex justify-center md:text-xl text-base text-center">
-            <h1 className="mt-4 md:w-1/2 w-4/5 md:px-0 px-5">Empowering cities with actionable insights to minimize landfill waste and
+            <h1 className="mt-4 lg:w-1/2 md:w-[65%] w-4/5 md:px-0 px-5">Empowering cities with actionable insights to minimize landfill waste and
               transition to circular waste systems.</h1>
           </div>
         </FadeIn>
-        <ul className="grid grid-cols-1 md:grid-cols-3 gap-14 justify-center items-center px-[48px] h-full w-full pb-12">
+        <ul className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-14 justify-center items-center px-[48px] h-full w-full pb-12">
           {steps.map((item, index) => (
             <FadeIn animation="animate__fadeInUp" delayClass={`animate__delay-${index > 2 ? index - 2 : index}s`} key={index} >
               <div className='relative' key={index}>
 
 
                 <div className='absolute top-[-20px] left-[-20px]  w-20 h-20 bg-[#386641] text-white font-bold rounded-full flex justify-center items-center'>Step {index + 1}</div>
-                <li className=" bg-[#A7C957] md:h-[350px] h-fit md:p-8 p-5 gap-5 flex flex-col items-center">
+                <li className=" bg-[#A7C957] lg:h-[300px] md:h-[320px] h-fit lg:p-8 md:p-6 p-5 gap-5 flex flex-col items-center">
                   <img src={item.image} alt="" className="w-36 h-[100px] object-cover object-center rounded-md" />
                   <h1 className='md:text- text-xl text-[#004b23]  font-[600] text-center w-full'>{item.title}</h1>
                   <h1 className='md:text-[17px] text-sm font-light text-center text-[#004b23]'>{item.description}</h1>
@@ -226,7 +230,7 @@ export default function Home2(open: any) {
 
           <FadeIn animation="animate__fadeInUp" delayClass="animate__delay-3s">
             <div className="relative flex justify-center items-center w-full">
-              <button className="border-[#386641] border-2 text-[#386641] font-semibold px-6 py-3 bg-white rounded-md flex items-center gap-2">
+              <button onClick={() => (location.href = "/waste-categories")} className="border-[#386641] cursor-pointer border-2 text-[#386641] font-semibold px-6 py-3 bg-white rounded-md flex items-center gap-2">
                 Generate My Sustainable Waste Plan
               </button>
             </div>
@@ -327,7 +331,7 @@ export default function Home2(open: any) {
                   </div>
                 ))}
                 <div className="relative flex justify-center items-center w-full">
-                  <div className={`absolute left-[-65px]  ${open ? 'w-[46%]' : 'w-[46%]'} h-1 bg-purple-600`}></div>
+                  <div className={`absolute left-[-65px]  ${isOpen ? 'w-[46%]' : 'w-[46%]'} h-1 bg-purple-600`}></div>
                   <div className="w-0 h-0 border-t-8 border-b-8 border-l-12 border-transparent border-l-purple-600"></div>
 
                   <button className="border-purple-600 border text-purple-600 font-semibold px-6 py-3 bg-white rounded-md flex items-center gap-2">

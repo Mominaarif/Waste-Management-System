@@ -330,10 +330,10 @@ function RDF() {
   const [shredderEfficiencyPrimary, setShredderEfficiencyPrimary] = useState(
     95
   ); // in %
-  const [shredderWastePrimary, setShredderWastePrimary] = useState(95); // in %
-  const [pelletizerEfficiency, setPelletizerEfficiency] = useState(98); // in %
-  const [densificationRatio, setDensificationRatio] = useState(8); // ratio
-  const [optimumMoistureContent, setOptimumMoistureContent] = useState(20); // in %
+  // const [shredderWastePrimary, setShredderWastePrimary] = useState(95); // in %
+  // const [pelletizerEfficiency, setPelletizerEfficiency] = useState(98); // in %
+  // const [densificationRatio, setDensificationRatio] = useState(8); // ratio
+  // const [optimumMoistureContent, setOptimumMoistureContent] = useState(20); // in %
 
   const [primaryShredder, setPrimaryShredder] = useState(95);
   const [secondaryShredder, setSecondaryShredder] = useState(95);
@@ -561,7 +561,7 @@ function RDF() {
     const ShreddedEfficiencypri =
       formFields.find((field) => field.key === "shredderEfficiency")?.value ||
       0;
-
+    setPrimaryShredder(ShreddedEfficiencypri)
     ////////////
     const TotalWasteSecondary =
       formFields.find(
@@ -580,7 +580,7 @@ function RDF() {
     const ShreddedEfficiencySec =
       formFields.find((field) => field.key === "shreddingEfficiency")?.value ||
       0;
-
+    setSecondaryShredder(ShreddedEfficiencySec)
     ///////////
 
     const TotalWastePelletizer =
@@ -594,7 +594,7 @@ function RDF() {
     const recoveryEfficiencyPelletizer =
       formFields.find((field) => field.key === "recoveryEfficiency")?.value ||
       0;
-
+    setPelletizer(recoveryEfficiencyPelletizer)
     const densificationRatioPelletizer =
       formFields.find((field) => field.key === "densificationRatio")?.value ||
       0;
@@ -865,10 +865,10 @@ function RDF() {
     const newComponent = {
       id: `s${formData.subCategories.length + 1}`,
       name: selectedName,
-      value: "0",
-      typicalDensity: "0",
-      moistureContent: "0",
-      typicalCalorificValue: "0",
+      value: "",
+      typicalDensity: "",
+      moistureContent: "",
+      typicalCalorificValue: "",
     };
 
     const updated = [...formData.subCategories, newComponent];
@@ -1287,7 +1287,7 @@ function RDF() {
                                   onClick={() =>
                                     handleRemoveSubCategory(subCat.name)
                                   }
-                                  className="text-red-500 hover:text-red-700 text-xs cursor-pointer"
+                                  className="text-[#c30911] hover:text-red-700 text-xs cursor-pointer"
                                 >
                                   ✕
                                 </button>
@@ -1367,7 +1367,7 @@ function RDF() {
                                   onClick={() =>
                                     handleRemoveSubCategory(subCat.name)
                                   }
-                                  className="text-red-500 hover:text-red-700 text-xs cursor-pointer"
+                                  className="text-[#c30911] hover:text-red-700 text-xs cursor-pointer"
                                 >
                                   ✕
                                 </button>
@@ -1483,7 +1483,7 @@ function RDF() {
                 </div>
               ))}
             </div>
-            <h2 className="text-lg font-semibold text-gray-900 py-5 text-center">
+            {/* <h2 className="text-lg font-semibold text-gray-900 py-5 text-center">
               Coal Vs RDF
             </h2>
             <div className="grid grid-cols-1 md:grid-cols-3 gap-y-4 gap-x-6">
@@ -1502,7 +1502,7 @@ function RDF() {
                   />
                 </div>
               ))}
-            </div>
+            </div> */}
 
             {/* <div className="overflow-x-auto w-full flex flex-col items-start">
               <div className="mt-4 space-y-2 w-full">
@@ -1604,7 +1604,7 @@ function RDF() {
               {/* Calculate Button */}
               <button
                 onClick={handleCalculate}
-                className=" bg-blue-500 cursor-pointer text-white px-8 py-2 mt-8 rounded-md shadow-md hover:bg-blue-600"
+                className=" bg-[#386641] cursor-pointer text-white px-8 py-2 mt-8 rounded-md shadow-md hover:bg-[#386641]/90"
               >
                 Calculate
               </button>
@@ -2102,11 +2102,11 @@ function RDF() {
                   {
                     label: "Volume Reduction (%)",
                     value:
-                      (((calculatedValues.RDFOutflowPell / calculatedValues.TotalDensityContribution) - 
-                      ((calculatedValues.RDFOutflowPell /
+                      (((calculatedValues.RDFOutflowPell / calculatedValues.TotalDensityContribution) -
+                        ((calculatedValues.RDFOutflowPell /
                           calculatedValues.TotalDensityContribution) /
-                          calculatedValues.densificationRatioPelletizer)) / ( calculatedValues.RDFOutflowPell /
-                      calculatedValues.TotalDensityContribution)) * 100,
+                          calculatedValues.densificationRatioPelletizer)) / (calculatedValues.RDFOutflowPell /
+                            calculatedValues.TotalDensityContribution)) * 100,
                   },
                   {
                     label: "Total Power Requirement (kW)",
@@ -2145,7 +2145,7 @@ function RDF() {
               </div>
 
               {/* <h2 className="text-lg font-semibold text-gray-900 pt-4">Coal Vs RDF</h2> */}
-              <div className="grid grid-cols-1 md:grid-cols-1 gap-y-4 gap-x-6 mt-4">
+              {/* <div className="border-t grid grid-cols-1 md:grid-cols-1 gap-y-4 gap-x-6 pt-4 mt-4">
                 {[
                   {
                     label: "CV of RDF : CV of Coal",
@@ -2161,9 +2161,9 @@ function RDF() {
                     </span>
                   </div>
                 ))}
-              </div>
+              </div> */}
 
-              <div className="border-t grid grid-cols-1 md:grid-cols-3 gap-y-4 gap-x-6 pt-4 mt-4">
+              {/* <div className="border-t grid grid-cols-1 md:grid-cols-3 gap-y-4 gap-x-6 pt-4 mt-4">
                 {[
                   {
                     label: "Total Amount of Equivalent Coal (tonnes/day)",
@@ -2189,8 +2189,8 @@ function RDF() {
                     </span>
                   </div>
                 ))}
-              </div>
-              <h2 className="text-lg font-semibold text-gray-900 pt-4">
+              </div> */}
+              {/* <h2 className="text-lg font-semibold text-gray-900 pt-4">
                 Cost Benefit Analysis{" "}
               </h2>
               <div className="grid grid-cols-1 md:grid-cols-3 gap-y-4 gap-x-6 mt-4">
@@ -2224,6 +2224,43 @@ function RDF() {
                     </span>
                   </div>
                 ))}
+              </div> */}
+
+              <div className="flex justify-center pt-4">
+                <div className="relative w-[700px] h-full">
+                  <img src="/images/rdf.jpg" alt="" />
+                  <p style={{ transform: "rotate(332deg)" }} className="absolute md:top-[26%] top-[26%] md:left-[22.5%] left-[22.5%] md:text-[15px] text-[#c30911] text-[10px] font-bold">
+                    {(calculatedValues.totalWasteGenerated / 1000).toFixed(2)}
+                  </p>
+                  <p className="absolute md:top-[8.9%] top-[8.9%] md:left-[35.5%] left-[34.5%] md:text-[15px]  text-[10px] font-bold ">
+                    {primaryShredder.toFixed(2)}
+                  </p>
+                  <p className="absolute md:top-[15.5%] top-[15.5%] md:left-[55.5%] left-[54.5%] md:text-[15px]  text-[10px] font-bold">
+                    {calculatedValues.ShreddedOutflowPrimary.toFixed(2)}
+                  </p>
+                  <p className="absolute md:top-[9.4%] top-[9.4%] md:left-[68.2%] left-[67.5%] md:text-[15px] text-[10px] font-bold">
+                    {secondaryShredder.toFixed(2)}
+                  </p>
+                  <p className="absolute bottom-[0.5%] right-[26.0%] md:text-[15px] text-[10px] font-bold">
+                    {pelletizer.toFixed(2)}
+                  </p>
+
+                  <p className="absolute md:top-[83.9%] top-[83.5%] md:left-[57.5%] left-[56.9%] md:text-[14px] text-[10px] font-bold">
+                    {((((calculatedValues.RDFOutflowPell / calculatedValues.TotalDensityContribution) -
+                      ((calculatedValues.RDFOutflowPell /
+                        calculatedValues.TotalDensityContribution) /
+                        calculatedValues.densificationRatioPelletizer)) / (calculatedValues.RDFOutflowPell /
+                          calculatedValues.TotalDensityContribution)) * 100).toFixed(2)}
+                  </p>
+
+
+                  <p style={{ transform: "rotate(90deg)" }} className="absolute top-[47.5%] right-[10.5%] md:text-[15px] text-[10px] font-bold">
+                    {calculatedValues.ShreddedOutflowSec.toFixed(2)}
+                  </p>
+                  <p className="absolute top-[66.5%] right-[33.5%]  md:right-[34.5%] md:text-[15px] text-[#c30911] text-[10px] font-bold">
+                    {calculatedValues.RDFOutflowPell.toFixed(2)}
+                  </p>
+                </div>
               </div>
             </div>
           </div>
