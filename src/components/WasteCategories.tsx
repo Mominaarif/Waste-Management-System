@@ -16,6 +16,7 @@ import Userdef from "./Modals/Userdef";
 import { useLocation, useNavigate } from "react-router-dom";
 import { CardTitle } from "./ui/card";
 import { Bar } from "react-chartjs-2";
+import Toast from "./Toast";
 
 declare global {
   interface Window {
@@ -668,7 +669,8 @@ export default function WasteCategories(open: any) {
       await setDoc(doc(db, "wasteData", IDValue), dataToSave);
       setToast({ message: "Data Saved Successfully", type: "success" });
       calculateOutputs();
-      alert("Data saved successfully!");
+
+      // alert("Data saved successfully!");
 
       // setRoundedArea(0);
       // setFormData({
@@ -1076,16 +1078,29 @@ export default function WasteCategories(open: any) {
     ],
   });
 
-  console.log( selectedPolygon
-        ?.getPath()
-        .getArray()
-        .map((latLng) => ({
-         
-          lng: latLng.lng(),
-           lat: latLng.lat(),
-        })))
+  console.log(selectedPolygon
+    ?.getPath()
+    .getArray()
+    .map((latLng) => ({
+
+      lng: latLng.lng(),
+      lat: latLng.lat(),
+    })))
+
+  const closeToast = () => {
+    console.log("Closing toast");
+    setToast({ message: "", type: "" });
+  };
   return (
     <div className="w-full h-[calc(100vh-85px)] overflow-y-auto bg-white pt-10 px-5 md:px-8">
+      {toast.message || toast.type ? (
+        <Toast
+          message={toast.message || ""}
+          type={toast.type || ""}
+          onClose={closeToast}
+          timeout={3000}
+        />
+      ) : null}
       <form onSubmit={handleSubmit} className="">
         <div className="border p-8 rounded-md">
           <div className="w-full h-full flex flex-col py-5 gap-5 items-start">
@@ -1391,7 +1406,7 @@ export default function WasteCategories(open: any) {
                       </tr>
                     )
                   )}
-                   <tr className="text-center font-semibold bg-gray-100">
+                  <tr className="text-center font-semibold bg-gray-100">
                     <td className="border border-gray-400 p-2">Total</td>
                     <td className="border border-gray-400 p-2">
                       {results?.recoveryDataCombustibles
@@ -1492,37 +1507,37 @@ export default function WasteCategories(open: any) {
                   data={
                     wasteDataBiodegradables
                       ? {
-                          labels: wasteDataBiodegradables.map(
-                            (item) => item.name
-                          ),
-                          datasets: [
-                            {
-                              label: "Quantities (tonnes/day)",
-                              data: wasteDataBiodegradables.map(
-                                (item) => item.value
-                              ),
-                              backgroundColor: "#4CAF50",
-                              borderColor: "#4CAF50",
-                              borderRadius: 5,
-                              barThickness: 42,
-                              borderSkipped: false,
-                            },
-                          ],
-                        }
+                        labels: wasteDataBiodegradables.map(
+                          (item) => item.name
+                        ),
+                        datasets: [
+                          {
+                            label: "Quantities (tonnes/day)",
+                            data: wasteDataBiodegradables.map(
+                              (item) => item.value
+                            ),
+                            backgroundColor: "#4CAF50",
+                            borderColor: "#4CAF50",
+                            borderRadius: 5,
+                            barThickness: 42,
+                            borderSkipped: false,
+                          },
+                        ],
+                      }
                       : {
-                          labels: [],
-                          datasets: [
-                            {
-                              label: "Quantities (tonnes/day)",
-                              data: [],
-                              backgroundColor: "#4CAF50",
-                              borderColor: "#4CAF50",
-                              borderRadius: 5,
-                              barThickness: 42,
-                              borderSkipped: false,
-                            },
-                          ],
-                        }
+                        labels: [],
+                        datasets: [
+                          {
+                            label: "Quantities (tonnes/day)",
+                            data: [],
+                            backgroundColor: "#4CAF50",
+                            borderColor: "#4CAF50",
+                            borderRadius: 5,
+                            barThickness: 42,
+                            borderSkipped: false,
+                          },
+                        ],
+                      }
                   }
                   {...{ responsive: true, maintainAspectRatio: false }}
                 />
@@ -1537,37 +1552,37 @@ export default function WasteCategories(open: any) {
                   data={
                     wasteDataCombustibles
                       ? {
-                          labels: wasteDataCombustibles.map(
-                            (item) => item.name
-                          ),
-                          datasets: [
-                            {
-                              label: "Quantities (tonnes/day)",
-                              data: wasteDataCombustibles.map(
-                                (item) => item.value
-                              ),
-                              backgroundColor: "#FF9800",
-                              borderColor: "#FF9800",
-                              borderRadius: 5,
-                              barThickness: 42,
-                              borderSkipped: false,
-                            },
-                          ],
-                        }
+                        labels: wasteDataCombustibles.map(
+                          (item) => item.name
+                        ),
+                        datasets: [
+                          {
+                            label: "Quantities (tonnes/day)",
+                            data: wasteDataCombustibles.map(
+                              (item) => item.value
+                            ),
+                            backgroundColor: "#FF9800",
+                            borderColor: "#FF9800",
+                            borderRadius: 5,
+                            barThickness: 42,
+                            borderSkipped: false,
+                          },
+                        ],
+                      }
                       : {
-                          labels: [],
-                          datasets: [
-                            {
-                              label: "Quantities (tonnes/day)",
-                              data: [],
-                              backgroundColor: "#FF9800",
-                              borderColor: "#FF9800",
-                              borderRadius: 5,
-                              barThickness: 42,
-                              borderSkipped: false,
-                            },
-                          ],
-                        }
+                        labels: [],
+                        datasets: [
+                          {
+                            label: "Quantities (tonnes/day)",
+                            data: [],
+                            backgroundColor: "#FF9800",
+                            borderColor: "#FF9800",
+                            borderRadius: 5,
+                            barThickness: 42,
+                            borderSkipped: false,
+                          },
+                        ],
+                      }
                   }
                   {...{ responsive: true, maintainAspectRatio: false }}
                 />
@@ -1582,35 +1597,35 @@ export default function WasteCategories(open: any) {
                   data={
                     wasteDataRecyclables
                       ? {
-                          labels: wasteDataRecyclables.map((item) => item.name),
-                          datasets: [
-                            {
-                              label: "Quantities (tonnes/day)",
-                              data: wasteDataRecyclables.map(
-                                (item) => item.value
-                              ),
-                              backgroundColor: "#2196F3",
-                              borderColor: "#2196F3",
-                              borderRadius: 5,
-                              barThickness: 42,
-                              borderSkipped: false,
-                            },
-                          ],
-                        }
+                        labels: wasteDataRecyclables.map((item) => item.name),
+                        datasets: [
+                          {
+                            label: "Quantities (tonnes/day)",
+                            data: wasteDataRecyclables.map(
+                              (item) => item.value
+                            ),
+                            backgroundColor: "#2196F3",
+                            borderColor: "#2196F3",
+                            borderRadius: 5,
+                            barThickness: 42,
+                            borderSkipped: false,
+                          },
+                        ],
+                      }
                       : {
-                          labels: [],
-                          datasets: [
-                            {
-                              label: "Quantities (tonnes/day)",
-                              data: [],
-                              backgroundColor: "#2196F3",
-                              borderColor: "#2196F3",
-                              borderRadius: 5,
-                              barThickness: 42,
-                              borderSkipped: false,
-                            },
-                          ],
-                        }
+                        labels: [],
+                        datasets: [
+                          {
+                            label: "Quantities (tonnes/day)",
+                            data: [],
+                            backgroundColor: "#2196F3",
+                            borderColor: "#2196F3",
+                            borderRadius: 5,
+                            barThickness: 42,
+                            borderSkipped: false,
+                          },
+                        ],
+                      }
                   }
                   {...{ responsive: true, maintainAspectRatio: false }}
                 />
@@ -1625,37 +1640,37 @@ export default function WasteCategories(open: any) {
                   data={
                     wasteDataResidues
                       ? {
-                          labels: wasteDataResidues.map((item) => item.name),
-                          datasets: [
-                            {
-                              label: "Quantities (tonnes/day)",
-                              data: wasteDataResidues.map((item) => item.value),
-                              backgroundColor: ["#9E9E9E"],
-                              borderColor: ["#9E9E9E"],
+                        labels: wasteDataResidues.map((item) => item.name),
+                        datasets: [
+                          {
+                            label: "Quantities (tonnes/day)",
+                            data: wasteDataResidues.map((item) => item.value),
+                            backgroundColor: ["#9E9E9E"],
+                            borderColor: ["#9E9E9E"],
 
-                              borderRadius: 5,
-                              barThickness: 42,
-                              borderSkipped: false,
-                              // showLabel: false,
-                            },
-                          ],
-                        }
+                            borderRadius: 5,
+                            barThickness: 42,
+                            borderSkipped: false,
+                            // showLabel: false,
+                          },
+                        ],
+                      }
                       : {
-                          labels: [],
-                          datasets: [
-                            {
-                              label: "Quantities (tonnes/day)",
-                              data: [],
-                              backgroundColor: ["#9E9E9E"],
-                              borderColor: ["#9E9E9E"],
+                        labels: [],
+                        datasets: [
+                          {
+                            label: "Quantities (tonnes/day)",
+                            data: [],
+                            backgroundColor: ["#9E9E9E"],
+                            borderColor: ["#9E9E9E"],
 
-                              borderRadius: 5,
-                              barThickness: 42,
-                              borderSkipped: false,
-                              // showLabel: false,
-                            },
-                          ],
-                        }
+                            borderRadius: 5,
+                            barThickness: 42,
+                            borderSkipped: false,
+                            // showLabel: false,
+                          },
+                        ],
+                      }
                   }
                   {...{ responsive: true, maintainAspectRatio: false }}
                 />
@@ -1663,9 +1678,8 @@ export default function WasteCategories(open: any) {
             </div>
           </div>
           <div
-            className={`${
-              open ? "w-full" : "w-full"
-            } pt-8 flex flex-col items-center justify-center `}
+            className={`${open ? "w-full" : "w-full"
+              } pt-8 flex flex-col items-center justify-center `}
           >
             <CardTitle className="py-3 text-left">
               Waste Categorization

@@ -18,6 +18,7 @@ import { useAuth } from "./AuthContext";
 
 import { Menu as MenuIcon1, Search, ShoppingBag, UserRound, X } from "lucide-react";
 import Example from "./SidebarMobile";
+import Toast from "./Toast";
 
 type UserData = {
   email?: string;
@@ -25,6 +26,10 @@ type UserData = {
 };
 export default function Header({ open, setOpen, title }: any) {
   const [user, setUser] = useState<UserData>({});
+    const [toast, setToast] = useState<{ message: string; type: string }>({
+      message: "",
+      type: "",
+    });
   const { logout } = useAuth();
   const navigate = useNavigate();
 
@@ -39,8 +44,8 @@ export default function Header({ open, setOpen, title }: any) {
     try {
       await signOut(auth);
       await logout();
-      alert("Logged out successfully!");
-      // localStorage.clear();
+       setToast({ message: "Logged out successfully!", type: "success" });
+      localStorage.clear();
       setTimeout(() => {
         navigate("/signin");
       }, 2000);
@@ -48,9 +53,20 @@ export default function Header({ open, setOpen, title }: any) {
       console.error("Error signing out:", error);
     }
   };
-
+  const closeToast = () => {
+    console.log("Closing toast");
+    setToast({ message: "", type: "" });
+  };
   return (
     <div className="bg-white w-full">
+        {toast.message || toast.type ? (
+              <Toast
+                message={toast.message || ""}
+                type={toast.type || ""}
+                onClose={closeToast}
+                timeout={3000}
+              />
+            ) : null}
       <Example setOpen={setOpen} open={open} />
       <header className="relative bg-white w-full">
         <nav aria-label="Top" className=" px-5 md:px-8">

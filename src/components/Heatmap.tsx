@@ -1689,6 +1689,13 @@ const CarbonFootprint = ({ open }: { open: boolean }) => {
   };
 
   const handleNext = () => {
+    // calculateWasteValues();
+    if (!calculatedData.recyclable) {
+      alert("Please select waste types");
+      return
+    }
+
+
     const totals = {
       biodegradableTotal: Object.values(calculatedData.biodegradable).reduce(
         (sum, value) => sum + (Number(value) || 0),
@@ -1712,7 +1719,6 @@ const CarbonFootprint = ({ open }: { open: boolean }) => {
       state: { calculatedData, totals },
     });
   };
-
   const tableRef = useRef<HTMLTableElement>(null);
   const tableRef1 = useRef<HTMLTableElement>(null);
 
@@ -1766,7 +1772,7 @@ const CarbonFootprint = ({ open }: { open: boolean }) => {
       <section>
         {/* <h2 className="text-base font-bold pl-8">Select Waste Categories</h2> */}
         <div className="pt-5 px-5 md:px-8">
-          <table  className="w-full border border-collapse border-gray-300 text-sm" >
+          <table className="w-full border border-collapse border-gray-300 text-sm" >
             <thead>
               <tr className="bg-[#386641] text-white border p-2">
                 <th className="border p-2">Biodegradables</th>
@@ -1804,21 +1810,23 @@ const CarbonFootprint = ({ open }: { open: boolean }) => {
                             <input
                               type="number"
                               value={selectedWasteTypes.biodegradable[bio] || 0}
-                              onChange={(e) =>
+                              onChange={(e) => {
                                 handlePercentageChange("biodegradable", bio, e.target.value)
+                                calculateWasteValues();
                               }
-                              className={`border w-full rounded-md px-3 py-[4.53px] text-gray-900 sm:text-sm  `}
+                              }
+                              className={`border w-full rounded-md px-3 py-[4.53px] sm:text-sm  ${!enabledWasteTypes.biodegradable[bio] ? " cursor-not-allowed text-gray-500" : "cursor-text text-gray-900"}`}
                               min={0}
                               max={100}
                               disabled={!enabledWasteTypes.biodegradable[bio]}
                             />
-                            
+
                           </div>
                         </div>
                       )}
                     </td>
 
-                     <td  className="border p-2">
+                    <td className="border p-2">
                       {comb && (
                         <div className="flex md:flex-row flex-col items-center gap-0.5 pr-2 relative">
                           <label className="md:w-1/2 w-full flex items-center gap-0.5">
@@ -1834,10 +1842,12 @@ const CarbonFootprint = ({ open }: { open: boolean }) => {
                             <input
                               type="number"
                               value={selectedWasteTypes.combustible[comb] || 0}
-                              onChange={(e) =>
-                                handlePercentageChange("combustible", comb, e.target.value)
+                              onChange={(e) => {
+                                handlePercentageChange("combustible", comb, e.target.value);
+                                calculateWasteValues();
                               }
-                              className={`border w-full rounded-md px-3 py-[4.53px] text-gray-900 sm:text-sm  `}
+                              }
+                              className={`border w-full rounded-md px-3 py-[4.53px]  sm:text-sm  ${!enabledWasteTypes.combustible[comb] ? " cursor-not-allowed text-gray-500" : "cursor-text text-gray-900"}`}
                               min={0}
                               max={100}
                               disabled={!enabledWasteTypes.combustible[comb]}
@@ -1851,8 +1861,8 @@ const CarbonFootprint = ({ open }: { open: boolean }) => {
                         </div>
                       )}
                     </td>
-                    <td  className="border p-2">
-                     {recy && (
+                    <td className="border p-2">
+                      {recy && (
                         <div className="flex md:flex-row flex-col items-center gap-0.5 pr-2 relative">
                           <label className="md:w-1/2 w-full flex items-center gap-0.5">
                             <input
@@ -1867,57 +1877,61 @@ const CarbonFootprint = ({ open }: { open: boolean }) => {
                             <input
                               type="number"
                               value={selectedWasteTypes.recyclable[recy] || 0}
-                              onChange={(e) =>
-                                handlePercentageChange("recyclable", recy, e.target.value)
-                              }
-                              className={`border w-full rounded-md px-3 py-[4.53px] text-gray-900 sm:text-sm  `}
+                              onChange={(e) => {
+                                handlePercentageChange("recyclable", recy, e.target.value);
+                                calculateWasteValues();
+                              }}
+                              className={`border w-full rounded-md px-3 py-[4.53px]  sm:text-sm  ${!enabledWasteTypes.recyclable[recy] ? " cursor-not-allowed text-gray-500" : "cursor-text text-gray-900"}`}
                               min={0}
                               max={100}
                               disabled={!enabledWasteTypes.recyclable[recy]}
                             />
-                            
+
                           </div>
                         </div>
                       )}
                     </td>
                   </tr>
                 );
-              })} 
-              
+              })}
+
 
             </tbody>
           </table>
-           {error && <div className="w-full mt-1 p-2 bg-red-100 text-red-800 text-sm rounded-md shadow-lg capitalize">{error}</div>}
+          {error && <div className="w-full mt-1 p-2 bg-red-100 text-red-800 text-sm rounded-md shadow-lg capitalize">{error}</div>}
         </div>
         <div className="md:px-8 px-5 flex justify-between gap-5 pb-8 items-center">
           <div className="flex justify-between gap-5 pb-8 items-center">
-          <Button
-            onClick={() => {
-              calculateWasteValues();
-              setShowModal(true);
-            }}
-            className="bg-[#386641] hover:bg-[#386641]/90  transition duration-300 ease-in-out cursor-pointer text-white px-8 py-2 mt-8 rounded-md shadow-md"
-          >
-            Calculated Waste Values
-          </Button>
-          <Button
-            onClick={() => {
-              calculateWasteValues();
-              setShowChart(true);
-            }}
-            className="bg-[#386641] hover:bg-[#386641]/90  transition duration-300 ease-in-out cursor-pointer text-white px-8 py-2 mt-8 rounded-md shadow-md"
-          >
-            Bar Chart
-          </Button>
-        </div>
-         <div className="flex justify-end gap-5 pb-8">
-          {/* <Button
-            onClick={handleNext}
-            className="bg-[#386641] hover:bg-[#386641]/80 transition duration-300 ease-in-out cursor-pointer text-white px-8 py-2 mt-8 rounded-md shadow-md"
-          >
-            Next
-          </Button> */}
-        </div>
+            <Button
+              onClick={() => {
+                calculateWasteValues();
+                setShowModal(true);
+              }}
+              className="bg-[#386641] hover:bg-[#386641]/90  transition duration-300 ease-in-out cursor-pointer text-white px-8 py-2 mt-8 rounded-md shadow-md"
+            >
+              Calculated Waste Values
+            </Button>
+            <Button
+              onClick={() => {
+                calculateWasteValues();
+                setShowChart(true);
+              }}
+              className="bg-[#386641] hover:bg-[#386641]/90  transition duration-300 ease-in-out cursor-pointer text-white px-8 py-2 mt-8 rounded-md shadow-md"
+            >
+              Bar Chart
+            </Button>
+          </div>
+          <div className="flex justify-end gap-5 pb-8">
+            <Button
+              onClick={() => {
+
+                handleNext()
+              }}
+              className="bg-[#386641] hover:bg-[#386641]/80 transition duration-300 ease-in-out cursor-pointer text-white px-8 py-2 mt-8 rounded-md shadow-md"
+            >
+              Next
+            </Button>
+          </div>
         </div>
 
         <Dialog
@@ -1950,7 +1964,7 @@ const CarbonFootprint = ({ open }: { open: boolean }) => {
                   <table
                     // ref={tableRef1}
                     className="w-full border border-collapse border-gray-300 text-sm"
-                    // style={{ width: "100%" }}
+                  // style={{ width: "100%" }}
                   >
                     <thead>
                       <tr className="bg-[#386641] text-white">
@@ -1989,11 +2003,11 @@ const CarbonFootprint = ({ open }: { open: boolean }) => {
                             <td className="border p-2">{bioKeys[index] || ""}</td>
                             <td className="border p-2">{(calculatedData.biodegradable?.[bioKeys[index]] ? calculatedData.biodegradable?.[bioKeys[index]].toFixed(2) : calculatedData.biodegradable?.[bioKeys[index]] === 0 ? calculatedData.biodegradable?.[bioKeys[index]].toFixed(2) : "")}</td>
                             <td className="border p-2">{comKeys[index] || ""}</td>
-                            <td className="border p-2">{(calculatedData.combustible?.[comKeys[index]] ? calculatedData.combustible?.[comKeys[index]].toFixed(2) :  calculatedData.combustible?.[comKeys[index]] === 0 ? calculatedData.combustible?.[comKeys[index]].toFixed(2) : "")}</td>
+                            <td className="border p-2">{(calculatedData.combustible?.[comKeys[index]] ? calculatedData.combustible?.[comKeys[index]].toFixed(2) : calculatedData.combustible?.[comKeys[index]] === 0 ? calculatedData.combustible?.[comKeys[index]].toFixed(2) : "")}</td>
                             <td className="border p-2">{recKeys[index] || ""}</td>
                             <td className="border p-2">{(calculatedData.recyclable?.[recKeys[index]] ? calculatedData.recyclable?.[recKeys[index]].toFixed(2) : calculatedData.recyclable?.[recKeys[index]] === 0 ? calculatedData.recyclable?.[recKeys[index]].toFixed(2) : "")}</td>
                             <td className="border p-2">{resKeys[index] || ""}</td>
-                            <td className="border p-2">{(calculatedData.residual?.[resKeys[index]] ? calculatedData.residual?.[resKeys[index]].toFixed(2) : calculatedData.residual?.[resKeys[index]] === 0 ?  calculatedData.residual?.[resKeys[index]].toFixed(2) : "")}</td>
+                            <td className="border p-2">{(calculatedData.residual?.[resKeys[index]] ? calculatedData.residual?.[resKeys[index]].toFixed(2) : calculatedData.residual?.[resKeys[index]] === 0 ? calculatedData.residual?.[resKeys[index]].toFixed(2) : "")}</td>
                           </tr>
                         );
                       })}
@@ -2075,7 +2089,7 @@ const CarbonFootprint = ({ open }: { open: boolean }) => {
         </Dialog>
       </section>
 
-     
+
 
       {/* <section>
         <div className="md:px-8 px-5 flex justify-end gap-5 pb-8">

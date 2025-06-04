@@ -65,7 +65,7 @@ export function MainLayout() {
   const [open, setOpen] = useState(false);
 
   return (
-    
+
     <div className="flex w-full">
       {!hideSidebar && (
         <div className="hidden md:flex">
@@ -204,6 +204,23 @@ export function MainLayout() {
             </ProtectedRoute>
           }
         />
+
+        <Route
+          path="/flask-api"
+          element={
+            <ProtectedRoute>
+              <WasteDetectionPage setOpen={setOpen} open={open} />
+            </ProtectedRoute>
+          }
+        />
+        <Route
+          path="/cf-calculations"
+          element={
+            <ProtectedRoute>
+              <CFPage setOpen={setOpen} open={open} />
+            </ProtectedRoute>
+          }
+        />
       </Routes>
       {!hideSidebar && <MyChatbot />}
     </div>
@@ -215,13 +232,16 @@ export function MainLayout() {
 import { Navigate } from "react-router-dom";
 import { useAuth } from "./components/AuthContext";
 import { auth } from "./firebase";
+import App1 from "./components/FlaskApi";
+import WasteDetectionPage from "./pages/WasteDetectionPage";
+import CFPage from "./pages/CFPage";
 // import { getAuth } from "firebase/auth";
 type UserData = {
   email?: string;
   displayName?: string;
 };
 const ProtectedRoute = ({ children }: { children: React.ReactElement }) => {
-   const [user, setUser] = useState<UserData>({});
+  const [user, setUser] = useState<UserData>({});
   const { logout } = useAuth();
   const navigate = useNavigate();
 
