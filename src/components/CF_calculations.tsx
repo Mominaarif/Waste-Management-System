@@ -322,6 +322,8 @@ import React, { useState, useEffect } from 'react';
 import { useLocation } from 'react-router-dom';
 import { Bar } from 'react-chartjs-2';
 import 'chart.js/auto';
+import { it } from 'node:test';
+import { sum } from 'firebase/firestore';
 
 // Interfaces for expected props and structures
 interface CalculatedData {
@@ -482,25 +484,68 @@ const NextPage: React.FC = () => {
     });
   };
 
+  // const calculateCarbonFootprint = () => {
+  //   const newFootprint: CarbonFootprint = {};
+
+  //   Object.keys(categoryDisposalMethods).forEach((category) => {
+  //     const subcategoriesData = calculatedData[category.toLowerCase()] || {};
+  //     const methods = categoryDisposalMethods[category] || [];
+
+  //     newFootprint[category] = methods.reduce((byMethod, method) => {
+  //       const footprint = Object.entries(subcategoriesData).reduce((sum, [subcategory, amount]) => {
+  //         const factor = customEmissionFactors[method] ?? carbonEmissionFactors[method] ?? 1;
+  //         const numericAmount = typeof amount === 'number' ? amount : Number(amount);
+  //         return sum + numericAmount * factor;
+  //       }, 0);
+  //       byMethod[method] = footprint;
+  //       return byMethod;
+  //     }, {} as { [method: string]: number });
+  //   });
+
+  //   setCarbonFootprint(newFootprint);
+  //   setShowSummary(true);
+  // };
+
+  //   const [carbonFootprint, setCarbonFootprint] = useState<Record<string, Record<string, number>>>({});
+  // const [emissions, setEmissions] = useState<number>(0);
+
+  // const emissionFactors: Record<string, number> = {
+  //   animalDunk: 0.02,
+  //   cardboard: 0.14,
+  //   foodWaste: 0.19,
+  //   paper: 0.01,
+  //   textile: 0.45,
+  //   yardWaste: 0.12,
+  // };
+
   const calculateCarbonFootprint = () => {
-    const newFootprint: CarbonFootprint = {};
+    const newFootprint: Record<string, Record<string, number>> = {};
+    let totalEmissions = 0;
 
     Object.keys(categoryDisposalMethods).forEach((category) => {
-      const subcategoriesData = calculatedData[category.toLowerCase()] || {};
       const methods = categoryDisposalMethods[category] || [];
+      const subcategoriesData = calculatedData[category.toLowerCase()] || {};
 
       newFootprint[category] = methods.reduce((byMethod, method) => {
-        const footprint = Object.entries(subcategoriesData).reduce((sum, [subcategory, amount]) => {
-          const factor = customEmissionFactors[method] ?? carbonEmissionFactors[method] ?? 1;
+        let methodSum = 0;
+
+        for (const [subcategory, amount] of Object.entries(subcategoriesData)) {
           const numericAmount = typeof amount === 'number' ? amount : Number(amount);
-          return sum + numericAmount * factor;
-        }, 0);
-        byMethod[method] = footprint;
+          const factor = emissionFactors[subcategory] ?? 1;
+
+          if (numericAmount && factor) {
+            methodSum += numericAmount * factor;
+          }
+        }
+
+        byMethod[method] = parseFloat(methodSum.toFixed(2));
+        totalEmissions += methodSum;
         return byMethod;
-      }, {} as { [method: string]: number });
+      }, {} as Record<string, number>);
     });
 
     setCarbonFootprint(newFootprint);
+    setEmissions(parseFloat(totalEmissions.toFixed(2)));
     setShowSummary(true);
   };
 
@@ -573,7 +618,7 @@ const NextPage: React.FC = () => {
             {Object.entries(tableData).map(([method, value]) => (
               <tr key={method}>
                 <td className=' border p-2'>{method}</td>
-                <td className=' border p-2'>{value.toFixed(2)}</td>
+                <td className=' border p-2'>{value.toFixed(2)} </td>
               </tr>
             ))}
           </tbody>
@@ -589,24 +634,100 @@ const NextPage: React.FC = () => {
     return <div>Data not available</div>;
   }
 
-  // Your entire JSX content remains the same
-  // No logic changes needed for rendering section
+  const [emissions, setEmissions] = useState<number>(0);
+
+  const emissionFactors: Record<string, number> = {
+    foodWaste: 1.45,
+    yardWaste: 0.21,
+    cardboard: 1.66,
+    lightPlastic: 0.02,
+    densePlastic: 0.02,
+    wood: 0.02,
+    paper: 1.44,
+    metals: 0.02,
+    glass: 0.02,
+    electronic: 0.02,
+    cdWaste: 0.02,
+    textile: 0,
+    animalDunk: 0,
+    leather: 0,
+    diapers: 0,
+
+  };
+
+  const calculateCarbonFootprintLandfillingWithoutLRG = (category: string, method: string) => {
+    const categoryKey = category.toLowerCase(); // 'biodegradable', etc.
+    const data = calculatedData[categoryKey as keyof typeof calculatedData];
+
+    if (!data) {
+      console.warn('Category data not found.');
+      return;
+    }
+
+    const result: Record<string, number> = {};
+    let sum = 0;
+
+    for (const [key, value] of Object.entries(data)) {
+      if (emissionFactors[key] !== undefined && value !== 0) {
+        result[key] = parseFloat((Number(value) * emissionFactors[key]).toFixed(2));
+        sum += result[key];
+      }
+      setEmissions(sum)
+      // console.log(result[key]);
+      // console.log(sum);
+    }
+
+    console.log('Calculated EM data:', result);
+    console.log('Category:', category);
+    console.log('Method:', method);
+    // console.log(calculatedData.biodegradable)
+
+    if (category === "Biodegradable") {
+      console.log(calculatedData.biodegradable)
+
+    }
+    if (category === "Combustible") {
+      console.log(calculatedData.combustible)
+
+    }
+    if (category === "Recyclable") {
+      console.log(calculatedData.recyclable)
+
+    }
+    if (category === "Residual")
+      console.log(calculatedData.residual)
+
+    // console.log(category)
+    // console.log(method)
+
+  }
+
+
+  const calculateCarbonFootprintLandfillingWithLRG = (category: string, method: string, subMethod?: string) => {
+
+    console.log(category)
+    console.log(method)
+    if (subMethod) {
+      console.log(subMethod)
+    }
+  }
+  // console.log(emissions)
 
   return (
-    // Paste your JSX from previous code here (it doesn't require much TypeScript change)
-    // If you'd like, I can include that block too.
-    <> {/* Replace with your JSX from previous code */}
 
-      <div className='h-[calc(100vh-85px)] overflow-y-auto bg-white'>
-        <div className='pt-8 px-5 md:px-8'>
+    <>
+      <div className="h-[calc(100vh-85px)] overflow-y-auto bg-white">
+        <div className="pt-8 px-5 md:px-8">
 
           <section>
-            <h2 className='block text-sm/6 font-medium text-gray-900 my-0'>Select Management Technologies Method for Each Category</h2>
-            <table className='table-auto border-collapse border border-gray-300 w-full mt-2'>
+            <h2 className="block text-sm/6 font-medium text-gray-900 my-0">
+              Select Management Technologies Method for Each Category
+            </h2>
+            <table className="table-auto border-collapse border border-gray-300 w-full mt-2">
               <thead>
-                <tr className='bg-[#386641] text-white border p-2 text-sm'>
+                <tr className="bg-[#386641] text-white border p-2 text-sm">
                   {Object.keys(disposalOptions).map((category) => (
-                    <th key={category} className='border p-2' >
+                    <th key={category} className="border p-2">
                       {category}
                     </th>
                   ))}
@@ -615,83 +736,133 @@ const NextPage: React.FC = () => {
               <tbody>
                 {Array.from({
                   length: Math.max(
-                    ...Object.values(disposalOptions).map((methods) => methods.length)
+                    ...Object.values(disposalOptions).map(
+                      (methods) => methods.length
+                    )
                   ),
                 }).map((_, rowIndex) => (
-                  <tr key={rowIndex} className=''>
+                  <tr key={rowIndex} className="">
                     {Object.keys(disposalOptions).map((category) => (
-                      <td key={category} className='border ' >
+                      <td key={category} className="border ">
                         {disposalOptions[category][rowIndex] ? (
-                          <div className='flex flex-col gap-1 items-start h-full px-2 my-2 text-sm'>
-                            {subcategories[disposalOptions[category][rowIndex]] ? (
-                              <div className='w-full h-full'>
-                                <label>{disposalOptions[category][rowIndex]}</label>
-                                {subcategories[disposalOptions[category][rowIndex]].map(
-                                  (subMethod) => {
-                                    const methodKey = `${disposalOptions[category][rowIndex]} - ${subMethod}`;
-                                    const isChecked = categoryDisposalMethods[category]?.includes(methodKey) || false;
-                                    return (
-                                      <div key={subMethod} className='flex flex-col  gap-1 pl-5'>
-                                        <div className="flex  gap-2">
+                          <div className="flex flex-col gap-1 items-start h-full px-2 my-2 text-sm">
+                            {subcategories[
+                              disposalOptions[category][rowIndex]
+                            ] ? (
+                              <div className="w-full h-full">
+                                <label>
+                                  {disposalOptions[category][rowIndex]}
+                                </label>
+                                {subcategories[
+                                  disposalOptions[category][rowIndex]
+                                ].map((subMethod) => {
+                                  const methodKey = `${disposalOptions[category][rowIndex]} - ${subMethod}`;
+                                  const isChecked =
+                                    categoryDisposalMethods[category]?.includes(
+                                      methodKey
+                                    ) || false;
+                                  return (
+                                    <div
+                                      key={subMethod}
+                                      className="flex flex-col  gap-1 pl-5"
+                                    >
+                                      <div className="flex  gap-2">
+                                        <input
+                                          type="checkbox"
+                                          checked={isChecked}
+                                          onChange={() => {
+                                            handleDisposalMethodChange(
+                                              category,
+                                              disposalOptions[category][
+                                              rowIndex
+                                              ],
+                                              subMethod
+                                            )
+                                            calculateCarbonFootprintLandfillingWithLRG(
+                                              category,
+                                              disposalOptions[category][rowIndex], subMethod
+                                            );
+                                          }}
+                                        />
+                                        <label>{subMethod}</label>
+                                      </div>
+                                      {/* Show input only if the checkbox is checked */}
+                                      {isChecked && (
+                                        <div className="ml-0 pr-5">
                                           <input
-                                            type="checkbox"
-                                            checked={isChecked}
-                                            onChange={() =>
-                                              handleDisposalMethodChange(category, disposalOptions[category][rowIndex], subMethod)
+                                            type="number"
+                                            // step="0.01"
+                                            placeholder="Enter emission factor"
+                                            className="border w-full rounded-md px-3 py-[4.53px] sm:text-sm mb-2"
+                                            value={
+                                              customEmissionFactors[
+                                              methodKey
+                                              ] || ""
+                                            }
+                                            onChange={(e) =>
+                                              handleCustomEmissionFactorChange(
+                                                methodKey,
+                                                e.target.value
+                                              )
                                             }
                                           />
-                                          <label>{subMethod}</label>
                                         </div>
-                                        {/* Show input only if the checkbox is checked */}
-                                        {isChecked && (
-                                          <div className='ml-0 pr-5'>
-                                            <input
-                                              type="number"
-                                              step="0.01"
-                                              placeholder="Enter emission factor"
-                                              className='border w-full rounded-md px-3 py-[4.53px] sm:text-sm mb-2'
-                                              value={customEmissionFactors[methodKey] || ''}
-                                              onChange={(e) =>
-                                                handleCustomEmissionFactorChange(methodKey, e.target.value)
-                                              }
-                                            />
-                                          </div>
-                                        )}
-                                      </div>
-                                    );
-                                  }
-                                )}
+                                      )}
+                                    </div>
+                                  );
+                                })}
                               </div>
                             ) : (
-                              <div>
-                                <input
-                                  type="checkbox"
-                                  checked={
-                                    categoryDisposalMethods[category]?.includes(disposalOptions[category][rowIndex]) || false
-                                  }
-                                  onChange={() =>
-                                    handleDisposalMethodChange(category, disposalOptions[category][rowIndex])
-                                  }
-                                />
-                                <label>{disposalOptions[category][rowIndex]}</label>
+                              <div className="flex flex-col gap-1 w-full pl-5">
+                                <div className="flex gap-2">
+                                  <input
+                                    type="checkbox"
+                                    checked={
+                                      categoryDisposalMethods[category]?.includes(
+                                        disposalOptions[category][rowIndex]
+                                      ) || false
+                                    }
+                                    onChange={() => {
+                                      handleDisposalMethodChange(
+                                        category,
+                                        disposalOptions[category][rowIndex]
+                                      );
+                                      calculateCarbonFootprintLandfillingWithoutLRG(
+                                        category,
+                                        disposalOptions[category][rowIndex]
+                                      );
+                                    }}
+                                  />
+                                  <label>
+                                    {disposalOptions[category][rowIndex]}
+                                  </label>
+                                </div>
 
                                 {/* Show input only if the checkbox is checked */}
-                                {categoryDisposalMethods[category]?.includes(disposalOptions[category][rowIndex]) && (
-                                  <div style={{ marginTop: '5px' }}>
-                                    <input
-                                      type="number"
-                                      // step="0.01"
-                                      className='border w-full rounded-md px-3 py-[4.53px] sm:text-sm mb-2'
-
-                                      placeholder="Enter emission factor"
-                                      value={customEmissionFactors[disposalOptions[category][rowIndex]] || ''}
-                                      onChange={(e) =>
-                                        handleCustomEmissionFactorChange(disposalOptions[category][rowIndex], e.target.value)
-                                      }
-                                      style={{ marginLeft: '10px' }}
-                                    />
-                                  </div>
-                                )}
+                                {/* {categoryDisposalMethods[category]?.includes(
+                                  disposalOptions[category][rowIndex]
+                                ) && (
+                                    <div style={{ marginTop: "5px" }} className=' mr-5'>
+                                      <input
+                                        type="number"
+                                        // step="0.01"
+                                        className="border w-full rounded-md px-3 py-[4.53px] sm:text-sm mb-2"
+                                        placeholder="Enter emission factor"
+                                        value={
+                                          customEmissionFactors[
+                                          disposalOptions[category][rowIndex]
+                                          ] || ""
+                                        }
+                                        onChange={(e) =>
+                                          handleCustomEmissionFactorChange(
+                                            disposalOptions[category][rowIndex],
+                                            e.target.value
+                                          )
+                                        }
+                                      // style={{ marginLeft: "10px" }}
+                                      />
+                                    </div>
+                                  )} */}
                               </div>
                             )}
                           </div>
@@ -704,18 +875,21 @@ const NextPage: React.FC = () => {
             </table>
           </section>
 
-
-          <button className="bg-[#386641] hover:bg-[#386641]/80 transition duration-300 ease-in-out cursor-pointer text-white px-8 py-2 mt-8 rounded-md shadow-md"
-            onClick={calculateCarbonFootprint}>
+          <button
+            className="bg-[#386641] hover:bg-[#386641]/80 transition duration-300 ease-in-out cursor-pointer text-white px-8 py-2 mt-8 rounded-md shadow-md"
+            onClick={calculateCarbonFootprint}
+          >
             Calculate Carbon Footprint
           </button>
 
           {showSummary && (
-            <div style={{ marginTop: '40px' }}>
-              <h2 className='block text-sm/6 font-medium text-gray-900 my-0'>Carbon Footprint Summary</h2>
-              <div className='grid grid-cols-1 md:grid-cols-2 gap-4'>
+            <div style={{ marginTop: "40px" }}>
+              <h2 className="block text-sm/6 font-medium text-gray-900 my-0">
+                Carbon Footprint Summary
+              </h2>
+              <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                 {Object.keys(carbonFootprint).map((category) => (
-                  <div key={category} >
+                  <div key={category}>
                     <h3>{category}</h3>
                     {renderTableAndChart(category)}
                   </div>
@@ -733,10 +907,12 @@ const NextPage: React.FC = () => {
 
           {showLeastCo2Table && (
             <div>
-              <h2 className='block text-sm/6 font-medium text-gray-900 my-0'>Least CO₂ Management Technologies </h2>
-              <table className="my-5 w-full border border-collapse border-gray-300 text-sm" >
+              <h2 className="block text-sm/6 font-medium text-gray-900 my-0">
+                Least CO₂ Management Technologies{" "}
+              </h2>
+              <table className="my-5 w-full border border-collapse border-gray-300 text-sm">
                 <thead>
-                  <tr className='bg-[#386641] text-white border p-2'>
+                  <tr className="bg-[#386641] text-white border p-2">
                     <th className="border p-2">Category</th>
                     <th className="border p-2">Method</th>
                     <th className="border p-2">Carbon Footprint (kg CO₂)</th>
@@ -746,9 +922,12 @@ const NextPage: React.FC = () => {
                   {Object.keys(leastCo2Methods).map((category) => (
                     <tr key={category}>
                       <td className="border p-2">{category}</td>
-                      <td className="border p-2">{leastCo2Methods[category]?.method || "N/A"}</td>
                       <td className="border p-2">
-                        {leastCo2Methods[category]?.footprint?.toFixed(2) || "N/A"}
+                        {leastCo2Methods[category]?.method || "N/A"}
+                      </td>
+                      <td className="border p-2">
+                        {leastCo2Methods[category]?.footprint?.toFixed(2) ||
+                          "N/A"}
                       </td>
                     </tr>
                   ))}
