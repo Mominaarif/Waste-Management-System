@@ -324,6 +324,7 @@ import { Bar } from 'react-chartjs-2';
 import 'chart.js/auto';
 import { it } from 'node:test';
 import { sum } from 'firebase/firestore';
+import { factors } from '@turf/turf';
 
 // Interfaces for expected props and structures
 interface CalculatedData {
@@ -398,7 +399,7 @@ const NextPage: React.FC = () => {
   };
 
   const subcategories: { [method: string]: string[] } = {
-    "Anaerobic Digestion": ["Dry Digestion", "Wet Digestion", "Batch Digestion", "Continuous Digestion"],
+    "Anaerobic Digestion": ["Dry Digestion with Digestate Curing", "Dry Digestion with Direct Land Application ", "Wet Digestion with Digestate Curing", "Wet Digestion with Direct Land Application "],
     // Composting: ["Aerated Static Pile Composting", "Windrow Composting", "In-vessel Composting"],
     "Mechanical Biological Treatment (MBT)": ["Biostabilization", "Bio-drying"],
     // "Landfilling with LGR": ["Sanitary Landfilling", "Bioreactor Landfills"],
@@ -550,6 +551,7 @@ const NextPage: React.FC = () => {
           for (const [subcategory, amount] of Object.entries(subcategoriesData)) {
             const numericAmount = typeof amount === 'number' ? amount : Number(amount);
             const factor = emissionFactorsLandfillWithLGR[subcategory] ?? 1;
+            console.log(factor)
             if (numericAmount && factor) {
               methodSum += numericAmount * factor;
             }
@@ -558,6 +560,33 @@ const NextPage: React.FC = () => {
           console.log(methodSum);
         }
 
+        if (method === "Recycling") {
+
+          for (const [subcategory, amount] of Object.entries(subcategoriesData)) {
+            const numericAmount = typeof amount === 'number' ? amount : Number(amount);
+            const factor = emissionFactorsRecycling[subcategory] ?? 1;
+            if (numericAmount && factor) {
+              methodSum += numericAmount * factor;
+            }
+            // 
+          }
+          console.log(methodSum);
+        }
+// Composting
+
+
+        if (method === "Composting") {
+
+          for (const [subcategory, amount] of Object.entries(subcategoriesData)) {
+            const numericAmount = typeof amount === 'number' ? amount : Number(amount);
+            const factor = emissionFactorsComposting[subcategory] ?? 1;
+            if (numericAmount && factor) {
+              methodSum += numericAmount * factor;
+            }
+            // 
+          }
+          console.log(methodSum);
+        }
         byMethod[method] = parseFloat(methodSum.toFixed(2));
         totalEmissions += methodSum;
         // console.log(byMethod)
@@ -658,7 +687,7 @@ const NextPage: React.FC = () => {
   const [emissions, setEmissions] = useState<number>(0);
 
   const emissionFactorsLandfillWithoutLGR: Record<string, number> = {
-   foodWaste: 0.72,
+    foodWaste: 0.72,
     yardWaste: -0.19,
     cardboard: 0.44,
     lightPlastic: 0.04,
@@ -692,6 +721,29 @@ const NextPage: React.FC = () => {
     animalDunk: -0.28,
     leather: -0.06,
     diapers: 0.05,
+
+  };
+
+  const emissionFactorsRecycling: Record<string, number> = {
+    paper: -1.26,
+    cardboard: -1.16,
+    lightPlastic: -1.46,
+    densePlastic: -1.56,
+    metals: -2.76,
+    glass: -0.46,
+    wood: -0.71,
+    electronics: -1.66,
+    cdWaste: -0.36,
+    textile: -0.91,
+    diapers: 0.04,
+    leather: -0.51,
+
+  };
+
+  const emissionFactorsComposting: Record<string, number> = {
+    foodWaste: -0.16,
+    yardWaste: -0.1,
+    animalDunk: 0.02
 
   };
 
