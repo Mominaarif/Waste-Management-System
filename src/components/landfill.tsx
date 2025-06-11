@@ -1219,31 +1219,31 @@ const Landfill = () => {
                     </table>
                     <div className="flex justify-center ">
                       <div className="relative w-[700px] h-full">
-                        <img src="/images/landfill.jpg" alt="" />
-                        <p className="absolute md:top-[63%] top-[63%] md:left-[59%] left-[59%] md:text-[10px] text-[8px] font-bold" style={{ transform: "rotate(318deg)" }}>
-                          {(
+                        <img src="/images/landfillUpdate.png" alt="" />
+                        <p className="absolute md:top-[63%] top-[63%] md:left-[55%] left-[55%] md:text-[10px] text-[8px] font-[600]" style={{ transform: "rotate(325deg)" }}>
+                          L =  {(
                             (outputs.totalWastePerDay *
                               designParams.trenchLifespan) /
                             designParams.density /
                             (designParams.trenchDepth * designParams.trenchWidth)
-                          ).toFixed(2)}
+                          ).toFixed(2)} m
                         </p>
-                        <p style={{ transform: "rotate(318deg)" }} className="absolute md:top-[52%] top-[52%] md:left-[20.5%] left-[20.5%] md:text-[10px] text-[8px] font-bold">
-                          {designParams.cellWidth.toFixed(2)}
+                        <p style={{ transform: "rotate(318deg)" }} className="absolute md:top-[45%] top-[45%] md:left-[15.5%] left-[15.5%] md:text-[10px] text-[8px] font-[600]">
+                          W = {designParams.cellWidth.toFixed(2)} m
                         </p>
-                        <p className="absolute md:top-[51.5%] top-[51.5%] md:left-[8%] left-[8%] md:text-[10px] text-[8px] font-bold">
-                          {outputs.cellDimensions.depth.toFixed(2)}
+                        <p className="absolute md:top-[47.5%] top-[47.5%] md:left-[6%] left-[6%] md:text-[10px] text-[8px] font-[600]">
+                          D = {outputs.cellDimensions.depth.toFixed(2)} m
                         </p>
-                        <p className="absolute md:top-[39.9%] top-[39.9%] md:left-[14%] left-[14%] md:text-[10px] text-[8px] font-bold">
-                          {designParams.dailyCoverThickness.toFixed(2)}                      </p>
-                        <p style={{ transform: "rotate(18deg)" }} className="absolute md:top-[42%] top-[42%] md:left-[57.5%] left-[57.5%] md:text-[10px] text-[8px] font-bold">
-                          {outputs.cellDimensions.length.toFixed(2)}
+                        <p className="absolute md:top-[33.9%] top-[33.9%] md:left-[8%] left-[8%] md:text-[10px] text-[8px] font-[600]">
+                          Daily Cover = {designParams.dailyCoverThickness.toFixed(2)} m                     </p>
+                        <p style={{ transform: "rotate(14deg)" }} className="absolute md:top-[40%] top-[40%] md:left-[54.5%] left-[54.5%] md:text-[10px] text-[8px] font-[600]">
+                          L = {outputs.cellDimensions.length.toFixed(2)} m
                         </p>
-                        <p style={{ transform: "rotate(318deg)" }} className="absolute md:top-[41%] top-[41%] md:left-[29.5%] left-[29.5%] md:text-[10px] text-[8px] font-bold">
-                          {designParams.trenchWidth.toFixed(2)}
+                        <p style={{ transform: "rotate(330deg)" }} className="absolute md:top-[36%] top-[36%] md:left-[31.5%] left-[31.5%] md:text-[10px] text-[8px] font-[600]">
+                          W = {designParams.trenchWidth.toFixed(2)} m
                         </p>
-                        <p className="absolute md:top-[20%] top-[20%] md:left-[34%] left-[34%] md:text-[10px] text-[8px] font-bold">
-                          {designParams.trenchDepth.toFixed(2)}
+                        <p className="absolute md:top-[14%] top-[14%] md:left-[37%] left-[3374%] md:text-[10px] text-[8px] font-[600]">
+                          D = {designParams.trenchDepth.toFixed(2)} m
                         </p>
 
                       </div>

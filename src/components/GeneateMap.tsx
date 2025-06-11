@@ -42,11 +42,11 @@ const WasteDataDisplay = ({ data }: { data: WasteData }) => {
                     <thead>
                         <tr className="bg-gray-100">
                             <th className="py-2 px-4 border-b">Waste Type</th>
-                            <th className="py-2 px-4 border-b">Residential (kg)</th>
-                            <th className="py-2 px-4 border-b">Commercial (kg)</th>
-                            <th className="py-2 px-4 border-b">Industrial (kg)</th>
-                            <th className="py-2 px-4 border-b">Hazardous (kg)</th>
-                            <th className="py-2 px-4 border-b">Total (kg)</th>
+                            <th className="py-2 px-4 border-b">Residential (tons)</th>
+                            <th className="py-2 px-4 border-b">Commercial (tons)</th>
+                            <th className="py-2 px-4 border-b">Industrial (tons)</th>
+                            <th className="py-2 px-4 border-b">Hazardous (tons)</th>
+                            <th className="py-2 px-4 border-b">Total (tons)</th>
                         </tr>
                     </thead>
                     <tbody>
@@ -724,7 +724,7 @@ const GeneateMap = ({ setCurrentValues, open }: any) => {
             <thead>
                 <tr className="text-left">
                     <th>Subcategory</th>
-                    <th>Amount (kg)</th>
+                    <th>Amount (tons)</th>
                 </tr>
             </thead>
             <tbody>

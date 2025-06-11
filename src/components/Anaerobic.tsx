@@ -539,7 +539,7 @@ const AnaerobicDigesterCalculator = () => {
       name: "GPR (m³/m³/day)",
       value: results?.biogasProduction
         ? results?.biogasProduction / results?.volumeOfDigester
-        : 0,  
+        : 0,
     },
     {
       name: "OLR (kg VS/m3/day)",
@@ -564,13 +564,12 @@ const AnaerobicDigesterCalculator = () => {
             </h2>
             {data1.length > 0 ? (
               <div
-                className={`grid grid-cols-1 ${
-                  data1.length > 2
+                className={`grid grid-cols-1 ${data1.length > 2
                     ? "md:grid-cols-3"
                     : data1.length > 0
-                    ? "md:grid-cols-2"
-                    : "md:grid-cols-3"
-                } gap-y-4 gap-x-6 border-b pb-4`}
+                      ? "md:grid-cols-2"
+                      : "md:grid-cols-3"
+                  } gap-y-4 gap-x-6 border-b pb-4`}
               >
                 <>
                   {data1.map((item: any, index: number) => (
@@ -1191,15 +1190,21 @@ const AnaerobicDigesterCalculator = () => {
               </div>
               <div className="flex justify-center ">
                 <div className="relative w-[700px] h-full">
-                  <img src="/images/anaerobic.jpg" alt="" />
-                  <p className="absolute md:top-[41%] top-[41%] md:left-[47.5%] left-[47%] md:text-[10px] text-[8px] font-bold">
-                    {diaUnit}
+                  <img src="/images/AD.png" alt="" />
+                  <p className="absolute md:top-[46.5%] top-[46.5%] md:left-[46.5%] left-[46%] md:text-[10px] text-[8px] font-bold">
+                    {diaUnit} m
                   </p>
-                  <p className="absolute top-[48%] right-[20.5%] md:text-[10px] text-[8px] font-bold">
-                    {depth}
+                  <p className="absolute top-[53.5%] right-[19.5%] md:text-[10px] text-[8px] font-bold">
+                    {depth} m
                   </p>
                 </div>
+               
               </div>
+               {result && (
+                  <span className="text-sm text-gray-500 flex justify-center w-full">
+                    ({result})
+                  </span>
+                )}
             </div>
           </div>
         )}

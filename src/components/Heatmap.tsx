@@ -1804,7 +1804,7 @@ const CarbonFootprint = ({ open }: { open: boolean }) => {
                               onChange={() => handleCheckboxChange("biodegradable", bio)}
                             />
                             <i className="fas fa-leaf" />
-                            {bio} ({combinedWasteData[bio] || 0} kg)
+                            {bio} ({combinedWasteData[bio] || 0} tons)
                           </label>
                           <div className="relative md:w-1/2 w-full">
                             <input
@@ -1836,7 +1836,7 @@ const CarbonFootprint = ({ open }: { open: boolean }) => {
                               onChange={() => handleCheckboxChange("combustible", comb)}
                             />
                             <i className="fas fa-leaf" />
-                            {comb} ({combinedWasteData[comb] || 0} kg)
+                            {comb} ({combinedWasteData[comb] || 0} tons)
                           </label>
                           <div className="relative md:w-1/2 w-full">
                             <input
@@ -1871,7 +1871,7 @@ const CarbonFootprint = ({ open }: { open: boolean }) => {
                               onChange={() => handleCheckboxChange("recyclable", recy)}
                             />
                             <i className="fas fa-leaf" />
-                            {recy} ({combinedWasteData[recy] || 0} kg)
+                            {recy} ({combinedWasteData[recy] || 0} tons)
                           </label>
                           <div className="relative md:w-1/2 w-full">
                             <input

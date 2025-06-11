@@ -1031,10 +1031,10 @@ const MRFDesign = () => {
                   </table>
                    <div className="flex justify-center ">
                 <div className="relative w-[700px] h-full">
-                  <img src="/images/mrf.jpg" alt="" />
-                  <p className="absolute md:top-[20.5%] top-[20.5%] left-[33%] md:text-[10px] text-[8px] font-bold">{calculatedData.dimensions}</p>
-                  <p className="absolute md:top-[36.5%] top-[36.5%] left-[32%] md:text-[10px] text-[8px] font-bold">{calculatedData.dimensions}</p>
-                  <p className="absolute top-[65.5%] right-[24.5%] md:text-[10px] text-[8px] font-bold" style={{transform: "rotate(32deg)"}}>{depth}</p>
+                  <img src="/images/mrfUpdate.png" alt="" />
+                  <p className="absolute md:top-[23%] top-[23%] left-[31%] md:text-[12px] text-[12px] font-bold">{calculatedData.dimensions} m</p>
+                  <p className="absolute md:top-[36.5%] top-[36.5%] left-[32%] md:text-[12px] text-[12px] font-bold">{calculatedData.dimensions} m</p>
+                  <p className="absolute top-[65.5%] right-[22.5%] md:text-[12px] text-[12px] font-bold" style={{transform: "rotate(46deg)"}}>{depth} m</p>
                 </div>
 
               </div>

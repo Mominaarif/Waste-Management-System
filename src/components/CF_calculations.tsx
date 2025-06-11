@@ -374,40 +374,40 @@ const NextPage: React.FC = () => {
 
   const disposalOptions: { [category: string]: string[] } = {
     Biodegradable: [
+      "Landfilling with LGR",
+      "Landfilling without LGR",
       "Composting",
       "Anaerobic Digestion",
-      "Landfilling with LGR",
-      "Landfilling without LGR",
-      "MBT",
+      // "MBT",
     ],
     Combustible: [
+      "Landfilling with LGR",
+      "Landfilling without LGR",
       "RDF",
       "Incineration",
-      "Landfilling with LGR",
-      "Landfilling without LGR",
-      "Pyrolysis",
-      "Gasification",
+      // "Pyrolysis",
+      // "Gasification",
     ],
     Recyclable: [
-      "Physical Recycling",
-      "Chemical Recycling",
       "Landfilling with LGR",
       "Landfilling without LGR",
+      "Recycling",
+
     ],
     Residual: ["Landfilling with LGR", "Landfilling without LGR"],
   };
 
   const subcategories: { [method: string]: string[] } = {
     "Anaerobic Digestion": ["Dry Digestion", "Wet Digestion", "Batch Digestion", "Continuous Digestion"],
-    Composting: ["Aerated Static Pile Composting", "Windrow Composting", "In-vessel Composting"],
+    // Composting: ["Aerated Static Pile Composting", "Windrow Composting", "In-vessel Composting"],
     "Mechanical Biological Treatment (MBT)": ["Biostabilization", "Bio-drying"],
-    "Landfilling with LGR": ["Sanitary Landfilling", "Bioreactor Landfills"],
-    RDF: ["Low-Density RDF", "High-Density RDF"],
+    // "Landfilling with LGR": ["Sanitary Landfilling", "Bioreactor Landfills"],
+    // RDF: ["Low-Density RDF", "High-Density RDF"],
     Incineration: ["Mass Burn", "Fluidized Bed"],
-    Pyrolysis: ["Fast Pyrolysis", "Slow Pyrolysis"],
-    Gasification: ["Plasma Arc Gasification", "Fixed Bed Gasification", "Fluidized Bed Gasification"],
-    "Chemical Recycling": ["Depolymerization", "Solvolysis"],
-    "Physical Recycling": ["Shredding and Re-molding", "Mechanical Separation"],
+    // Pyrolysis: ["Fast Pyrolysis", "Slow Pyrolysis"],
+    // Gasification: ["Plasma Arc Gasification", "Fixed Bed Gasification", "Fluidized Bed Gasification"],
+    // "Chemical Recycling": ["Depolymerization", "Solvolysis"],
+    // "Physical Recycling": ["Shredding and Re-molding", "Mechanical Separation"],
   };
 
   const carbonEmissionFactors: { [method: string]: number } = {
@@ -525,21 +525,42 @@ const NextPage: React.FC = () => {
     Object.keys(categoryDisposalMethods).forEach((category) => {
       const methods = categoryDisposalMethods[category] || [];
       const subcategoriesData = calculatedData[category.toLowerCase()] || {};
+      console.log(methods)
+      // console.log(category)
+
 
       newFootprint[category] = methods.reduce((byMethod, method) => {
         let methodSum = 0;
 
-        for (const [subcategory, amount] of Object.entries(subcategoriesData)) {
-          const numericAmount = typeof amount === 'number' ? amount : Number(amount);
-          const factor = emissionFactors[subcategory] ?? 1;
+        if (method === "Landfilling with LGR") {
 
-          if (numericAmount && factor) {
-            methodSum += numericAmount * factor;
+          for (const [subcategory, amount] of Object.entries(subcategoriesData)) {
+            const numericAmount = typeof amount === 'number' ? amount : Number(amount);
+            const factor = emissionFactorsLandfillWithoutLGR[subcategory] ?? 1;
+            if (numericAmount && factor) {
+
+              methodSum += numericAmount * factor;
+            }
+            // 
           }
+          console.log(methodSum);
+        }
+        if (method === "Landfilling without LGR") {
+
+          for (const [subcategory, amount] of Object.entries(subcategoriesData)) {
+            const numericAmount = typeof amount === 'number' ? amount : Number(amount);
+            const factor = emissionFactorsLandfillWithLGR[subcategory] ?? 1;
+            if (numericAmount && factor) {
+              methodSum += numericAmount * factor;
+            }
+            // 
+          }
+          console.log(methodSum);
         }
 
         byMethod[method] = parseFloat(methodSum.toFixed(2));
         totalEmissions += methodSum;
+        // console.log(byMethod)
         return byMethod;
       }, {} as Record<string, number>);
     });
@@ -636,22 +657,41 @@ const NextPage: React.FC = () => {
 
   const [emissions, setEmissions] = useState<number>(0);
 
-  const emissionFactors: Record<string, number> = {
-    foodWaste: 1.45,
-    yardWaste: 0.21,
-    cardboard: 1.66,
-    lightPlastic: 0.02,
-    densePlastic: 0.02,
-    wood: 0.02,
-    paper: 1.44,
-    metals: 0.02,
-    glass: 0.02,
-    electronic: 0.02,
-    cdWaste: 0.02,
-    textile: 0,
-    animalDunk: 0,
-    leather: 0,
-    diapers: 0,
+  const emissionFactorsLandfillWithoutLGR: Record<string, number> = {
+   foodWaste: 0.72,
+    yardWaste: -0.19,
+    cardboard: 0.44,
+    lightPlastic: 0.04,
+    densePlastic: 0.04,
+    wood: -0.83,
+    paper: 0.49,
+    metals: 0.04,
+    glass: 0.04,
+    electronic: 0.04,
+    cdWaste: 0.04,
+    textile: 0.9,
+    animalDunk: -0.36,
+    leather: -0.075,
+    diapers: 0.05,
+
+  };
+
+  const emissionFactorsLandfillWithLGR: Record<string, number> = {
+    foodWaste: 0.76,
+    yardWaste: -0.18,
+    cardboard: 0.51,
+    lightPlastic: 0.04,
+    densePlastic: 0.04,
+    wood: -0.83,
+    paper: 0.46,
+    metals: 0.04,
+    glass: 0.04,
+    electronic: 0.04,
+    cdWaste: 0.04,
+    textile: 0.14,
+    animalDunk: -0.28,
+    leather: -0.06,
+    diapers: 0.05,
 
   };
 
@@ -668,8 +708,8 @@ const NextPage: React.FC = () => {
     let sum = 0;
 
     for (const [key, value] of Object.entries(data)) {
-      if (emissionFactors[key] !== undefined && value !== 0) {
-        result[key] = parseFloat((Number(value) * emissionFactors[key]).toFixed(2));
+      if (emissionFactorsLandfillWithoutLGR[key] !== undefined && value !== 0) {
+        result[key] = parseFloat(((Number(value) / 1000) * emissionFactorsLandfillWithoutLGR[key]).toFixed(2));
         sum += result[key];
       }
       setEmissions(sum)
