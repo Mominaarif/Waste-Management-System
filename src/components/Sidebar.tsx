@@ -62,6 +62,7 @@ import {
   MapIcon,
   List,
   ChartNoAxesCombined,
+  Earth,
 } from "lucide-react";
 
 type UserData = {
@@ -74,6 +75,7 @@ const Sidebar = () => {
   const [isOpen, setIsOpen] = useState(false);
   const [isServicesOpen, setIsServicesOpen] = useState(false);
   const [isServicesOpen1, setIsServicesOpen1] = useState(false);
+  const [isServicesOpen2, setIsServicesOpen2] = useState(false);
   const [user, setUser] = useState<UserData>({});
 
   useEffect(() => {
@@ -145,14 +147,40 @@ const Sidebar = () => {
                   {open && <span className="ml-3">Dashboard</span>}
                 </li>
               </a>
+              <a href="/map" className="text-sm">
+                <li
+                  className={`${open
+                    ? "flex items-center mb-3 cursor-pointer hover:bg-gray-400/15 py-1.5 px-2 rounded w-full my-1"
+                    : "flex items-center mb-3 cursor-pointer hover:text-gray-400"
+                    }`}
+                >
+                  <MapIcon className="w-[18px]" />
+                  {open && <span className="ml-3">Waste Generation Map</span>}
+                </li>
+              </a>
+              <a href="/waste-categories" className="text-sm">
+                <li
+                  className={`${open
+                    ? "flex items-center mb-3 cursor-pointer hover:bg-gray-400/15 py-1.5 px-2 rounded w-full my-1"
+                    : "flex items-center mb-3 cursor-pointer hover:text-gray-400"
+                    }`}
+                >
+                  <List className="w-[18px]" />
+                  {open && <span className="ml-3">Waste Categorization</span>}
+                </li>
+              </a>
+
               <li className="">
                 <div
                   className={` ${open
-                      ? "flex items-center mb-3 cursor-pointer hover:bg-gray-400/15 py-1.5 px-2 rounded w-full my-1"
-                      : "flex items-center mb-3 cursor-pointer hover:text-gray-400"
+                    ? "flex items-center mb-3 cursor-pointer hover:bg-gray-400/15 py-1.5 px-2 rounded w-full my-1"
+                    : "flex items-center mb-3 cursor-pointer hover:text-gray-400"
                     }`}
-                  onClick={() => {setIsServicesOpen1(!isServicesOpen1);
-                    setIsServicesOpen(false)
+                  onClick={() => {
+                    setIsServicesOpen1(!isServicesOpen1);
+                    setIsServicesOpen(false)                    
+                    setIsServicesOpen2(false)
+
                   }}
                 >
                   <LandPlot className="w-[18px]" />
@@ -239,28 +267,7 @@ const Sidebar = () => {
                   {open && <span className="ml-3">Add Data</span>}
                 </li>
               </a> */}
-              <a href="/map" className="text-sm">
-                <li
-                  className={`${open
-                      ? "flex items-center mb-3 cursor-pointer hover:bg-gray-400/15 py-1.5 px-2 rounded w-full my-1"
-                      : "flex items-center mb-3 cursor-pointer hover:text-gray-400"
-                    }`}
-                >
-                  <MapIcon className="w-[18px]" />
-                  {open && <span className="ml-3">Waste Generation Map</span>}
-                </li>
-              </a>
-              <a href="/waste-categories" className="text-sm">
-                <li
-                  className={`${open
-                      ? "flex items-center mb-3 cursor-pointer hover:bg-gray-400/15 py-1.5 px-2 rounded w-full my-1"
-                      : "flex items-center mb-3 cursor-pointer hover:text-gray-400"
-                    }`}
-                >
-                  <List className="w-[18px]" />
-                  {open && <span className="ml-3">Waste Categories</span>}
-                </li>
-              </a>
+
               {/* <a href="/anaerobic-design" className="text-sm">
                 <li
                   className={`${
@@ -277,72 +284,41 @@ const Sidebar = () => {
               <li>
                 <div
                   className={`${open
-                      ? "flex items-center mb-3 cursor-pointer hover:bg-gray-400/15 py-1.5 px-2 rounded w-full my-1"
-                      : "flex items-center mb-3 cursor-pointer hover:text-gray-400"
+                    ? "flex items-center mb-3 cursor-pointer hover:bg-gray-400/15 py-1.5 px-2 rounded w-full my-1"
+                    : "flex items-center mb-3 cursor-pointer hover:text-gray-400"
                     }`}
-                  onClick={() => {setIsServicesOpen(!isServicesOpen);
+                  onClick={() => {
+                    setIsServicesOpen2(!isServicesOpen2);
                     setIsServicesOpen1(false)
+                    setIsServicesOpen(false)
                   }}
                 >
-                  <FileStack className="w-[18px]" />
+                  <Earth className="w-[18px]" />
                   {open && (
                     <div className="flex justify-between w-full">
-                      <span className="ml-3 text-sm">Designs</span>
-                      <ChevronDown className={`"w-[18px]" ${isServicesOpen ? "rotate-180 transition duration-300" : "transition duration-300"}`} />
+                      <span className="ml-3 text-sm">Sustainability Analysis</span>
+                      <ChevronDown className={`"w-[18px]" ${isServicesOpen2 ? "rotate-180 transition duration-300" : "transition duration-300"}`} />
                     </div>
                   )}
                 </div>
-                 {!open && isServicesOpen && (
+                {!open && isServicesOpen2 && (
                   <div className=" absolute bg-[#004b23] left-18 w-[200px]  rounded-md top-68 z-10">
-                     <ul className="mt-2 text-sm">
-                    <a href="/economy-analysis" className="text-sm">
-                      <li
-                        className={`flex items-center mb-3 cursor-pointer hover:bg-gray-400/15 py-1 px-2 rounded w-full my-0.5`}
-                      >
-                        <ChartNoAxesCombined className="w-[18px]" />
-                        {!open && (
-                          <span className="ml-3">Economic Analysis </span>
-                        )}
-                      </li>
-                    </a>
-                    <a href="/landfill-design" className="text-sm">
-                      <li
-                        className={`flex items-center mb-3 cursor-pointer hover:bg-gray-400/15 py-1 px-2 rounded w-full my-0.5`}
-                      >
-                        <DraftingCompass className="w-[18px]" />
-                        {!open && (
-                          <span className="ml-3">Landfill Design</span>
-                        )}
-                      </li>
-                    </a>
-                    <a href="/MRF-design" className="text-sm">
-                      <li
-                        className={`flex items-center mb-3 cursor-pointer hover:bg-gray-400/15 py-1 px-2 rounded w-full my-0.5`}
-                      >
-                        <Framer className="w-[18px]" />
-                        {!open && <span className="ml-3">MRF Design</span>}
-                      </li>
-                    </a>
-                    <a href="/RDF-design" className="text-sm">
-                      <li
-                        className={`flex items-center mb-3 cursor-pointer hover:bg-gray-400/15 py-1 px-2 rounded w-full my-0.5`}
-                      >
-                        <SquareChartGantt className="w-[18px]" />
-                        {!open && <span className="ml-3">RDF Design</span>}
-                      </li>
-                    </a>
-                    <a href="/anaerobic-design" className="text-sm">
-                      <li
-                        className={`flex items-center mb-3 cursor-pointer hover:bg-gray-400/15 py-1 px-2 rounded w-full my-0.5`}
-                      >
-                        <Frame className="w-[18px]" />
-                        {!open && <span className="ml-3">Anaerobic Design</span>}
-                      </li>
-                    </a>
-                  </ul>
+                    <ul className="mt-2 text-sm">
+                      <a href="/economy-analysis" className="text-sm">
+                        <li
+                          className={`flex items-center mb-3 cursor-pointer hover:bg-gray-400/15 py-1 px-2 rounded w-full my-0.5`}
+                        >
+                          <ChartNoAxesCombined className="w-[18px]" />
+                          {!open && (
+                            <span className="ml-3">Economic Analysis </span>
+                          )}
+                        </li>
+                      </a>
+
+                    </ul>
                   </div>
                 )}
-                {open && isServicesOpen && (
+                {open && isServicesOpen2 && (
                   <ul className="ml-6 mt-2 text-sm">
                     <a href="/economy-analysis" className="text-sm">
                       <li
@@ -354,6 +330,75 @@ const Sidebar = () => {
                         )}
                       </li>
                     </a>
+
+                  </ul>
+                )}
+              </li>
+              <li>
+                <div
+                  className={`${open
+                    ? "flex items-center mb-3 cursor-pointer hover:bg-gray-400/15 py-1.5 px-2 rounded w-full my-1"
+                    : "flex items-center mb-3 cursor-pointer hover:text-gray-400"
+                    }`}
+                  onClick={() => {
+                    setIsServicesOpen(!isServicesOpen);
+                    setIsServicesOpen1(false)
+                                        setIsServicesOpen2(false)
+
+                  }}
+                >
+                  <FileStack className="w-[18px]" />
+                  {open && (
+                    <div className="flex justify-between w-full">
+                      <span className="ml-3 text-sm">Designs</span>
+                      <ChevronDown className={`"w-[18px]" ${isServicesOpen ? "rotate-180 transition duration-300" : "transition duration-300"}`} />
+                    </div>
+                  )}
+                </div>
+                {!open && isServicesOpen && (
+                  <div className=" absolute bg-[#004b23] left-18 w-[200px]  rounded-md top-68 z-10">
+                    <ul className="mt-2 text-sm">
+
+                      <a href="/landfill-design" className="text-sm">
+                        <li
+                          className={`flex items-center mb-3 cursor-pointer hover:bg-gray-400/15 py-1 px-2 rounded w-full my-0.5`}
+                        >
+                          <DraftingCompass className="w-[18px]" />
+                          {!open && (
+                            <span className="ml-3">Landfill Design</span>
+                          )}
+                        </li>
+                      </a>
+                      <a href="/MRF-design" className="text-sm">
+                        <li
+                          className={`flex items-center mb-3 cursor-pointer hover:bg-gray-400/15 py-1 px-2 rounded w-full my-0.5`}
+                        >
+                          <Framer className="w-[18px]" />
+                          {!open && <span className="ml-3">MRF Design</span>}
+                        </li>
+                      </a>
+                      <a href="/RDF-design" className="text-sm">
+                        <li
+                          className={`flex items-center mb-3 cursor-pointer hover:bg-gray-400/15 py-1 px-2 rounded w-full my-0.5`}
+                        >
+                          <SquareChartGantt className="w-[18px]" />
+                          {!open && <span className="ml-3">RDF Design</span>}
+                        </li>
+                      </a>
+                      <a href="/anaerobic-design" className="text-sm">
+                        <li
+                          className={`flex items-center mb-3 cursor-pointer hover:bg-gray-400/15 py-1 px-2 rounded w-full my-0.5`}
+                        >
+                          <Frame className="w-[18px]" />
+                          {!open && <span className="ml-3">Anaerobic Design</span>}
+                        </li>
+                      </a>
+                    </ul>
+                  </div>
+                )}
+                {open && isServicesOpen && (
+                  <ul className="ml-6 mt-2 text-sm">
+
                     <a href="/landfill-design" className="text-sm">
                       <li
                         className={`flex items-center mb-3 cursor-pointer hover:bg-gray-400/15 py-1 px-2 rounded w-full my-0.5`}
