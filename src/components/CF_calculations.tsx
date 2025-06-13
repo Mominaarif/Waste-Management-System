@@ -404,7 +404,7 @@ const NextPage: React.FC = () => {
     "Mechanical Biological Treatment (MBT)": ["Biostabilization", "Bio-drying"],
     // "Landfilling with LGR": ["Sanitary Landfilling", "Bioreactor Landfills"],
     // RDF: ["Low-Density RDF", "High-Density RDF"],
-    Incineration: ["Mass Burn", "Fluidized Bed"],
+    Incineration: ["With Energy Recovery", "Without Energy Recovery"],
     // Pyrolysis: ["Fast Pyrolysis", "Slow Pyrolysis"],
     // Gasification: ["Plasma Arc Gasification", "Fixed Bed Gasification", "Fluidized Bed Gasification"],
     // "Chemical Recycling": ["Depolymerization", "Solvolysis"],
@@ -527,7 +527,7 @@ const NextPage: React.FC = () => {
       const methods = categoryDisposalMethods[category] || [];
       const subcategoriesData = calculatedData[category.toLowerCase()] || {};
       console.log(methods)
-      // console.log(category)
+      console.log(subcategoriesData)
 
 
       newFootprint[category] = methods.reduce((byMethod, method) => {
@@ -572,7 +572,7 @@ const NextPage: React.FC = () => {
           }
           console.log(methodSum);
         }
-// Composting
+        // Composting
 
 
         if (method === "Composting") {
@@ -587,6 +587,87 @@ const NextPage: React.FC = () => {
           }
           console.log(methodSum);
         }
+
+        if (method === "Anaerobic Digestion - Dry Digestion with Digestate Curing") {
+
+          for (const [subcategory, amount] of Object.entries(subcategoriesData)) {
+            const numericAmount = typeof amount === 'number' ? amount : Number(amount);
+            const factor = emissionFactorsAnaerobicDigDryDigestateCuring[subcategory] ?? 1;
+            if (numericAmount && factor) {
+              methodSum += numericAmount * factor;
+            }
+            // console.log(factor + " * " + numericAmount)
+          }
+          console.log(methodSum);
+        }
+
+
+        if (method === "Anaerobic Digestion - Wet Digestion with Digestate Curing") {
+
+          for (const [subcategory, amount] of Object.entries(subcategoriesData)) {
+            const numericAmount = typeof amount === 'number' ? amount : Number(amount);
+            const factor = emissionFactorsAnaerobicDigWetDigestateCuring[subcategory] ?? 1;
+            if (numericAmount && factor) {
+              methodSum += numericAmount * factor;
+            }
+            // console.log(factor + " * " + numericAmount)
+          }
+          console.log(methodSum);
+        }
+
+
+        if (method === "Anaerobic Digestion - Dry Digestion with Direct Land Application ") {
+
+          for (const [subcategory, amount] of Object.entries(subcategoriesData)) {
+            const numericAmount = typeof amount === 'number' ? amount : Number(amount);
+            const factor = emissionFactorsAnaerobicDigDryDirectLandApplication[subcategory] ?? 1;
+            if (numericAmount && factor) {
+              methodSum += numericAmount * factor;
+            }
+            // console.log(factor + " * " + numericAmount)
+          }
+          console.log(methodSum);
+        }
+
+        if (method === "Anaerobic Digestion - Wet Digestion with Direct Land Application ") {
+
+          for (const [subcategory, amount] of Object.entries(subcategoriesData)) {
+            const numericAmount = typeof amount === 'number' ? amount : Number(amount);
+            const factor = emissionFactorsAnaerobicDigWetDirectLandApplication[subcategory] ?? 1;
+            if (numericAmount && factor) {
+              methodSum += numericAmount * factor;
+            }
+            // console.log(factor + " * " + numericAmount)
+          }
+          console.log(methodSum);
+        }
+
+        if (method === "Incineration - With Energy Recovery") {
+
+          for (const [subcategory, amount] of Object.entries(subcategoriesData)) {
+            const numericAmount = typeof amount === 'number' ? amount : Number(amount);
+            const factor = emissionFactorsIncinerationWithRecovery[subcategory] ?? 1;
+            if (numericAmount && factor) {
+              methodSum += numericAmount * factor;
+            }
+          }
+          console.log(methodSum);
+        }
+
+        if (method === "Incineration - Without Energy Recovery") {
+
+          for (const [subcategory, amount] of Object.entries(subcategoriesData)) {
+            const numericAmount = typeof amount === 'number' ? amount : Number(amount);
+            const factor = emissionFactorsIncinerationWithoutRecovery[subcategory] ?? 1;
+            if (numericAmount && factor) {
+              methodSum += numericAmount * factor;
+            }
+          }
+          console.log(methodSum);
+        }
+
+        // console.log(method);Incineration - With Energy Recovery
+
         byMethod[method] = parseFloat(methodSum.toFixed(2));
         totalEmissions += methodSum;
         // console.log(byMethod)
@@ -737,14 +818,68 @@ const NextPage: React.FC = () => {
     textile: -0.91,
     diapers: 0.04,
     leather: -0.51,
-
   };
 
   const emissionFactorsComposting: Record<string, number> = {
     foodWaste: -0.16,
     yardWaste: -0.1,
     animalDunk: 0.02
+  };
 
+  const emissionFactorsAnaerobicDigDryDigestateCuring: Record<string, number> = {
+    foodWaste: -0.04,
+    yardWaste: -0.1,
+    animalDunk: -0.02
+  };
+
+  const emissionFactorsAnaerobicDigWetDigestateCuring: Record<string, number> = {
+    foodWaste: -0.06,
+    yardWaste: 0,
+    animalDunk: -0.36
+  };
+
+  const emissionFactorsAnaerobicDigDryDirectLandApplication: Record<string, number> = {
+    foodWaste: -0.1,
+    yardWaste: -0.35,
+    animalDunk: -0.005
+  };
+
+   const emissionFactorsAnaerobicDigWetDirectLandApplication: Record<string, number> = {
+    foodWaste: -0.14,
+    yardWaste: 0,
+    animalDunk: -0.335
+  };
+
+  const emissionFactorsIncinerationWithoutRecovery: Record<string, number> = {
+    foodWaste: 0.09,
+    yardWaste: 0.06,
+    paper: 0.99,
+    cardboard: 0.94,
+    lightPlastic: 1.44,
+    densePlastic: 1.54,
+    wood: 0.39,
+    electronics: 0.84,
+    cdWaste: 0.09,
+    textile: 0.74,
+    diapers: 0.24,
+    animalDunk: 0.02,
+    leather: 0.54,
+  };
+
+  const emissionFactorsIncinerationWithRecovery: Record<string, number> = {
+    foodWaste: 0.24,
+    yardWaste: 0.14,
+    paper: 1.84,
+    cardboard: 1.74,
+    lightPlastic: 3.04,
+    densePlastic: 3.24,
+    wood: 1.04,
+    electronics: 1.54,
+    cdWaste: 0.14,
+    textile: 1.54,
+    diapers: 1.34,
+    animalDunk: 0.24,
+    leather: 1.04,
   };
 
   const calculateCarbonFootprintLandfillingWithoutLRG = (category: string, method: string) => {
@@ -879,7 +1014,7 @@ const NextPage: React.FC = () => {
                                         <label>{subMethod}</label>
                                       </div>
                                       {/* Show input only if the checkbox is checked */}
-                                      {isChecked && (
+                                      {/* {isChecked && (
                                         <div className="ml-0 pr-5">
                                           <input
                                             type="number"
@@ -899,7 +1034,7 @@ const NextPage: React.FC = () => {
                                             }
                                           />
                                         </div>
-                                      )}
+                                      )} */}
                                     </div>
                                   );
                                 })}
