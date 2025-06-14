@@ -1,323 +1,3 @@
-// import React, { useState, useEffect } from 'react';
-// import { useLocation } from 'react-router-dom';
-// import { Bar } from 'react-chartjs-2';
-// import 'chart.js/auto';
-
-// interface CarbonFootprintData {
-//   [method: string]: number;
-// }
-
-// interface CategoryFootprint {
-//   [category: string]: CarbonFootprintData;
-// }
-
-// interface LeastCo2Method {
-//   method: string;
-//   footprint: number;
-// }
-
-// interface WasteData {
-//   [category: string]: {
-//     [subcategory: string]: number;
-//   };
-// }
-
-// interface LocationState {
-//   calculatedData: WasteData;
-//   totals: any; // Adjust if you have more detailed typing
-// }
-
-// const NextPage: React.FC = () => {
-//   const location = useLocation();
-//   const { calculatedData = {}, totals = {} } = (location.state || {}) as LocationState;
-
-//   const [selectedWasteTypes, setSelectedWasteTypes] = useState<Record<string, boolean>>({});
-//   const [wasteCategories, setWasteCategories] = useState<Record<string, string>>({});
-//   const [customEmissionFactors, setCustomEmissionFactors] = useState<Record<string, number | null>>({});
-//   const [showSummary, setShowSummary] = useState(false);
-//   const [carbonFootprint, setCarbonFootprint] = useState<CategoryFootprint>({});
-//   const [leastCo2Methods, setLeastCo2Methods] = useState<Record<string, LeastCo2Method | null>>({});
-//   const [showLeastCo2Table, setShowLeastCo2Table] = useState(false);
-
-//   const [categoryDisposalMethods, setCategoryDisposalMethods] = useState<Record<string, string[]>>({
-//     Biodegradable: [],
-//     Combustible: [],
-//     Recyclable: [],
-//     Residual: [],
-//   });
-
-//   const disposalOptions: Record<string, string[]> = {
-//     Biodegradable: ["Composting", "Anaerobic Digestion", "Landfilling with LGR", "Landfilling without LGR", "MBT"],
-//     Combustible: ["RDF", "Incineration", "Landfilling with LGR", "Landfilling without LGR", "Pyrolysis", "Gasification"],
-//     Recyclable: ["Physical Recycling", "Chemical Recycling", "Landfilling with LGR", "Landfilling without LGR"],
-//     Residual: ["Landfilling with LGR", "Landfilling without LGR"],
-//   };
-
-//   const subcategories: Record<string, string[]> = {
-//     "Anaerobic Digestion": ["Dry Digestion", "Wet Digestion", "Batch Digestion", "Continuous Digestion"],
-//     Composting: ["Aerated Static Pile Composting", "Windrow Composting", "In-vessel Composting"],
-//     "Mechanical Biological Treatment (MBT)": ["Biostabilization", "Bio-drying"],
-//     "Landfilling with LGR": ["Sanitary Landfilling", "Bioreactor Landfills"],
-//     RDF: ["Low-Density RDF", "High-Density RDF"],
-//     Incineration: ["Mass Burn", "Fluidized Bed"],
-//     Pyrolysis: ["Fast Pyrolysis", "Slow Pyrolysis"],
-//     Gasification: ["Plasma Arc Gasification", "Fixed Bed Gasification", "Fluidized Bed Gasification"],
-//     "Chemical Recycling": ["Depolymerization", "Solvolysis"],
-//     "Physical Recycling": ["Shredding and Re-molding", "Mechanical Separation"],
-//   };
-
-//   const carbonEmissionFactors: Record<string, number> = {
-//     Composting: 0.1, "Anaerobic Digestion": 0.05, "Landfilling with LGR": 0.3, "Landfilling without LGR": 0.6,
-//     MBT: 0.15, RDF: 0.4, Incineration: 0.7, Pyrolysis: 0.2, Gasification: 0.25,
-//     "Physical Recycling": 0.08, "Chemical Recycling": 0.12,
-//     "Dry Digestion": 0.04, "Wet Digestion": 0.05, "Batch Digestion": 0.06, "Continuous Digestion": 0.03,
-//     "Aerated Static Pile Composting": 0.12, "Windrow Composting": 0.1, "In-vessel Composting": 0.08,
-//     "Biostabilization": 0.18, "Bio-drying": 0.2, "Sanitary Landfilling": 0.35, "Bioreactor Landfills": 0.28,
-//     "Low-Density RDF": 0.35, "High-Density RDF": 0.45, "Mass Burn": 0.8, "Fluidized Bed": 0.75,
-//     "Fast Pyrolysis": 0.25, "Slow Pyrolysis": 0.3, "Plasma Arc Gasification": 0.22,
-//     "Fixed Bed Gasification": 0.2, "Fluidized Bed Gasification": 0.18,
-//     "Depolymerization": 0.13, "Solvolysis": 0.15,
-//     "Shredding and Re-molding": 0.06, "Mechanical Separation": 0.05,
-//   };
-
-//   useEffect(() => {
-//     if (!calculatedData) return;
-//     setSelectedWasteTypes(
-//       Object.keys(calculatedData).reduce((acc, wasteType) => {
-//         acc[wasteType] = true;
-//         return acc;
-//       }, {} as Record<string, boolean>)
-//     );
-//     setWasteCategories(
-//       Object.keys(calculatedData).reduce((acc, wasteType) => {
-//         acc[wasteType] = "Biodegradable";
-//         return acc;
-//       }, {} as Record<string, string>)
-//     );
-//   }, [calculatedData]);
-
-//   const handleCustomEmissionFactorChange = (method: string, value: string) => {
-//     setCustomEmissionFactors((prev) => ({
-//       ...prev,
-//       [method]: value ? parseFloat(value) : null,
-//     }));
-//   };
-
-//   const handleDisposalMethodChange = (category: string, method: string, subMethod?: string) => {
-//     setCategoryDisposalMethods((prev) => {
-//       const methodKey = subMethod ? `${method} - ${subMethod}` : method;
-//       const updated = prev[category] || [];
-//       const newMethods = updated.includes(methodKey)
-//         ? updated.filter((m) => m !== methodKey)
-//         : [...updated, methodKey];
-//       return { ...prev, [category]: newMethods };
-//     });
-//   };
-
-//   const calculateCarbonFootprint = () => {
-//     const newCarbonFootprint: CategoryFootprint = {};
-
-//     Object.keys(categoryDisposalMethods).forEach((category) => {
-//       const subcategoriesData = calculatedData[category.toLowerCase()] || {};
-//       const methods = categoryDisposalMethods[category] || [];
-
-//       newCarbonFootprint[category] = methods.reduce((acc, method) => {
-//         const emission = Object.keys(subcategoriesData).reduce((total, subcategory) => {
-//           const amount = subcategoriesData[subcategory] || 0;
-//           const factor = customEmissionFactors[method] ?? carbonEmissionFactors[method] ?? 1;
-//           return total + amount * factor;
-//         }, 0);
-//         acc[method] = emission;
-//         return acc;
-//       }, {} as CarbonFootprintData);
-//     });
-
-//     setCarbonFootprint(newCarbonFootprint);
-//     setShowSummary(true);
-//   };
-
-//   const computeLeastCo2Methods = () => {
-//     const leastMethods: Record<string, LeastCo2Method | null> = {};
-
-//     Object.entries(carbonFootprint).forEach(([category, methods]) => {
-//       const least = Object.entries(methods).reduce<LeastCo2Method | null>((acc, [method, val]) => {
-//         return !acc || val < acc.footprint ? { method, footprint: val } : acc;
-//       }, null);
-//       leastMethods[category] = least;
-//     });
-
-//     setLeastCo2Methods(leastMethods);
-//     setShowLeastCo2Table(true);
-//   };
-
-//   const renderTableAndChart = (category: string) => {
-//     const data = carbonFootprint[category] || {};
-//     const chartData = {
-//       labels: Object.keys(data),
-//       datasets: [
-//         {
-//           label: `${category} Carbon Footprint (kg CO₂)`,
-//           data: Object.values(data),
-//           backgroundColor: ['rgba(75,192,192,0.6)', 'rgba(255,99,132,0.6)', 'rgba(255,206,86,0.6)'],
-//           borderWidth: 1,
-//         },
-//       ],
-//     };
-
-//     return (
-//       <div className="">
-//         <table>
-//           <thead className="">
-//             <tr className="bg-[#386641] text-white border p-2 text-left">
-//               <th className='p-2 border '>Method</th>
-//               <th className='p-2 border '>CO₂ (kg)</th>
-//             </tr>
-//           </thead>
-//           <tbody>
-//             {Object.entries(data).map(([method, val]) => (
-//               <tr key={method}>
-//                 <td className='p-2 border '>{method}</td>
-//                 <td className='p-2 border '>{val.toFixed(2)}</td>
-//               </tr>
-//             ))}
-//           </tbody>
-//         </table>
-//         <div style={{ width: "50%" }}>
-//           <Bar data={chartData} />
-//         </div>
-//       </div>
-//     );
-//   };
-
-//   if (!calculatedData || !totals) return <div>No data available</div>;
-
-//   return (
-//     <div className="h-[calc(100vh-85px)] overflow-y-auto bg-white">
-//       <h2>Select Management Technologies Method for Each Category</h2>
-//       <table className="table-auto border-collapse border border-gray-300">
-//         <thead>
-//           <tr>
-//             {Object.keys(disposalOptions).map((cat) => <th key={cat}>{cat}</th>)}
-//           </tr>
-//         </thead>
-//         <tbody>
-//           {Array.from({ length: Math.max(...Object.values(disposalOptions).map((m) => m.length)) }).map((_, row) => (
-//             <tr key={row}>
-//               {Object.keys(disposalOptions).map((cat) => {
-//                 const method = disposalOptions[cat][row];
-//                 if (!method) return <td key={cat}></td>;
-//                 const subMethods = subcategories[method];
-
-//                 return (
-//                   <td key={cat}>
-//                     {subMethods ? (
-//                       <>
-//                         <div>{method}</div>
-//                         {subMethods.map((sub) => {
-//                           const key = `${method} - ${sub}`;
-//                           const isChecked = categoryDisposalMethods[cat]?.includes(key);
-//                           return (
-//                             <div key={sub} className="ml-4">
-//                               <input type="checkbox" checked={isChecked} onChange={() => handleDisposalMethodChange(cat, method, sub)} />
-//                               <label>{sub}</label>
-//                               {isChecked && (
-//                                 <input
-//                                   type="number"
-//                                   placeholder="Emission"
-//                                   step="0.01"
-//                                   value={customEmissionFactors[key] ?? ''}
-//                                   onChange={(e) => handleCustomEmissionFactorChange(key, e.target.value)}
-//                                 />
-//                               )}
-//                             </div>
-//                           );
-//                         })}
-//                       </>
-//                     ) : (
-//                       <div>
-//                         <input
-//                           type="checkbox"
-//                           checked={categoryDisposalMethods[cat]?.includes(method) || false}
-//                           onChange={() => handleDisposalMethodChange(cat, method)}
-//                         />
-//                         <label>{method}</label>
-//                         {categoryDisposalMethods[cat]?.includes(method) && (
-//                           <input
-//                             type="number"
-//                             step="0.01"
-//                             placeholder="Emission"
-//                             value={customEmissionFactors[method] ?? ''}
-//                             onChange={(e) => handleCustomEmissionFactorChange(method, e.target.value)}
-//                           />
-//                         )}
-//                       </div>
-//                     )}
-//                   </td>
-//                 );
-//               })}
-//             </tr>
-//           ))}
-//         </tbody>
-//       </table>
-
-//       <button className="mt-4 bg-blue-500 text-white px-4 py-2" onClick={calculateCarbonFootprint}>
-//         Calculate Carbon Footprint
-//       </button>
-
-//       {showSummary && (
-//         <div className="mt-6">
-//           <h2 className="text-xl">Carbon Footprint Summary</h2>
-//           {Object.keys(carbonFootprint).map((cat) => (
-//             <div key={cat}>
-//               <h3 className="font-bold">{cat}</h3>
-//               {renderTableAndChart(cat)}
-//             </div>
-//           ))}
-//           <button className="mt-4 bg-green-600 text-white px-4 py-2" onClick={computeLeastCo2Methods}>
-//             Show Least CO₂ Management Technologies
-//           </button>
-//         </div>
-//       )}
-
-//       {showLeastCo2Table && (
-//         <div className="mt-6">
-//           <h2 className="text-xl">Least CO₂ Methods</h2>
-//           <table>
-//             <thead>
-//               <tr><th>Category</th><th>Method</th><th>CO₂ (kg)</th></tr>
-//             </thead>
-//             <tbody>
-//               {Object.entries(leastCo2Methods).map(([cat, methodData]) => (
-//                 <tr key={cat}>
-//                   <td>{cat}</td>
-//                   <td>{methodData?.method ?? 'N/A'}</td>
-//                   <td>{methodData?.footprint.toFixed(2) ?? 'N/A'}</td>
-//                 </tr>
-//               ))}
-//             </tbody>
-//           </table>
-//         </div>
-//       )}
-//     </div>
-//   );
-// };
-
-// export default NextPage;
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
 import React, { useState, useEffect } from 'react';
 import { useLocation } from 'react-router-dom';
 import { Bar } from 'react-chartjs-2';
@@ -546,6 +226,7 @@ const NextPage: React.FC = () => {
           }
           console.log(methodSum);
         }
+
         if (method === "Landfilling without LGR") {
 
           for (const [subcategory, amount] of Object.entries(subcategoriesData)) {
@@ -572,8 +253,6 @@ const NextPage: React.FC = () => {
           }
           console.log(methodSum);
         }
-        // Composting
-
 
         if (method === "Composting") {
 
@@ -596,11 +275,9 @@ const NextPage: React.FC = () => {
             if (numericAmount && factor) {
               methodSum += numericAmount * factor;
             }
-            // console.log(factor + " * " + numericAmount)
           }
           console.log(methodSum);
         }
-
 
         if (method === "Anaerobic Digestion - Wet Digestion with Digestate Curing") {
 
@@ -610,11 +287,9 @@ const NextPage: React.FC = () => {
             if (numericAmount && factor) {
               methodSum += numericAmount * factor;
             }
-            // console.log(factor + " * " + numericAmount)
           }
           console.log(methodSum);
         }
-
 
         if (method === "Anaerobic Digestion - Dry Digestion with Direct Land Application ") {
 
@@ -624,7 +299,6 @@ const NextPage: React.FC = () => {
             if (numericAmount && factor) {
               methodSum += numericAmount * factor;
             }
-            // console.log(factor + " * " + numericAmount)
           }
           console.log(methodSum);
         }
@@ -637,7 +311,6 @@ const NextPage: React.FC = () => {
             if (numericAmount && factor) {
               methodSum += numericAmount * factor;
             }
-            // console.log(factor + " * " + numericAmount)
           }
           console.log(methodSum);
         }
@@ -655,7 +328,6 @@ const NextPage: React.FC = () => {
         }
 
         if (method === "Incineration - Without Energy Recovery") {
-
           for (const [subcategory, amount] of Object.entries(subcategoriesData)) {
             const numericAmount = typeof amount === 'number' ? amount : Number(amount);
             const factor = emissionFactorsIncinerationWithoutRecovery[subcategory] ?? 1;
@@ -664,6 +336,61 @@ const NextPage: React.FC = () => {
             }
           }
           console.log(methodSum);
+        }
+
+        if (method === "RDF") {
+          for (const [subcategory, amount] of Object.entries(subcategoriesData)) {
+            const numericAmount = typeof amount === 'number' ? amount : Number(amount);
+            // const factor = emissionFactorsIncinerationWithoutRecovery[subcategory] ?? 1;
+            // if (numericAmount && factor) {
+            //   methodSum += numericAmount * factor;
+            // }
+            methodSum += numericAmount;
+          }
+
+          const primaryShreddigngEfficiency = 95;
+          const secondaryShreddigngEfficiency = 95;
+          const pelletizerShreddigngEfficiency = 98;
+          const GHGEmissionFactor = 0.000417;
+          const operatingHours = 12;
+          const primaryTypicalPowerRequirement = 500;
+          const secondaryTypicalPowerRequirement = 670;
+          const pelletizerTypicalPowerRequirement = 500.8;
+          const primaryPowerRequired = operatingHours * primaryTypicalPowerRequirement;
+          const secondaryPowerRequired = operatingHours * secondaryTypicalPowerRequirement;
+          const pelletizerPowerRequired = operatingHours * pelletizerTypicalPowerRequirement;
+          const primaryEmission = GHGEmissionFactor * primaryPowerRequired;
+          const secondaryEmission = GHGEmissionFactor * secondaryPowerRequired;
+          const pelletizerEmission = GHGEmissionFactor * pelletizerPowerRequired;
+
+          // Total Process Emissions =  Emissions of all processes
+          const energyContentOfFuel = 36.397;
+          const totalProcessEmissions = primaryEmission + secondaryEmission + pelletizerEmission;
+          const totalProcessEmissionsPerYear = totalProcessEmissions * 365;
+
+          const GHGEmissionFactorMJ = GHGEmissionFactor + (0.000003 * 28) + (0.0000006 * 265);
+          const GHGEmissionFactorLitre = GHGEmissionFactorMJ + energyContentOfFuel;
+          const mileagePerGallon = 7.2;
+          const mileagePerLitre = mileagePerGallon / 2.352;
+          const RDF_FacilityDistanceFromCollectionLocation = 30;
+          const fuelConsumption = RDF_FacilityDistanceFromCollectionLocation / mileagePerLitre;
+          // Transportation Emissions
+          const GHGEmissionsKgPerDay = fuelConsumption * GHGEmissionFactorLitre;
+          const GHGEmissionsTonsPerDay = GHGEmissionsKgPerDay / 1000;
+          const GHGEmissionsTonsPerYear = GHGEmissionsTonsPerDay * 365;
+
+          console.log(methodSum);
+          const shredderOutflowPrimary = methodSum * (primaryShreddigngEfficiency / 100);
+          const shredderOutflowSecondary = shredderOutflowPrimary * (secondaryShreddigngEfficiency / 100);
+          const shredderOutflowPelletizer = shredderOutflowSecondary * (pelletizerShreddigngEfficiency / 100);
+          const RDFProduction = shredderOutflowPelletizer;
+
+          const GHGEmissionsFactorRDFCombustionKg = 1.42;
+          const GHGEmissionsFactorRDFCombustionTon = 1.42300;
+          const GHGEmissionsRDFCombustionKg = GHGEmissionsFactorRDFCombustionTon * RDFProduction;
+          const GHGEmissionsRDFCombustionTon = GHGEmissionsRDFCombustionKg * 365;
+          const TotalEmissionsOfRDFP_C= GHGEmissionsRDFCombustionTon + GHGEmissionsTonsPerYear + totalProcessEmissionsPerYear;
+          const TotalEmissionsOfRDFP_CYear = TotalEmissionsOfRDFP_C * 365;
         }
 
         // console.log(method);Incineration - With Energy Recovery
@@ -702,7 +429,7 @@ const NextPage: React.FC = () => {
       labels: Object.keys(tableData),
       datasets: [
         {
-          label: `${category} Carbon Footprint (kg CO₂)`,
+          label: `${category} Carbon Footprint (tons CO₂)`,
           data: Object.values(tableData),
           // backgroundColor: [
           //   'rgba(75, 192, 192, 0.6)', 'rgba(255, 99, 132, 0.6)', 'rgba(54, 162, 235, 0.6)',
@@ -736,7 +463,7 @@ const NextPage: React.FC = () => {
           <thead>
             <tr className='bg-[#386641] text-white border p-2'>
               <th className=' border p-2'>Method</th>
-              <th className=' border p-2'>Carbon Footprint (kg CO₂)</th>
+              <th className=' border p-2'>Carbon Footprint (tons CO₂)</th>
             </tr>
           </thead>
           <tbody>
@@ -844,7 +571,7 @@ const NextPage: React.FC = () => {
     animalDunk: -0.005
   };
 
-   const emissionFactorsAnaerobicDigWetDirectLandApplication: Record<string, number> = {
+  const emissionFactorsAnaerobicDigWetDirectLandApplication: Record<string, number> = {
     foodWaste: -0.14,
     yardWaste: 0,
     animalDunk: -0.335
@@ -1142,7 +869,7 @@ const NextPage: React.FC = () => {
                   <tr className="bg-[#386641] text-white border p-2">
                     <th className="border p-2">Category</th>
                     <th className="border p-2">Method</th>
-                    <th className="border p-2">Carbon Footprint (kg CO₂)</th>
+                    <th className="border p-2">Carbon Footprint (tons CO₂)</th>
                   </tr>
                 </thead>
                 <tbody>

@@ -1046,17 +1046,17 @@ function RDF() {
                     <tbody>
                       {editableSubcategories.map((subCat, idx) => (
                         <tr key={idx}>
-                          <td className="p-[0_!important] pl-[8px_!important]">
+                          <td className="p-[0_!important] pl-[8px_!important] border">
                             {subCat.name}
                           </td>
 
-                          <td className="p-[0_!important]">
+                          <td className="p-[0_!important] pl-[8px_!important] border">
                             <p className="block h-[38px] w-full px-3 py-1.5 text-gray-900 focus:border-blue-500 focus:ring-blue-500 md:text-sm">
                               {subCat.percentage}
                             </p>
                           </td>
 
-                          <td className="p-[0_!important]">
+                          <td className="p-[0_!important] pl-[8px_!important] border">
                             <input
                               type="number"
                               value={subCat.typicalDensity}
@@ -1070,7 +1070,7 @@ function RDF() {
                               }
                             />
                           </td>
-                          <td className="p-[0_!important]">
+                          <td className="p-[0_!important] pl-[8px_!important] border">
                             <input
                               type="number"
                               className="block w-full  border-gray-300 px-3 py-1.5 text-gray-900 focus:border-blue-500 focus:ring-blue-500 md:text-sm"
@@ -1084,7 +1084,7 @@ function RDF() {
                               }
                             />
                           </td>
-                          <td className="p-[0_!important]">
+                          <td className="p-[0_!important] pl-[8px_!important] border">
                             <input
                               type="number"
                               className="block w-full  border-gray-300 px-3 py-1.5 text-gray-900 focus:border-blue-500 focus:ring-blue-500 md:text-sm"
